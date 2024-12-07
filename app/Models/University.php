@@ -5,8 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class JobInfo extends Model {
-	/** @use HasFactory<\Database\Factories\JobInfoFactory> */
+class University extends Model {
+	/** @use HasFactory<\Database\Factories\UniversityFactory> */
 	use HasFactory;
 	protected $fillable = [ 'name' ];
 }
