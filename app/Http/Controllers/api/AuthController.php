@@ -63,14 +63,16 @@ class AuthController extends Controller {
 
 	protected function validateRegister( $validator ) {
 		$validated = $validator->validated();
-		$district = District::find( $validated['district_id'] );
-		if ( $district->state_id != $validated['state_id'] ) {
-			return [ 
-				'fails' => true,
-				'response' => $this->failure( "The District with id {$validated['district_id']} don't belong to this state with id {$validated['state_id']}" )
-			];
-		} else {
-			return [ 'fails' => false ];
+		if ( isset( $validated['district_id'] ) ) {
+			$district = District::find( $validated['district_id'] );
+			if ( $district->state_id != $validated['state_id'] ) {
+				return [ 
+					'fails' => true,
+					'response' => $this->failure( "The District with id {$validated['district_id']} don't belong to this state with id {$validated['state_id']}" )
+				];
+			}
 		}
+		return [ 'fails' => false ];
+
 	}
 }
