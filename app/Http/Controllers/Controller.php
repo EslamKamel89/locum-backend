@@ -14,9 +14,14 @@ abstract class Controller {
 		return \App\Pr::_( $value, $title );
 	}
 	public function handleValidation( Validator $validator ): JsonResponse {
+		$errors = collect( [] );
+		collect( $validator->errors() )
+			->each(
+				fn( $error ) => $errors->add( $error[0] )
+			);
 		return $this->failure(
 			message: 'Validation Failed',
-			errors: $validator->errors(),
+			errors: $errors,
 			statusCode: 422
 		);
 	}

@@ -30,10 +30,8 @@ class AuthController extends Controller {
 			return $this->failure( 'The provided credentials are incorrect.' );
 		}
 		return $this->success(
-			[ 
-				'user' => collect( $user )
-					->merge( [ 'token' => $user->createToken( $user->email )->plainTextToken ] ),
-			],
+			collect( $user )
+				->merge( [ 'token' => $user->createToken( $user->email )->plainTextToken ] ),
 			message: 'Login Completed Successfully' );
 	}
 	public function register( Request $request ) {
@@ -58,10 +56,8 @@ class AuthController extends Controller {
 		$user = User::create( $validator->validated() );
 
 		return $this->success(
-			[ 
-				'user' => collect( $user )
-					->merge( [ 'token' => $user->createToken( $user->email )->plainTextToken ] ),
-			],
+			collect( $user )
+				->merge( [ 'token' => $user->createToken( $user->email )->plainTextToken ] ),
 			message: 'Register Completed Successfully' );
 	}
 
