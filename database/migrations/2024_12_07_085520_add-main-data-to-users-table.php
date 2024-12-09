@@ -18,6 +18,7 @@ return new class extends Migration {
 				->nullable()
 				->constrained( 'districts' )
 				->nullOnDelete();
+			$table->enum( 'type', [ 'doctor', 'hospital' ] );
 		} );
 	}
 
