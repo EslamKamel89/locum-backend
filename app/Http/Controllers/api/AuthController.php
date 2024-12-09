@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Models\District;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class AuthController extends Controller {
 	public function login( Request $request ) {
@@ -43,6 +45,7 @@ class AuthController extends Controller {
 				'password' => 'required',
 				'state_id' => 'required|exists:states,id',
 				'district_id' => 'required|exists:districts,id',
+				'type' => [ 'required', Rule::enum( UserType::class) ]
 			] );
 
 		if ( $validator->fails() ) {
