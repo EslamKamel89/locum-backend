@@ -42,7 +42,7 @@ class AuthController extends Controller {
 				'email' => 'required|email|unique:users,email',
 				'password' => 'required',
 				'state_id' => 'required|exists:states,id',
-				'district_id' => 'required|exists:districts,id',
+				'district_id' => 'sometimes|exists:districts,id',
 				'type' => [ 'required', Rule::enum( UserType::class) ]
 			] );
 
