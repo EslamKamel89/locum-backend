@@ -14,7 +14,7 @@ class DoctorResource extends JsonResource {
 	 */
 	public function toArray( Request $request ): array {
 		return collect( parent::toArray( $request ) )->merge( [ 
-			'specialty' => new SpecialtyResource( $this->whenLoaded( 'posts' ) ),
+			'specialty' => new SpecialtyResource( $this->whenLoaded( 'specialty' ) ),
 			'user' => new UserResource( $this->whenLoaded( 'user' ) ),
 			'jobInfo' => new JobInfoResource( $this->whenLoaded( 'jobInfo' ) ),
 			'doctorInfo' => new DoctorInfoResource( $this->whenLoaded( 'doctorInfo' ) ),

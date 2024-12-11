@@ -15,7 +15,7 @@ class DoctorInfo extends Model {
 	public function doctor(): BelongsTo {
 		return $this->belongsTo( Doctor::class);
 	}
-	public function universities(): BelongsTo {
+	public function university(): BelongsTo {
 		return $this->belongsTo( University::class);
 	}
 

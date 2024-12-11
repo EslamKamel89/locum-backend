@@ -35,7 +35,7 @@ class DoctorController extends Controller {
 				return $this->failure(
 					message: 'Validation Failed',
 					errors: [ 
-						"There is already a doctor associated with this user"
+						"There is already a Health Care Professional associated with this user"
 					],
 					statusCode: 422
 				);
@@ -88,8 +88,6 @@ class DoctorController extends Controller {
 			return $this->handleException( $e );
 		}
 	}
-
-
 
 	/**
 	 * Update the specified resource in storage.
