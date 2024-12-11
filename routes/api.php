@@ -33,14 +33,15 @@ Route::prefix( 'auth' )->group( function () {
 } );
 
 Route::middleware( [ 'auth:sanctum' ] )->group( function () {
-	Route::apiResource( '/langs', LangController::class);
-	Route::apiResource( '/skills', SkillController::class);
-	Route::apiResource( '/doctors', DoctorController::class);
+	Route::apiResource( '/langs', LangController::class); //
+	Route::apiResource( '/skills', SkillController::class); //
+	Route::post( '/doctors/update-user-img/{doctor}', [ DoctorController::class, 'updateUserImg' ] );
+	Route::apiResource( '/doctors', DoctorController::class); //
 	Route::apiResource( '/doctor-infos', DoctorInfoController::class);
 	Route::apiResource( '/doctor-docs', DoctorDocumentController::class);
-	Route::apiResource( '/hospitals', HospitalController::class);
+	Route::apiResource( '/hospitals', HospitalController::class);//
 	Route::apiResource( '/hospital-infos', HospitalInfoController::class);
 	Route::apiResource( '/hospital-docs', HospitalDocumentController::class);
-	Route::apiResource( '/hospital-docs', JobAddController::class);
+	Route::apiResource( '/hospital-docs', JobAddController::class); //
 
 } );

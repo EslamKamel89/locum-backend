@@ -8,7 +8,7 @@ use Illuminate\Foundation\Exceptions\Renderer\Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Validator;
 
-abstract class Controller {
+class Controller {
 	use ApiResponse;
 	public function pr( $value, $title = null ) {
 		return \App\Pr::_( $value, $title );

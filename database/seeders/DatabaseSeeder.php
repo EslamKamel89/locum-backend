@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\District;
 use App\Models\JobInfo;
+use App\Models\Lang;
+use App\Models\Skill;
 use App\Models\Specialty;
 use App\Models\State;
 use App\Models\University;
@@ -32,11 +34,34 @@ class DatabaseSeeder extends Seeder {
 						] );
 					} );
 			} );
+
 		collect( $this->universities )
 			->each( fn( $university ) => University::create( $university ) );
+
 		collect( $this->medicalJobs )
 			->each( fn( $job ) => JobInfo::create( $job ) );
+
+		collect( $this->langs )->each( fn( $lang ) => Lang::create( $lang ) );
+		collect( $this->skills )->each( fn( $skill ) => Skill::create( $skill ) );
+
+		User::create( [ 
+			"name" => "hospital",
+			"email" => "hospital@gmail.com",
+			"password" => "123456789",
+			"state_id" => 1,
+			"district_id" => 1,
+			"type" => "hospital"
+		] );
+		User::create( [ 
+			"name" => "doctor",
+			"email" => "doctor@gmail.com",
+			"password" => "123456789",
+			"state_id" => 1,
+			"district_id" => 1,
+			"type" => "doctor",
+		] );
 	}
+
 	public $medicalSpecialties = [ 
 		[ "name" => "Allergy and Immunology" ],
 		[ "name" => "Anesthesiology" ],
@@ -199,6 +224,7 @@ class DatabaseSeeder extends Seeder {
 			],
 		],
 	];
+
 	public $universities = [ 
 		[ 'name' => 'Massachusetts Institute of Technology' ],
 		[ 'name' => 'Harvard University' ],
@@ -367,6 +393,42 @@ class DatabaseSeeder extends Seeder {
 		[ "name" => "Sports Medicine Specialist" ],
 		[ "name" => "Palliative Care Specialist" ],
 		[ "name" => "Nuclear Medicine Technologist" ]
+	];
+
+	public $langs = [ 
+		[ "name" => "English" ],
+		[ "name" => "Arabic" ],
+		[ "name" => "Spanish" ],
+		[ "name" => "Chinese" ],
+		[ "name" => "French" ],
+		[ "name" => "Korean" ],
+		[ "name" => "German" ],
+		[ "name" => "Russian" ],
+	];
+
+	public $skills = [ 
+		[ "name" => "Patient Assessment" ],
+		[ "name" => "EMR (Electronic Medical Records)" ],
+		[ "name" => "Surgical Precision" ],
+		[ "name" => "Diagnostic Accuracy" ],
+		[ "name" => "CPR Certification" ],
+		[ "name" => "Leadership" ],
+		[ "name" => "Problem-Solving" ],
+		[ "name" => "Communication" ],
+		[ "name" => "Empathy" ],
+		[ "name" => "Teamwork" ],
+		[ "name" => "Attention to Detail" ],
+		[ "name" => "Professionalism" ],
+		[ "name" => "Technical Skills" ],
+		[ "name" => "Critical Thinking" ],
+		[ "name" => "Time Management" ],
+		[ "name" => "Adaptability" ],
+		[ "name" => "Interpersonal Skills" ],
+		[ "name" => "Compassion" ],
+		[ "name" => "Decision-Making" ],
+		[ "name" => "Stress Management" ],
+		[ "name" => "Research Skills" ],
+		[ "name" => "Ethical Judgment" ]
 	];
 
 }

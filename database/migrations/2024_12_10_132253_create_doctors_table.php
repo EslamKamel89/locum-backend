@@ -14,13 +14,12 @@ return new class extends Migration {
 			$table->foreignId( 'user_id' )->unique()->constrained()->cascadeOnDelete();
 			$table->foreignId( 'specialty_id' )->nullable()->constrained()->nullOnDelete();
 			$table->foreignId( 'job_info_id' )->nullable()->constrained()->nullOnDelete();
-			$table->string( 'name' );
 			$table->dateTime( 'date_of_birth' );
 			$table->enum( 'gender', [ 'male', 'female' ] );
 			$table->string( 'address' );
 			$table->string( 'phone' );
 			$table->boolean( 'willing_to_relocate' );
-			$table->string( 'photo' );
+			$table->string( 'photo' )->nullable();
 			$table->timestamps();
 		} );
 	}
