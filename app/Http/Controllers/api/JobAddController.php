@@ -4,6 +4,8 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Resources\JobAddResource;
 use App\Models\JobAdd;
+use App\Models\Lang;
+use App\Models\Skill;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -27,7 +29,7 @@ class JobAddController extends Controller {
 	 */
 	public function store( Request $request ) {
 		try {
-
+			$this->handleStoreAuthroizationCheck();
 			$validator = Validator::make(
 				$request->all(),
 				[ 
@@ -58,6 +60,9 @@ class JobAddController extends Controller {
 						'hospital_id' => auth()->user()->hospital->id,
 					] )->toArray()
 			);
+			$this->handleSkillAttach( $jobAdd );
+			$this->handleLangAttach( $jobAdd );
+			$jobAdd->load( [ 'langs', 'skills' ] );
 			return $this->success( new JobAddResource( $jobAdd ) );
 		} catch (\Exception $e) {
 			return $this->handleException( $e );
@@ -125,6 +130,53 @@ class JobAddController extends Controller {
 			return $this->success( [], message: 'Resource Deleted Successfully' );
 		} catch (\Exception $e) {
 			return $this->handleException( $e );
+		}
+	}
+
+	protected function handleSkillAttach( JobAdd $jobAdd ) {
+		$skillNames = [];
+		if ( ! ( request()->has( 'skills' ) ) ) {
+			return;
+		}
+		$skillNames = explode( ',', request()->only( 'skills' )['skills'] );
+
+		$skillIds = collect( [] );
+		foreach ( $skillNames as $skillName ) {
+			$skill = Skill::where( 'name', trim( $skillName ) )->first();
+			if ( ! $skill ) {
+				$skill = Skill::create( [ 'name' => trim( $skillName ) ] );
+			}
+			$skillIds->add( $skill->id );
+		}
+		$jobAdd->skills()->attach( $skillIds );
+	}
+	protected function handleLangAttach( JobAdd $jobAdd ) {
+		$langNames = [];
+		if ( ! ( request()->has( 'langs' ) ) ) {
+			return;
+		}
+		$langNames = explode( ',', request()->only( 'langs' )['langs'] );
+
+		$langIds = collect( [] );
+		foreach ( $langNames as $langName ) {
+			$lang = Lang::where( 'name', trim( $langName ) )->first();
+			if ( ! $lang ) {
+				$lang = Lang::create( [ 'name' => trim( $langName ) ] );
+			}
+			$langIds->add( $lang->id );
+		}
+		$jobAdd->langs()->attach( $langIds );
+	}
+
+	protected function handleStoreAuthroizationCheck() {
+		if ( auth()->user()->type !== 'hospital' ) {
+			throw new \Exception( "This user is not signed as a health care provider" );
+		}
+		if ( ! auth()->user()->hospital ) {
+			throw new \Exception( "this health care proivder didn't complete his basic profile information" );
+		}
+		if ( ! auth()->user()->hospital->hospitalInfo ) {
+			throw new \Exception( "This Health Care Provider didn't complete his profile information" );
 		}
 	}
 }

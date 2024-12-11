@@ -28,6 +28,7 @@ class HospitalInfoController extends Controller {
 	 */
 	public function store( Request $request ) {
 		try {
+			$this->handleStoreAuthroizationCheck();
 			if ( auth()->user()->hospital->hospitalInfo ) {
 				return $this->failure(
 					message: 'Validation Failed',
@@ -112,6 +113,17 @@ class HospitalInfoController extends Controller {
 			return $this->success( [], message: 'Resource Deleted Successfully' );
 		} catch (\Exception $e) {
 			return $this->handleException( $e );
+		}
+	}
+	protected function handleStoreAuthroizationCheck() {
+		if ( auth()->user()->type !== 'hospital' ) {
+			throw new \Exception( "This user is not signed as a health care provider" );
+		}
+		if ( ! auth()->user()->hospital ) {
+			throw new \Exception( "this health care proivder didn't complete his basic profile information" );
+		}
+		if ( auth()->user()->hospital->hospitalInfo ) {
+			throw new \Exception( "This Health Care Provider already completed his profile" );
 		}
 	}
 }

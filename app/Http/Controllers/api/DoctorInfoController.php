@@ -31,16 +31,7 @@ class DoctorInfoController extends Controller {
 	 */
 	public function store( Request $request ) {
 		try {
-			if ( auth()->user()->doctor->doctorInfo ) {
-				return $this->failure(
-					message: 'Validation Failed',
-					errors: [ 
-						"This Health Care Professional already completed his profile"
-					],
-					statusCode: 422
-				);
-			}
-
+			$this->handleStoreAuthroizationCheck();
 			$validator = Validator::make(
 				$request->all(),
 				[ 
@@ -156,6 +147,17 @@ class DoctorInfoController extends Controller {
 			return $this->success( new DoctorInfoResource( $doctorInfo ) );
 		} catch (\Exception $e) {
 			return $this->handleException( $e );
+		}
+	}
+	protected function handleStoreAuthroizationCheck() {
+		if ( auth()->user()->type !== 'doctor' ) {
+			throw new \Exception( "This user is not signed as a health care professional" );
+		}
+		if ( ! auth()->user()->doctor ) {
+			throw new \Exception( "this health care professional didn't complete his basic profile information" );
+		}
+		if ( auth()->user()->doctor->doctorInfo ) {
+			throw new \Exception( "This Health Care Professional already completed his profile" );
 		}
 	}
 }

@@ -15,6 +15,7 @@ class DoctorInfoResource extends JsonResource {
 		return collect( parent::toArray( $request ) )->merge( [ 
 			'doctor' => new DoctorResource( $this->whenLoaded( 'doctor' ) ),
 			'university' => new UserResource( $this->whenLoaded( 'university' ) ),
+			'skills' => new SkillResource( $this->whenLoaded( 'skills' ) ),
 		] )->toArray();
 	}
 }

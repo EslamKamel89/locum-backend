@@ -4,6 +4,9 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Resources\DoctorResource;
 use App\Models\Doctor;
+use App\Models\Lang;
+use App\Models\Skill;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -31,15 +34,7 @@ class DoctorController extends Controller {
 	 */
 	public function store( Request $request ) {
 		try {
-			if ( auth()->user()->doctor ) {
-				return $this->failure(
-					message: 'Validation Failed',
-					errors: [ 
-						"There is already a Health Care Professional associated with this user"
-					],
-					statusCode: 422
-				);
-			}
+			$this->handleStoreAuthroizationCheck();
 			$validator = Validator::make(
 				$request->all(),
 				[ 
@@ -63,6 +58,7 @@ class DoctorController extends Controller {
 				$path = $request->file( 'photo' )->store( 'doctor/personal_imgs', 'public' );
 				$path = "storage/$path";
 			}
+
 			$doctor = Doctor::create(
 				collect( $validator->validated() )
 					->merge( [ 
@@ -70,6 +66,9 @@ class DoctorController extends Controller {
 						'photo' => $path,
 					] )->toArray()
 			);
+			$this->handleSkillAttach( $doctor );
+			$this->handleLangAttach( $doctor );
+			$doctor->load( [ 'skills', 'langs' ] );
 			return $this->success( new DoctorResource( $doctor ) );
 		} catch (\Exception $e) {
 			return $this->handleException( $e );
@@ -150,6 +149,51 @@ class DoctorController extends Controller {
 			return $this->success( new DoctorResource( $doctor ) );
 		} catch (\Exception $e) {
 			return $this->handleException( $e );
+		}
+	}
+
+
+	protected function handleSkillAttach( Doctor $doctor ) {
+		$skillNames = [];
+		if ( ! ( request()->has( 'skills' ) ) ) {
+			return;
+		}
+		$skillNames = explode( ',', request()->only( 'skills' )['skills'] );
+
+		$skillIds = collect( [] );
+		foreach ( $skillNames as $skillName ) {
+			$skill = Skill::where( 'name', trim( $skillName ) )->first();
+			if ( ! $skill ) {
+				$skill = Skill::create( [ 'name' => trim( $skillName ) ] );
+			}
+			$skillIds->add( $skill->id );
+		}
+		$doctor->skills()->attach( $skillIds );
+	}
+	protected function handleLangAttach( Doctor $doctor ) {
+		$langNames = [];
+		if ( ! ( request()->has( 'langs' ) ) ) {
+			return;
+		}
+		$langNames = explode( ',', request()->only( 'langs' )['langs'] );
+
+		$langIds = collect( [] );
+		foreach ( $langNames as $langName ) {
+			$lang = Lang::where( 'name', trim( $langName ) )->first();
+			if ( ! $lang ) {
+				$lang = Lang::create( [ 'name' => trim( $langName ) ] );
+			}
+			$langIds->add( $lang->id );
+		}
+		$doctor->langs()->attach( $langIds );
+	}
+
+	protected function handleStoreAuthroizationCheck() {
+		if ( auth()->user()->type !== 'doctor' ) {
+			throw new \Exception( "This user is not signed as a health care professional" );
+		}
+		if ( auth()->user()->doctor ) {
+			throw new \Exception( "This health care professionl completed his basic information" );
 		}
 	}
 }

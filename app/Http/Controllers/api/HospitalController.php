@@ -29,15 +29,9 @@ class HospitalController extends Controller {
 	 */
 	public function store( Request $request ) {
 		try {
-			if ( auth()->user()->hospital ) {
-				return $this->failure(
-					message: 'Validation Failed',
-					errors: [ 
-						"There is already a Health Care Provider associated with this user"
-					],
-					statusCode: 422
-				);
-			}
+			$this->handleStoreAuthroizationCheck();
+
+
 			$validator = Validator::make(
 				$request->all(),
 				[ 
@@ -159,5 +153,12 @@ class HospitalController extends Controller {
 			return $this->handleException( $e );
 		}
 	}
-
+	protected function handleStoreAuthroizationCheck() {
+		if ( auth()->user()->type !== 'hospital' ) {
+			throw new \Exception( "This user is not signed as a health care provider" );
+		}
+		if ( auth()->user()->hospital ) {
+			throw new \Exception( "This health care provider completed his basic information" );
+		}
+	}
 }
