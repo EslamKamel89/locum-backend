@@ -9,6 +9,7 @@ use App\Http\Controllers\api\HospitalController;
 use App\Http\Controllers\api\HospitalDocumentController;
 use App\Http\Controllers\api\HospitalInfoController;
 use App\Http\Controllers\api\JobAddController;
+use App\Http\Controllers\api\JobApplicationController;
 use App\Http\Controllers\api\JobInfoController;
 use App\Http\Controllers\api\LangController;
 use App\Http\Controllers\api\SkillController;
@@ -47,5 +48,6 @@ Route::middleware( [ 'auth:sanctum' ] )->group( function () {
 	Route::post( '/hosptial-docs/update-hospital-file/{hospital}', [ HospitalDocumentController::class, 'updateHospitalFile' ] );
 	Route::apiResource( '/hospital-docs', HospitalDocumentController::class);
 	Route::apiResource( '/job-add', JobAddController::class); //
+	Route::apiResource( '/job-applications', JobApplicationController::class); //
 
 } );
