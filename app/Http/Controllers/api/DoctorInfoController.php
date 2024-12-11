@@ -116,7 +116,7 @@ class DoctorInfoController extends Controller {
 			$doctorInfo = DoctorInfo::findOrFail( $id );
 			$doctorInfo->update( $validator->validated() );
 			$doctorInfo->Load( [ 'doctor', 'university' ] );
-			return $this->success( $doctorInfo );
+			return $this->success( new DoctorInfoResource( $doctorInfo ) );
 		} catch (\Exception $e) {
 			return $this->handleException( $e );
 		}

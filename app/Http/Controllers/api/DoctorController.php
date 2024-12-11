@@ -111,7 +111,7 @@ class DoctorController extends Controller {
 			$doctor = Doctor::findOrFail( $id );
 			$doctor->update( $validator->validated() );
 			$doctor->Load( [ 'user', 'specialty', 'jobInfo', 'doctorInfo', 'doctorDocuments' ] );
-			return $this->success( $doctor );
+			return $this->success( new DoctorResource( $doctor ) );
 		} catch (\Exception $e) {
 			return $this->handleException( $e );
 		}
@@ -146,7 +146,8 @@ class DoctorController extends Controller {
 				$path = "storage/$path";
 			}
 			$doctor->update( [ 'photo' => $path ] );
-			return $this->success( $doctor );
+			$doctor->Load( [ 'user', 'specialty', 'jobInfo', 'doctorInfo', 'doctorDocuments' ] );
+			return $this->success( new DoctorResource( $doctor ) );
 		} catch (\Exception $e) {
 			return $this->handleException( $e );
 		}

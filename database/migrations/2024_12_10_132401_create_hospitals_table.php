@@ -13,7 +13,7 @@ return new class extends Migration {
 			$table->id();
 
 			$table->foreignId( 'user_id' )->unique()->constrained()->cascadeOnDelete();
-			$table->string( 'name' );
+			$table->string( 'facility_name' );
 			$table->string( 'type' ); // ['Hospital', 'Clinic', 'Nursing Home', 'Other']
 			$table->string( 'contact_person' )->nullable();
 			$table->string( 'contact_email' )->nullable();
