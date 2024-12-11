@@ -126,8 +126,8 @@ class DoctorInfoController extends Controller {
 	 */
 	public function destroy( string $id ) {
 		try {
-			$Info = DoctorInfo::findOrFail( $id );
-			$Info->delete();
+			$doctorInfo = DoctorInfo::findOrFail( $id );
+			$doctorInfo->delete();
 			return $this->success( [], message: 'Resource Deleted Successfully' );
 		} catch (\Exception $e) {
 			return $this->handleException( $e );
