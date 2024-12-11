@@ -2,7 +2,16 @@
 
 use App\Http\Controllers\api\AuthController;
 use App\Http\Controllers\api\DistrictController;
+use App\Http\Controllers\api\DoctorController;
+use App\Http\Controllers\api\DoctorDocumentController;
+use App\Http\Controllers\api\DoctorInfoController;
+use App\Http\Controllers\api\HospitalController;
+use App\Http\Controllers\api\HospitalDocumentController;
+use App\Http\Controllers\api\HospitalInfoController;
+use App\Http\Controllers\api\JobAddController;
 use App\Http\Controllers\api\JobInfoController;
+use App\Http\Controllers\api\LangController;
+use App\Http\Controllers\api\SkillController;
 use App\Http\Controllers\api\SpecialtyController;
 use App\Http\Controllers\api\StateController;
 use App\Http\Controllers\api\UniversityController;
@@ -23,3 +32,15 @@ Route::prefix( 'auth' )->group( function () {
 	Route::post( '/register', [ AuthController::class, 'register' ] );
 } );
 
+Route::middleware( [ 'auth:sanctum' ] )->group( function () {
+	Route::apiResource( '/langs', LangController::class);
+	Route::apiResource( '/skills', SkillController::class);
+	Route::apiResource( '/doctors', DoctorController::class);
+	Route::apiResource( '/doctor-infos', DoctorInfoController::class);
+	Route::apiResource( '/doctor-docs', DoctorDocumentController::class);
+	Route::apiResource( '/hospitals', HospitalController::class);
+	Route::apiResource( '/hospital-infos', HospitalInfoController::class);
+	Route::apiResource( '/hospital-docs', HospitalDocumentController::class);
+	Route::apiResource( '/hospital-docs', JobAddController::class);
+
+} );

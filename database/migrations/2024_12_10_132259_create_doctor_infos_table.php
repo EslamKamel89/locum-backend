@@ -11,7 +11,6 @@ return new class extends Migration {
 	public function up(): void {
 		Schema::create( 'doctor_infos', function (Blueprint $table) {
 			$table->id();
-			$table->foreignId( 'user_id' );
 			$table->foreignId( 'doctor_id' )->unique()->constrained()->cascadeOnDelete();
 			$table->string( 'professional_license_number' )->nullable();
 			$table->string( 'license_state' )->nullable();

@@ -11,7 +11,6 @@ return new class extends Migration {
 	public function up(): void {
 		Schema::create( 'job_adds', function (Blueprint $table) {
 			$table->id();
-
 			$table->string( 'title' );
 			$table->foreignId( 'hospital_id' )->constrained()->cascadeOnDelete();
 			$table->foreignId( 'speciality_id' )->nullable()->constrained( 'specialties' )->nullOnDelete();
