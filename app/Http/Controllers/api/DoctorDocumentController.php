@@ -2,15 +2,24 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Http\Resources\DoctorDocumentResource;
 use App\Models\DoctorDocument;
+use File;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 class DoctorDocumentController extends Controller {
 	/**
 	 * Display a listing of the resource.
 	 */
 	public function index() {
-		//
+		$doctorDocuments = request()->has( 'limit' ) ?
+			DoctorDocument::paginate( request()->get( 'limit' ) ?? 10 ) :
+			DoctorDocument::all();
+		return $this->success(
+			DoctorDocumentResource::collection( $doctorDocuments ),
+			pagination: request()->has( 'limit' ),
+		);
 	}
 
 
@@ -19,14 +28,45 @@ class DoctorDocumentController extends Controller {
 	 * Store a newly created resource in storage.
 	 */
 	public function store( Request $request ) {
-		//
+		try {
+			$validator = Validator::make(
+				$request->all(),
+				[ 
+					'type' => [ 'required' ],
+					'file' => [ 'required', File::types( mimetypes: [ 'doc', 'pdf' ] ) ],
+				] );
+			if ( $validator->fails() ) {
+				return $this->handleValidation( $validator );
+			}
+			$path = null;
+			if ( $request->hasFile( 'cv' ) ) {
+				$path = $request->file( 'file' )->store( 'doctor/files', 'public' );
+				$path = "storage/$path";
+			}
+			$doctorDocument = DoctorDocument::create(
+				collect( $validator->validated() )
+					->merge( [ 
+						'doctor_id' => auth()->user()->doctor->id,
+						'file' => $path,
+					] )->toArray()
+			);
+			return $this->success( new DoctorDocumentResource( $doctorDocument ) );
+		} catch (\Exception $e) {
+			return $this->handleException( $e );
+		}
 	}
 
 	/**
 	 * Display the specified resource.
 	 */
-	public function show( DoctorDocument $doctorDocument ) {
-		//
+	public function show( string $id ) {
+		try {
+			$doctorDocument = DoctorDocument::findOrFail( $id );
+			$doctorDocument->Load( [ 'doctor' ] );
+			return $this->success( new DoctorDocumentResource( $doctorDocument ) );
+		} catch (\Exception $e) {
+			return $this->handleException( $e );
+		}
 	}
 
 
@@ -34,14 +74,36 @@ class DoctorDocumentController extends Controller {
 	/**
 	 * Update the specified resource in storage.
 	 */
-	public function update( Request $request, DoctorDocument $doctorDocument ) {
-		//
+	public function update( Request $request, string $id ) {
+		try {
+			$validator = Validator::make(
+				$request->all(),
+				[ 
+					'type' => [ 'sometimes' ],
+					'file' => [ 'required', File::types( mimetypes: [ 'doc', 'pdf' ] ) ],
+				] );
+			if ( $validator->fails() ) {
+				return $this->handleValidation( $validator );
+			}
+			$doctorDocument = DoctorDocument::findOrFail( $id );
+			$doctorDocument->update( $validator->validated() );
+			$doctorDocument->Load( [ 'doctor' ] );
+			return $this->success( new DoctorDocumentResource( $doctorDocument ) );
+		} catch (\Exception $e) {
+			return $this->handleException( $e );
+		}
 	}
 
 	/**
 	 * Remove the specified resource from storage.
 	 */
-	public function destroy( DoctorDocument $doctorDocument ) {
-		//
+	public function destroy( string $id ) {
+		try {
+			$doctorDocument = DoctorDocument::findOrFail( $id );
+			$doctorDocument->delete();
+			return $this->success( [], message: 'Resource Deleted Successfully' );
+		} catch (\Exception $e) {
+			return $this->handleException( $e );
+		}
 	}
 }

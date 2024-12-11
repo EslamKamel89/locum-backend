@@ -37,6 +37,7 @@ Route::middleware( [ 'auth:sanctum' ] )->group( function () {
 	Route::apiResource( '/skills', SkillController::class); //
 	Route::post( '/doctors/update-user-img/{doctor}', [ DoctorController::class, 'updateUserImg' ] );
 	Route::apiResource( '/doctors', DoctorController::class); //
+	Route::post( '/doctors/update-doctor-cv/{doctor}', [ DoctorInfoController::class, 'updateDoctorCv' ] );
 	Route::apiResource( '/doctor-infos', DoctorInfoController::class);
 	Route::apiResource( '/doctor-docs', DoctorDocumentController::class);
 	Route::post( '/hospitals/update-hospital-img/{hospital}', [ HospitalController::class, 'updateHospitalImg' ] );

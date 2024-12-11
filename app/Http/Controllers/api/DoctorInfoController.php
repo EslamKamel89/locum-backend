@@ -121,6 +121,7 @@ class DoctorInfoController extends Controller {
 			return $this->handleException( $e );
 		}
 	}
+
 	/**
 	 * Remove the specified resource from storage.
 	 */
@@ -129,6 +130,30 @@ class DoctorInfoController extends Controller {
 			$doctorInfo = DoctorInfo::findOrFail( $id );
 			$doctorInfo->delete();
 			return $this->success( [], message: 'Resource Deleted Successfully' );
+		} catch (\Exception $e) {
+			return $this->handleException( $e );
+		}
+	}
+
+	public function updateDoctorCv( string $id, Request $request ) {
+		try {
+			$doctorInfo = DoctorInfo::findOrFail( $id );
+			$validator = Validator::make(
+				$request->all(),
+				[ 
+					'cv' => [ 'required', File::types( mimetypes: [ 'doc', 'pdf' ] ) ],
+				] );
+			if ( $validator->fails() ) {
+				return $this->handleValidation( $validator );
+			}
+			$path = null;
+			if ( $request->hasFile( 'cv' ) ) {
+				$path = $request->file( 'cv' )->store( 'doctor/cv', 'public' );
+				$path = "storage/$path";
+			}
+			$doctorInfo->update( [ 'cv' => $path ] );
+			$doctorInfo->Load( [ 'doctor', 'university' ] );
+			return $this->success( new DoctorInfoResource( $doctorInfo ) );
 		} catch (\Exception $e) {
 			return $this->handleException( $e );
 		}
