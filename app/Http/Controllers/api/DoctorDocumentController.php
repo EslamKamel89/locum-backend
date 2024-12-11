@@ -4,10 +4,10 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Resources\DoctorDocumentResource;
 use App\Models\DoctorDocument;
-use File;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\File;
 class DoctorDocumentController extends Controller {
 	/**
 	 * Display a listing of the resource.
@@ -39,7 +39,7 @@ class DoctorDocumentController extends Controller {
 				return $this->handleValidation( $validator );
 			}
 			$path = null;
-			if ( $request->hasFile( 'cv' ) ) {
+			if ( $request->hasFile( 'file' ) ) {
 				$path = $request->file( 'file' )->store( 'doctor/files', 'public' );
 				$path = "storage/$path";
 			}
@@ -80,7 +80,6 @@ class DoctorDocumentController extends Controller {
 				$request->all(),
 				[ 
 					'type' => [ 'sometimes' ],
-					'file' => [ 'required', File::types( mimetypes: [ 'doc', 'pdf' ] ) ],
 				] );
 			if ( $validator->fails() ) {
 				return $this->handleValidation( $validator );
@@ -102,6 +101,34 @@ class DoctorDocumentController extends Controller {
 			$doctorDocument = DoctorDocument::findOrFail( $id );
 			$doctorDocument->delete();
 			return $this->success( [], message: 'Resource Deleted Successfully' );
+		} catch (\Exception $e) {
+			return $this->handleException( $e );
+		}
+	}
+
+	public function updateDoctorFile( string $id, Request $request ) {
+		try {
+			$doctorDocument = DoctorDocument::findOrFail( $id );
+			$validator = Validator::make(
+				$request->all(),
+				[ 
+					'type' => [ 'required' ],
+					'file' => [ 'required', File::types( mimetypes: [ 'doc', 'pdf' ] ) ],
+				] );
+			if ( $validator->fails() ) {
+				return $this->handleValidation( $validator );
+			}
+			$path = null;
+			if ( $request->hasFile( 'file' ) ) {
+				$path = $request->file( 'file' )->store( 'doctor/files', 'public' );
+				$path = "storage/$path";
+			}
+			$doctorDocument->update(
+				collect( $validator->validated() )
+					->merge( [ 'file' => $path ] )->toArray()
+			);
+			$doctorDocument->Load( [ 'doctor' ] );
+			return $this->success( new DoctorDocumentResource( $doctorDocument ) );
 		} catch (\Exception $e) {
 			return $this->handleException( $e );
 		}

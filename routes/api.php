@@ -39,11 +39,13 @@ Route::middleware( [ 'auth:sanctum' ] )->group( function () {
 	Route::apiResource( '/doctors', DoctorController::class); //
 	Route::post( '/doctors/update-doctor-cv/{doctor}', [ DoctorInfoController::class, 'updateDoctorCv' ] );
 	Route::apiResource( '/doctor-infos', DoctorInfoController::class);
+	Route::post( '/doctor-docs/update-doctor-file/{doctor}', [ DoctorDocumentController::class, 'updateDoctorFile' ] );
 	Route::apiResource( '/doctor-docs', DoctorDocumentController::class);
 	Route::post( '/hospitals/update-hospital-img/{hospital}', [ HospitalController::class, 'updateHospitalImg' ] );
 	Route::apiResource( '/hospitals', HospitalController::class);//
 	Route::apiResource( '/hospital-infos', HospitalInfoController::class);
+	Route::post( '/hosptial-docs/update-hospital-file/{hospital}', [ HospitalDocumentController::class, 'updateHospitalFile' ] );
 	Route::apiResource( '/hospital-docs', HospitalDocumentController::class);
-	Route::apiResource( '/hospital-docs', JobAddController::class); //
+	Route::apiResource( '/job-add', JobAddController::class); //
 
 } );
