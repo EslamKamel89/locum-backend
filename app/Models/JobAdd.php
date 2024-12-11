@@ -16,7 +16,7 @@ class JobAdd extends Model {
 	public function hospital(): BelongsTo {
 		return $this->belongsTo( Hospital::class);
 	}
-	public function specialties(): BelongsTo {
+	public function specialty(): BelongsTo {
 		return $this->belongsTo( Specialty::class);
 	}
 	public function jobInfo(): BelongsTo {
