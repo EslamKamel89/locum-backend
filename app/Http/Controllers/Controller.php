@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\NotAuthorizedException;
 use App\Traits\ApiResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Renderer\Exception;
@@ -27,6 +28,9 @@ class Controller {
 		);
 	}
 	public function handleException( \Exception $e ): JsonResponse {
+		if ( $e instanceof NotAuthorizedException ) {
+			return $this->failure( $e->getMessage(), $e->errors );
+		}
 		if ( $e instanceof ModelNotFoundException ) {
 			return $this->failure( 'Resoruce Not Found ', [ $e->getMessage() ], 404 );
 		}

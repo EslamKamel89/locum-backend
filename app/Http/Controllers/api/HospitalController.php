@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Exceptions\NotAuthorizedException;
 use App\Http\Resources\HospitalResource;
 use App\Models\Hospital;
 use Illuminate\Http\Request;
@@ -155,10 +156,10 @@ class HospitalController extends Controller {
 	}
 	protected function handleStoreAuthroizationCheck() {
 		if ( auth()->user()->type !== 'hospital' ) {
-			throw new \Exception( "This user is not signed as a health care provider" );
+			throw new NotAuthorizedException( [ "This user is not signed as a health care provider" ] );
 		}
 		if ( auth()->user()->hospital ) {
-			throw new \Exception( "This health care provider completed his basic information" );
+			throw new NotAuthorizedException( [ "This health care provider completed his basic information" ] );
 		}
 	}
 }

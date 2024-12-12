@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -28,6 +29,13 @@ class Lang extends Model {
 			table: 'job_lang',
 			foreignPivotKey: 'lang_id',
 			relatedPivotKey: 'job_add_id',
+		);
+	}
+	//! Mutators
+	protected function name(): Attribute {
+		return Attribute::make(
+			get: fn( string $value ) => trim( strtolower( $value ) ),
+			set: fn( string $value ) => trim( strtolower( $value ) ),
 		);
 	}
 }

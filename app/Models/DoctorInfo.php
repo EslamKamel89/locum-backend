@@ -19,4 +19,11 @@ class DoctorInfo extends Model {
 		return $this->belongsTo( University::class);
 	}
 
+	//! casts
+	protected function casts() {
+		return [ 
+			'license_issue_date' => 'datetime:Y-m-d',
+			'license_expiry_date' => 'datetime:Y-m-d',
+		];
+	}
 }

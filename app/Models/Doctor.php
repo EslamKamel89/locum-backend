@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Gender;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -58,5 +59,14 @@ class Doctor extends Model {
 			foreignPivotKey: 'doctor_id',
 			relatedPivotKey: 'job_add_id',
 		)->withPivot( [ 'status', 'application_date', 'additional_notes',] )->withTimestamps();
+	}
+
+	//! casts
+	protected function casts() {
+		return [ 
+			'date_of_birth' => 'datetime:Y-m-d',
+			'gender' => Gender::class,
+			'willing_to_relocate' => 'boolean'
+		];
 	}
 }

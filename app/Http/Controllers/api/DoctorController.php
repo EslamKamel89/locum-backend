@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Exceptions\NotAuthorizedException;
 use App\Http\Resources\DoctorResource;
 use App\Models\Doctor;
 use App\Models\Lang;
@@ -162,9 +163,10 @@ class DoctorController extends Controller {
 
 		$skillIds = collect( [] );
 		foreach ( $skillNames as $skillName ) {
-			$skill = Skill::where( 'name', trim( $skillName ) )->first();
+			$skillName = str( $skillName )->trim()->lower();
+			$skill = Skill::where( 'name', $skillName )->first();
 			if ( ! $skill ) {
-				$skill = Skill::create( [ 'name' => trim( $skillName ) ] );
+				$skill = Skill::create( [ 'name' => $skillName ] );
 			}
 			$skillIds->add( $skill->id );
 		}
@@ -179,9 +181,10 @@ class DoctorController extends Controller {
 
 		$langIds = collect( [] );
 		foreach ( $langNames as $langName ) {
-			$lang = Lang::where( 'name', trim( $langName ) )->first();
+			$langName = str( $langName )->trim()->lower();
+			$lang = Lang::where( 'name', $langName )->first();
 			if ( ! $lang ) {
-				$lang = Lang::create( [ 'name' => trim( $langName ) ] );
+				$lang = Lang::create( [ 'name' => $langName ] );
 			}
 			$langIds->add( $lang->id );
 		}
@@ -190,10 +193,10 @@ class DoctorController extends Controller {
 
 	protected function handleStoreAuthroizationCheck() {
 		if ( auth()->user()->type !== 'doctor' ) {
-			throw new \Exception( "This user is not signed as a health care professional" );
+			throw new NotAuthorizedException( [ "This user is not signed as a health care professional" ] );
 		}
 		if ( auth()->user()->doctor ) {
-			throw new \Exception( "This health care professionl completed his basic information" );
+			throw new NotAuthorizedException( [ "This health care professionl completed his basic information" ] );
 		}
 	}
 }

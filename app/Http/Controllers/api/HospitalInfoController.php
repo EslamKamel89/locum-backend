@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Exceptions\NotAuthorizedException;
 use App\Http\Resources\HospitalInfoResource;
 use App\Models\HospitalInfo;
 use Illuminate\Http\Request;
@@ -117,13 +118,13 @@ class HospitalInfoController extends Controller {
 	}
 	protected function handleStoreAuthroizationCheck() {
 		if ( auth()->user()->type !== 'hospital' ) {
-			throw new \Exception( "This user is not signed as a health care provider" );
+			throw new NotAuthorizedException( [ "This user is not signed as a health care provider" ] );
 		}
 		if ( ! auth()->user()->hospital ) {
-			throw new \Exception( "this health care proivder didn't complete his basic profile information" );
+			throw new NotAuthorizedException( [ "this health care proivder didn't complete his basic profile information" ] );
 		}
 		if ( auth()->user()->hospital->hospitalInfo ) {
-			throw new \Exception( "This Health Care Provider already completed his profile" );
+			throw new NotAuthorizedException( [ "This Health Care Provider already completed his profile" ] );
 		}
 	}
 }

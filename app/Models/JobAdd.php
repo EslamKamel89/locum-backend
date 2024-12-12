@@ -46,4 +46,10 @@ class JobAdd extends Model {
 			relatedPivotKey: 'doctor_id',
 		)->withPivot( [ 'status', 'application_date', 'additional_notes',] )->withTimestamps();
 	}
+	//! casts
+	protected function casts() {
+		return [ 
+			'application_deadline' => 'datetime:Y-m-d',
+		];
+	}
 }

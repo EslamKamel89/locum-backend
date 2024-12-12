@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\NotAuthorizedException;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -22,6 +23,7 @@ return Application::configure( basePath: dirname( __DIR__ ) )
 
 	} )
 	->withExceptions( function (Exceptions $exceptions) {
+
 		$exceptions->render( function (NotFoundHttpException $e) {
 			return ( new Controller() )->failure( 'Resource Not Found' );
 		} );
@@ -43,5 +45,8 @@ return Application::configure( basePath: dirname( __DIR__ ) )
 		} );
 		$exceptions->render( function (AccessDeniedHttpException $e) {
 			return ( new Controller() )->failure( 'This action is unauthorized.', statusCode: 403 );
+		} );
+		$exceptions->render( function (NotAuthorizedException $e) {
+			return ( new Controller() )->failure( $e->getMessage(), $e->errors );
 		} );
 	} )->create();

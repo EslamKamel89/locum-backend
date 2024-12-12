@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Exceptions\NotAuthorizedException;
 use App\Http\Resources\JobAddResource;
 use App\Models\JobAdd;
 use App\Models\Lang;
@@ -142,9 +143,10 @@ class JobAddController extends Controller {
 
 		$skillIds = collect( [] );
 		foreach ( $skillNames as $skillName ) {
-			$skill = Skill::where( 'name', trim( $skillName ) )->first();
+			$skillName = str( $skillName )->trim()->lower();
+			$skill = Skill::where( 'name', $skillName )->first();
 			if ( ! $skill ) {
-				$skill = Skill::create( [ 'name' => trim( $skillName ) ] );
+				$skill = Skill::create( [ 'name' => $skillName ] );
 			}
 			$skillIds->add( $skill->id );
 		}
@@ -159,9 +161,10 @@ class JobAddController extends Controller {
 
 		$langIds = collect( [] );
 		foreach ( $langNames as $langName ) {
-			$lang = Lang::where( 'name', trim( $langName ) )->first();
+			$langName = str( $langName )->trim()->lower();
+			$lang = Lang::where( 'name', $langName )->first();
 			if ( ! $lang ) {
-				$lang = Lang::create( [ 'name' => trim( $langName ) ] );
+				$lang = Lang::create( [ 'name' => $langName ] );
 			}
 			$langIds->add( $lang->id );
 		}
@@ -170,13 +173,13 @@ class JobAddController extends Controller {
 
 	protected function handleStoreAuthroizationCheck() {
 		if ( auth()->user()->type !== 'hospital' ) {
-			throw new \Exception( "This user is not signed as a health care provider" );
+			throw new NotAuthorizedException( [ "This user is not signed as a health care provider" ] );
 		}
 		if ( ! auth()->user()->hospital ) {
-			throw new \Exception( "this health care proivder didn't complete his basic profile information" );
+			throw new NotAuthorizedException( [ "this health care proivder didn't complete his basic profile information" ] );
 		}
 		if ( ! auth()->user()->hospital->hospitalInfo ) {
-			throw new \Exception( "This Health Care Provider didn't complete his profile information" );
+			throw new NotAuthorizedException( [ "This Health Care Provider didn't complete his profile information" ] );
 		}
 	}
 }

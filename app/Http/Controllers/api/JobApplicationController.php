@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Exceptions\NotAuthorizedException;
 use App\Http\Resources\JobApplicationResource;
 use App\Models\JobApplication;
 use Illuminate\Http\Request;
@@ -31,7 +32,7 @@ class JobApplicationController extends Controller {
 			$this->handleStoreAuthroizationCheck();
 			$validator = Validator::make(
 				$request->all(),
-				[
+				[ 
 					'job_add_id' => [ 'required', 'exists:job_adds,id' ],
 					'additional_notes' => [ 'sometimes' ],
 				] );
@@ -41,7 +42,7 @@ class JobApplicationController extends Controller {
 
 			$jobApplication = JobApplication::create(
 				collect( $validator->validated() )
-					->merge( [
+					->merge( [ 
 						'doctor_id' => auth()->user()->doctor->id,
 					] )->toArray()
 			);
@@ -84,10 +85,10 @@ class JobApplicationController extends Controller {
 	}
 	protected function handleStoreAuthroizationCheck() {
 		if ( auth()->user()->type !== 'doctor' ) {
-			throw new \Exception( "This user is not signed as a health care professional" );
+			throw new NotAuthorizedException( [ "This user is not signed as a health care professional" ] );
 		}
 		if ( ! auth()->user()->doctor ) {
-			throw new \Exception( "This health care professionl didn't complete his basic information" );
+			throw new NotAuthorizedException( [ "This health care professionl didn't complete his basic information" ] );
 		}
 	}
 }
