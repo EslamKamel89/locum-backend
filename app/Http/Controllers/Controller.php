@@ -15,6 +15,7 @@ class Controller {
 	public function pr( $value, $title = null ) {
 		return \App\Pr::_( $value, $title );
 	}
+
 	public function handleValidation( Validator $validator ): JsonResponse {
 		$errors = collect( [] );
 		collect( $validator->errors() )
@@ -27,6 +28,7 @@ class Controller {
 			statusCode: 422
 		);
 	}
+
 	public function handleException( \Exception $e ): JsonResponse {
 		if ( $e instanceof NotAuthorizedException ) {
 			return $this->failure( $e->getMessage(), $e->errors );
@@ -47,6 +49,12 @@ class Controller {
 			);
 		}
 		return $this->failure( 'Unkown Error ', [ $e->getMessage() ], 404 );
+	}
+
+	public function checkResourceOwner( int $id, string $message = null ) {
+		if ( auth()->id() !== $id ) {
+			throw new NotAuthorizedException( [ $message ?? 'You are not the owner of this resource' ] );
+		}
 	}
 
 }

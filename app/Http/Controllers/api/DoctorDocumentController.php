@@ -76,6 +76,8 @@ class DoctorDocumentController extends Controller {
 	 */
 	public function update( Request $request, string $id ) {
 		try {
+			$doctorDocument = DoctorDocument::findOrFail( $id );
+			$this->checkResourceOwner( $doctorDocument->doctor->user->id );
 			$validator = Validator::make(
 				$request->all(),
 				[ 
@@ -84,7 +86,6 @@ class DoctorDocumentController extends Controller {
 			if ( $validator->fails() ) {
 				return $this->handleValidation( $validator );
 			}
-			$doctorDocument = DoctorDocument::findOrFail( $id );
 			$doctorDocument->update( $validator->validated() );
 			$doctorDocument->Load( [ 'doctor' ] );
 			return $this->success( new DoctorDocumentResource( $doctorDocument ) );
@@ -99,6 +100,7 @@ class DoctorDocumentController extends Controller {
 	public function destroy( string $id ) {
 		try {
 			$doctorDocument = DoctorDocument::findOrFail( $id );
+			$this->checkResourceOwner( $doctorDocument->doctor->user->id );
 			$doctorDocument->delete();
 			return $this->success( [], message: 'Resource Deleted Successfully' );
 		} catch (\Exception $e) {

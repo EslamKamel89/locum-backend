@@ -22,8 +22,6 @@ class HospitalInfoController extends Controller {
 		);
 	}
 
-
-
 	/**
 	 * Store a newly created resource in storage.
 	 */
@@ -76,13 +74,13 @@ class HospitalInfoController extends Controller {
 		}
 	}
 
-
-
 	/**
 	 * Update the specified resource in storage.
 	 */
 	public function update( Request $request, string $id ) {
 		try {
+			$hospitalInfo = HospitalInfo::findOrFail( $id );
+			$this->checkResourceOwner( $hospitalInfo->hospital->user->id );
 			$validator = Validator::make(
 				$request->all(),
 				[ 
@@ -95,7 +93,6 @@ class HospitalInfoController extends Controller {
 			if ( $validator->fails() ) {
 				return $this->handleValidation( $validator );
 			}
-			$hospitalInfo = HospitalInfo::findOrFail( $id );
 			$hospitalInfo->update( $validator->validated() );
 			$hospitalInfo->Load( [ 'hospital' ] );
 			return $this->success( new HospitalInfoResource( $hospitalInfo ) );
@@ -110,6 +107,7 @@ class HospitalInfoController extends Controller {
 	public function destroy( string $id ) {
 		try {
 			$hospitalInfo = HospitalInfo::findOrFail( $id );
+			$this->checkResourceOwner( $hospitalInfo->hospital->user->id );
 			$hospitalInfo->delete();
 			return $this->success( [], message: 'Resource Deleted Successfully' );
 		} catch (\Exception $e) {

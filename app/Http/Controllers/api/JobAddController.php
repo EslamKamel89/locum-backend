@@ -24,7 +24,6 @@ class JobAddController extends Controller {
 		);
 	}
 
-
 	/**
 	 * Store a newly created resource in storage.
 	 */
@@ -83,13 +82,13 @@ class JobAddController extends Controller {
 		}
 	}
 
-
-
 	/**
 	 * Update the specified resource in storage.
 	 */
 	public function update( Request $request, string $id ) {
 		try {
+			$jobAdd = JobAdd::findOrFail( $id );
+			$this->checkResourceOwner( $jobAdd->hospital->user->id );
 			$validator = Validator::make(
 				$request->all(),
 				[ 
@@ -112,7 +111,6 @@ class JobAddController extends Controller {
 			if ( $validator->fails() ) {
 				return $this->handleValidation( $validator );
 			}
-			$jobAdd = JobAdd::findOrFail( $id );
 			$jobAdd->update( $validator->validated() );
 			$jobAdd->Load( [ "hospital", "specialty", "jobInfo" ] );
 			return $this->success( new JobAddResource( $jobAdd ) );
@@ -127,6 +125,7 @@ class JobAddController extends Controller {
 	public function destroy( string $id ) {
 		try {
 			$jobAdd = JobAdd::findOrFail( $id );
+			$this->checkResourceOwner( $jobAdd->hospital->user->id );
 			$jobAdd->delete();
 			return $this->success( [], message: 'Resource Deleted Successfully' );
 		} catch (\Exception $e) {
