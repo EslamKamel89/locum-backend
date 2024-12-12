@@ -23,17 +23,17 @@ Route::get( '/user', function (Request $request) {
 	return $request->user();
 } )->middleware( 'auth:sanctum' );
 
-Route::apiResource( '/specialties', SpecialtyController::class);
 Route::apiResource( '/states', StateController::class);
 Route::apiResource( '/districts', DistrictController::class);
-Route::apiResource( '/universities', UniversityController::class);
-Route::apiResource( '/jobinfo', JobInfoController::class);
 Route::prefix( 'auth' )->group( function () {
 	Route::post( '/login', [ AuthController::class, 'login' ] );
 	Route::post( '/register', [ AuthController::class, 'register' ] );
 } );
 
 Route::middleware( [ 'auth:sanctum' ] )->group( function () {
+	Route::apiResource( '/universities', UniversityController::class);
+	Route::apiResource( '/specialties', SpecialtyController::class);
+	Route::apiResource( '/jobinfo', JobInfoController::class);
 	Route::apiResource( '/langs', LangController::class); //
 	Route::apiResource( '/skills', SkillController::class); //
 	Route::post( '/doctors/update-user-img/{doctor}', [ DoctorController::class, 'updateUserImg' ] );
