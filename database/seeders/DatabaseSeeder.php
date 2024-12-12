@@ -51,12 +51,19 @@ class DatabaseSeeder extends Seeder {
 		collect( $this->langs )->each( fn( $lang ) => Lang::create( $lang ) );
 		collect( $this->skills )->each( fn( $skill ) => Skill::create( $skill ) );
 		$usersAsDoctors = User::factory()
-			->count( 20 )
+			->count( 50 )
 			->sequence( function (Sequence $sequence) {
+				if ( $sequence->index == 0 ) {
+					return [ 
+						'name' => "doctor",
+						'email' => "doctor@gmail.com",
+						'type' => 'doctor',
+					];
+				}
 				$index = $sequence->index + 1;
 				return [ 
-					'name' => "doctor_{$index}",
-					'email' => "doctor_{$index}@gmail.com",
+					'name' => "Dr{$index} " . fake()->name(),
+					'email' => "dr{$index}_" . fake()->email(),
 					'type' => 'doctor',
 				];
 			} )->create();
@@ -71,12 +78,19 @@ class DatabaseSeeder extends Seeder {
 			$doctor->skills()->attach( [ 1, 2, 3 ] );
 		} );
 		$usersAsHospitals = User::factory()
-			->count( 20 )
+			->count( 50 )
 			->sequence( function (Sequence $sequence) {
+				if ( $sequence->index == 0 ) {
+					return [ 
+						'name' => "hospital",
+						'email' => "hospital@gmail.com",
+						'type' => 'hospital',
+					];
+				}
 				$index = $sequence->index + 1;
 				return [ 
-					'name' => "hospital_{$index}",
-					'email' => "hospital_{$index}@gmail.com",
+					'name' => "Hospital{$index} " . fake()->name(),
+					'email' => "hospital{$index}_" . fake()->email(),
 					'type' => 'hospital',
 				];
 			} )->create();
