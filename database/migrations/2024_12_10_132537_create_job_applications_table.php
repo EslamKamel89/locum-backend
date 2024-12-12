@@ -13,7 +13,7 @@ return new class extends Migration {
 			$table->id();
 			$table->foreignId( 'job_add_id' )->constrained( 'job_adds' )->cascadeOnDelete();
 			$table->foreignId( 'doctor_id' )->constrained()->cascadeOnDelete();
-			$table->enum( 'status', [ "Pending", "Accepted", "Rejected" ] )->default( 'Pending' );
+			$table->enum( 'status', [ "pending", "accepted", "rejected" ] )->default( 'Pending' );
 			$table->dateTime( 'application_date' )->default( now() );
 			$table->text( 'additional_notes' )->nullable();
 			$table->timestamps();

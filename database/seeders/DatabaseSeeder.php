@@ -3,6 +3,12 @@
 namespace Database\Seeders;
 
 use App\Models\District;
+use App\Models\Doctor;
+use App\Models\DoctorInfo;
+use App\Models\Hospital;
+use App\Models\HospitalInfo;
+use App\Models\JobAdd;
+use App\Models\JobApplication;
 use App\Models\JobInfo;
 use App\Models\Lang;
 use App\Models\Skill;
@@ -11,6 +17,7 @@ use App\Models\State;
 use App\Models\University;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder {
@@ -43,23 +50,55 @@ class DatabaseSeeder extends Seeder {
 
 		collect( $this->langs )->each( fn( $lang ) => Lang::create( $lang ) );
 		collect( $this->skills )->each( fn( $skill ) => Skill::create( $skill ) );
-
-		User::create( [ 
-			"name" => "hospital",
-			"email" => "hospital@gmail.com",
-			"password" => "123456789",
-			"state_id" => 1,
-			"district_id" => 1,
-			"type" => "hospital"
-		] );
-		User::create( [ 
-			"name" => "doctor",
-			"email" => "doctor@gmail.com",
-			"password" => "123456789",
-			"state_id" => 1,
-			"district_id" => 1,
-			"type" => "doctor",
-		] );
+		$usersAsDoctors = User::factory()
+			->count( 20 )
+			->sequence( function (Sequence $sequence) {
+				$index = $sequence->index + 1;
+				return [ 
+					'name' => "doctor_{$index}",
+					'email' => "doctor_{$index}@gmail.com",
+					'type' => 'doctor',
+				];
+			} )->create();
+		$usersAsDoctors->each( function ($user, $index) {
+			$doctor = Doctor::factory()->create( [ 
+				'user_id' => $user->id,
+			] );
+			DoctorInfo::factory()->create( [ 
+				'doctor_id' => $doctor->id,
+			] );
+			$doctor->langs()->attach( [ 1, 2, 3 ] );
+			$doctor->skills()->attach( [ 1, 2, 3 ] );
+		} );
+		$usersAsHospitals = User::factory()
+			->count( 20 )
+			->sequence( function (Sequence $sequence) {
+				$index = $sequence->index + 1;
+				return [ 
+					'name' => "hospital_{$index}",
+					'email' => "hospital_{$index}@gmail.com",
+					'type' => 'hospital',
+				];
+			} )->create();
+		$usersAsHospitals->each( function ($userHospital, $index) {
+			$hospital = Hospital::factory()->create( [ 
+				'user_id' => $userHospital->id,
+			] );
+			HospitalInfo::factory()->create( [ 
+				'hospital_id' => $hospital->id,
+			] );
+		} );
+		$hospitals = Hospital::all();
+		$hospitals->each( function (Hospital $hospital) {
+			$jobAdd = JobAdd::factory()->create( [ 
+				'hospital_id' => $hospital->id,
+			] );
+			$jobAdd->skills()->attach( [ 1, 2, 3 ] );
+			$jobAdd->langs()->attach( [ 1, 2, 3 ] );
+			$jobApplication = JobApplication::factory()->create( [ 
+				'job_add_id' => $jobAdd->id,
+			] );
+		} );
 	}
 
 	public $medicalSpecialties = [ 
@@ -430,6 +469,8 @@ class DatabaseSeeder extends Seeder {
 		[ "name" => "Research Skills" ],
 		[ "name" => "Ethical Judgment" ]
 	];
+
+
 
 }
 

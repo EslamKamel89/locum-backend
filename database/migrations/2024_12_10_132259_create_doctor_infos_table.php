@@ -34,3 +34,26 @@ return new class extends Migration {
 		Schema::dropIfExists( 'doctor_infos' );
 	}
 };
+
+/*
+can you generate fake data for these fields for a doctor data in locum registeration data
+[
+'professional_license_number' ,
+'license_state' ,
+'license_issue_date' ,
+'license_expiry_date' ,
+'university_id' ,
+'highest_degree' ,
+'field_of_study' ,
+'graduation_year'  ,
+'work_experience' ,
+'biography' ,
+]
+could you please pub it in php assocative array format
+['key'=>'fake-value]
+
+
+
+
+
+*/

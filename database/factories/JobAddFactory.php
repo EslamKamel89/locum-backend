@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\JobInfo;
+use App\Models\Specialty;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -14,8 +16,22 @@ class JobAddFactory extends Factory {
 	 * @return array<string, mixed>
 	 */
 	public function definition(): array {
-		return [
-			//
+		return [ 
+			'title' => 'Experienced: ' . JobInfo::all()->random()->first()->name . ' needed',
+			'speciality_id' => Specialty::all()->random()->first()->id,
+			'job_info_id' => JobInfo::all()->random()->first()->id,
+			'job_type' => fake()->randomElement( [ 'Fulltime', 'Parttime', 'Contract', 'Locum' ] ),
+			'location' => fake()->address(),
+			'description' => fake()->realText(),
+			'responsibilities' => fake()->realText(),
+			'qualifications' => fake()->realText(),
+			'experience_required' => fake()->realText(),
+			'salary_min' => 10000,
+			'salary_max' => 10500,
+			'benefits' => fake()->realText(),
+			'working_hours' => '8 hours shift',
+			'application_deadline' => fake()->date(),
+			'required_documents' => fake()->realText(),
 		];
 	}
 }
