@@ -51,7 +51,7 @@ class User extends Authenticatable {
 		];
 	}
 	//! Relationships
-	public function states(): BelongsTo {
+	public function state(): BelongsTo {
 		return $this->belongsTo( State::class);
 	}
 

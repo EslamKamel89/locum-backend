@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api;
 
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Models\District;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -74,5 +75,32 @@ class AuthController extends Controller {
 		}
 		return [ 'fails' => false ];
 
+	}
+
+
+	public function userInfo() {
+		$user = auth()->user()->load( [ 'district', 'state',] );
+
+
+		if ( $user->type == 'doctor' ) {
+			$user->load( [ 
+				'doctor.doctorInfo',
+				'doctor.doctorDocuments',
+				'doctor.skills',
+				'doctor.langs',
+				'doctor.specialty',
+				'doctor.jobInfo',
+			] );
+		} else {
+			$user->load( [ 
+				'hospital.hospitalInfo',
+				'hospital.hospitalDocuments',
+
+			] );
+		}
+		return $this->success( [ 
+			'type' => $user->type,
+			'user' => $user,
+		] );
 	}
 }

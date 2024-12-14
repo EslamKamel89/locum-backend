@@ -31,6 +31,7 @@ Route::prefix( 'auth' )->group( function () {
 } );
 
 Route::middleware( [ 'auth:sanctum' ] )->group( function () {
+	Route::get( '/auth/user', [ AuthController::class, 'userInfo' ] );
 	Route::apiResource( '/universities', UniversityController::class);
 	Route::apiResource( '/specialties', SpecialtyController::class);
 	Route::apiResource( '/jobinfo', JobInfoController::class);
