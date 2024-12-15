@@ -84,7 +84,7 @@ class AuthController extends Controller {
 
 		if ( $user->type == 'doctor' ) {
 			$user->load( [ 
-				'doctor.doctorInfo',
+				'doctor.doctorInfo.university',
 				'doctor.doctorDocuments',
 				'doctor.skills',
 				'doctor.langs',

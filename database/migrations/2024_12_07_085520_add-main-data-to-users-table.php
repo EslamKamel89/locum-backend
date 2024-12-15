@@ -12,7 +12,7 @@ return new class extends Migration {
 		Schema::table( 'users', function (Blueprint $table) {
 			$table->foreignId( 'state_id' )
 				->nullable()
-				->constrained( 'specialties' )
+				->constrained( 'states' )
 				->nullOnDelete();
 			$table->foreignId( 'district_id' )
 				->nullable()
