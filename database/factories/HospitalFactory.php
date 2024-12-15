@@ -23,7 +23,7 @@ class HospitalFactory extends Factory {
 			'address' => fake()->address,
 			'services_offered' => fake()->randomElement( $this->hospitalServices ),
 			'number_of_beds' => fake()->numberBetween( 20, 200 ),
-			'website_url' => fake()->url(),
+			'website_url' => fake()->imageUrl(),
 			'year_established' => fake()->numberBetween( 1950, 2000 ),
 			'overview' => fake()->realText(),
 		];

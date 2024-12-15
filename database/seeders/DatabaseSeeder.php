@@ -4,8 +4,10 @@ namespace Database\Seeders;
 
 use App\Models\District;
 use App\Models\Doctor;
+use App\Models\DoctorDocument;
 use App\Models\DoctorInfo;
 use App\Models\Hospital;
+use App\Models\HospitalDocument;
 use App\Models\HospitalInfo;
 use App\Models\JobAdd;
 use App\Models\JobApplication;
@@ -74,6 +76,9 @@ class DatabaseSeeder extends Seeder {
 			DoctorInfo::factory()->create( [ 
 				'doctor_id' => $doctor->id,
 			] );
+			DoctorDocument::factory()->create( [ 
+				'doctor_id' => $doctor->id,
+			] );
 			$doctor->langs()->attach( [ 1, 2, 3 ] );
 			$doctor->skills()->attach( [ 1, 2, 3 ] );
 		} );
@@ -99,6 +104,9 @@ class DatabaseSeeder extends Seeder {
 				'user_id' => $userHospital->id,
 			] );
 			HospitalInfo::factory()->create( [ 
+				'hospital_id' => $hospital->id,
+			] );
+			HospitalDocument::factory()->create( [ 
 				'hospital_id' => $hospital->id,
 			] );
 		} );

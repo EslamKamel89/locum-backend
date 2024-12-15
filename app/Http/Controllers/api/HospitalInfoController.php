@@ -40,8 +40,8 @@ class HospitalInfoController extends Controller {
 			$validator = Validator::make(
 				$request->all(),
 				[ 
-					'license_number' => [ "sometimes" ],
-					'license_state' => [ "sometimes" ],
+					'license_number' => [ "required" ],
+					'license_state' => [ "required" ],
 					'license_issue_date' => [ "required", 'date' ],
 					'license_expiry_date' => [ "required", 'date' ],
 					'operating_hours' => [ "sometimes" ],
