@@ -73,6 +73,9 @@ class DatabaseSeeder extends Seeder {
 			$doctor = Doctor::factory()->create( [ 
 				'user_id' => $user->id,
 			] );
+
+			// if ( $user->id == 1 )
+			// 	return;
 			DoctorInfo::factory()->create( [ 
 				'doctor_id' => $doctor->id,
 			] );
@@ -82,8 +85,7 @@ class DatabaseSeeder extends Seeder {
 			] );
 			$doctor->langs()->attach( [ 1, 2, 3 ] );
 			$doctor->skills()->attach( [ 1, 2, 3 ] );
-			// if ( $user->id == 1 )
-			// 	return;
+
 		} );
 		$usersAsHospitals = User::factory()
 			->count( 50 )

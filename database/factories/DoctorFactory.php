@@ -21,6 +21,7 @@ class DoctorFactory extends Factory {
 			'job_info_id' => JobInfo::all()->random( 1 )->first()->id,
 			'date_of_birth' => fake()->dateTimeBetween( '-40 years', '-20 years' ),
 			'gender' => fake()->randomElement( [ 'male', 'female' ] ),
+			'shift_preference' => fake()->randomElement( [ 'day', 'night', 'weekday', 'weekend', 'noPreference' ] ),
 			'address' => fake()->address,
 			'phone' => fake()->phoneNumber,
 			'willing_to_relocate' => fake()->boolean,

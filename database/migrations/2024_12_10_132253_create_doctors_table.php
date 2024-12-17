@@ -19,6 +19,8 @@ return new class extends Migration {
 			$table->string( 'address' );
 			$table->string( 'phone' );
 			$table->boolean( 'willing_to_relocate' );
+			$table->enum( 'shift_preference', [ 'day', 'night', 'weekday', 'weekend', 'noPreference' ] )
+				->default( 'noPreference' );
 			$table->string( 'photo' )->nullable();
 			$table->timestamps();
 		} );

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api;
 use App\Exceptions\NotAuthorizedException;
 use App\Http\Resources\DoctorInfoResource;
 use App\Models\DoctorInfo;
+use App\Models\University;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -34,16 +35,17 @@ class DoctorInfoController extends Controller {
 			$validator = Validator::make(
 				$request->all(),
 				[ 
+					'id' => [ 'sometimes', 'exists:doctor_infos,id' ],
 					'professional_license_number' => [ 'required' ],
 					'license_state' => [ 'required' ],
 					'license_issue_date' => [ 'required', 'date' ],
 					'license_expiry_date' => [ 'required', 'date' ],
-					'university_id' => [ 'sometimes', 'exists:universities,id' ],
+					'university_name' => [ 'sometimes' ],
 					'highest_degree' => [ 'required' ],
 					'field_of_study' => [ 'required' ],
-					'graduation_year' => [ 'sometimes', 'numeric' ],
+					'graduation_year' => [ 'sometimes', 'nullable', 'numeric' ],
 					'work_experience' => [ 'sometimes', 'max:255' ],
-					'cv' => [ 'sometimes', File::types( mimetypes: [ 'doc', 'pdf' ] ) ],
+					'cv' => [ 'sometimes', 'nullable', File::types( mimetypes: [ 'doc', 'pdf' ] ) ],
 					'biography' => [ 'sometimes', 'max:255' ],
 				] );
 			if ( $validator->fails() ) {
@@ -54,13 +56,29 @@ class DoctorInfoController extends Controller {
 				$path = $request->file( 'cv' )->store( 'doctor/cv', 'public' );
 				$path = "storage/$path";
 			}
-			$doctorInfo = DoctorInfo::create(
-				collect( $validator->validated() )
+			$doctorInfo = null;
+			if ( request()->has( 'id' ) ) {
+				$doctorInfo = DoctorInfo::findOrFail( request()->all()['id'] );
+				$doctorInfo->update( collect( $validator->validated() )
 					->merge( [ 
 						'doctor_id' => auth()->user()->doctor->id,
 						'cv' => $path,
-					] )->toArray()
-			);
+					] )
+					->forget( [ 'id', 'university_name' ] )
+					->toArray()
+				);
+			} else {
+				$doctorInfo = DoctorInfo::create(
+					collect( $validator->validated() )
+						->merge( [ 
+							'doctor_id' => auth()->user()->doctor->id,
+							'cv' => $path,
+						] )
+						->forget( [ 'id', 'university_name' ] )
+						->toArray()
+				);
+			}
+			$this->attachUniversity( $doctorInfo );
 			return $this->success( new DoctorInfoResource( $doctorInfo ) );
 		} catch (\Exception $e) {
 			return $this->handleException( $e );
@@ -95,7 +113,7 @@ class DoctorInfoController extends Controller {
 					'license_state' => [ 'sometimes' ],
 					'license_issue_date' => [ 'sometimes', 'date' ],
 					'license_expiry_date' => [ 'sometimes', 'date' ],
-					'university_id' => [ 'sometimes', 'exists:universities,id' ],
+					'university_name' => [ 'sometimes' ],
 					'highest_degree' => [ 'sometimes' ],
 					'field_of_study' => [ 'sometimes' ],
 					'graduation_year' => [ 'sometimes', 'numeric' ],
@@ -105,7 +123,12 @@ class DoctorInfoController extends Controller {
 			if ( $validator->fails() ) {
 				return $this->handleValidation( $validator );
 			}
-			$doctorInfo->update( $validator->validated() );
+			$doctorInfo->update(
+				collect( $validator->validated() )
+					->forget( [ 'university_name', 'cv' ] )
+					->toArray()
+			);
+			$this->attachUniversity( $doctorInfo );
 			$doctorInfo->Load( [ 'doctor', 'university' ] );
 			return $this->success( new DoctorInfoResource( $doctorInfo ) );
 		} catch (\Exception $e) {
@@ -150,6 +173,7 @@ class DoctorInfoController extends Controller {
 			return $this->handleException( $e );
 		}
 	}
+
 	protected function handleStoreAuthroizationCheck() {
 		if ( auth()->user()->type !== 'doctor' ) {
 			throw new NotAuthorizedException( [ "This user is not signed as a health care professional" ] );
@@ -157,8 +181,19 @@ class DoctorInfoController extends Controller {
 		if ( ! auth()->user()->doctor ) {
 			throw new NotAuthorizedException( [ "this health care professional didn't complete his basic profile information" ] );
 		}
-		if ( auth()->user()->doctor->doctorInfo ) {
+		if ( auth()->user()->doctor->doctorInfo && ! request()->has( [ 'id' ] ) ) {
 			throw new NotAuthorizedException( [ "This Health Care Professional already completed his profile" ] );
 		}
+	}
+
+	protected function attachUniversity( DoctorInfo $doctorInfo ) {
+		if ( ! request()->has( 'university_name' ) )
+			return;
+		$universityName = strtolower( trim( request()->all()['university_name'] ) );
+		$university = University::where( 'name', $universityName )->first();
+		if ( ! $university ) {
+			$university = University::create( [ 'name' => $universityName ] );
+		}
+		$doctorInfo->update( [ 'university_id' => $university->id ] );
 	}
 }
