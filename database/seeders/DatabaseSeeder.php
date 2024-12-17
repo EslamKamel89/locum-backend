@@ -76,11 +76,14 @@ class DatabaseSeeder extends Seeder {
 			DoctorInfo::factory()->create( [ 
 				'doctor_id' => $doctor->id,
 			] );
+
 			DoctorDocument::factory()->create( [ 
 				'doctor_id' => $doctor->id,
 			] );
 			$doctor->langs()->attach( [ 1, 2, 3 ] );
 			$doctor->skills()->attach( [ 1, 2, 3 ] );
+			// if ( $user->id == 1 )
+			// 	return;
 		} );
 		$usersAsHospitals = User::factory()
 			->count( 50 )
