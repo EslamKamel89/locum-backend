@@ -1,0 +1,14 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 65 47" width="65" height="47">
+	<title>comma-svg</title>
+	<defs>
+		<image  width="65" height="47" id="img1" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEEAAAAvAgMAAADBZ0/8AAAAAXNSR0IB2cksfwAAAAxQTFRFAAAAAAD/AAD/AAD/VNiU2gAAAAR0Uk5TAP/fjZiidDoAAAB5SURBVHic7c6xEYAwDENRqYAN2IcRKGBEKigYIftkBAowsZILWQFcPvvOn8AC9CtshhGIgUmuPcsGgnMWWxU5D4mtiG6S6NglBomtqA8mOqY+SGxFfSg5LnUO2Oa41Dlgm+NS54BtjkudA7Y5SV45fpPOHrGJv3xTbto2f3DwcW6MAAAAAElFTkSuQmCC"/>
+	</defs>
+	<style>
+		.s0 { fill: #00e676 } 
+	</style>
+	<g id="Group_1446">
+		<path id="Path_668" class="s0" d="m23.2 0h-13.9l-9.3 18.5v27.8h27.8v-27.8h-13.9z"/>
+		<path id="Path_669" class="s0" d="m51 18.5l9.2-18.5h-13.9l-9.2 18.5v27.8h27.8v-27.8z"/>
+		<use id="طبقة 1" href="#img1" x="0" y="0"/>
+	</g>
+</svg>

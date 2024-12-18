@@ -1,0 +1,16 @@
+{
+  "name": "locum-website",
+  "version": "1.0.0",
+  "description": "locum-website",
+  "main": "index.js",
+  "scripts": {
+    "build:sass": "sass --no-source-map scss:css",
+    "watch:sass": "sass --no-source-map --watch scss:css"
+  },
+  "author": "Eslam Kamel",
+  "license": "ISC",
+  "dependencies": {
+    "bootstrap": "^5.3.3",
+    "sass": "^1.80.6"
+  }
+}
