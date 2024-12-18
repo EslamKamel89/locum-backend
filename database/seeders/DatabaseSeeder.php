@@ -70,12 +70,13 @@ class DatabaseSeeder extends Seeder {
 				];
 			} )->create();
 		$usersAsDoctors->each( function ($user, $index) {
+			// if ( $user->id == 1 )
+			// 	return;
 			$doctor = Doctor::factory()->create( [ 
 				'user_id' => $user->id,
 			] );
 
-			// if ( $user->id == 1 )
-			// 	return;
+
 			DoctorInfo::factory()->create( [ 
 				'doctor_id' => $doctor->id,
 			] );

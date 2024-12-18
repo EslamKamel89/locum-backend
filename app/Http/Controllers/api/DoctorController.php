@@ -40,17 +40,16 @@ class DoctorController extends Controller {
 				$request->all(),
 				[ 
 					'id' => [ 'sometimes', 'exists:doctors,id' ],
-					'specialty_name' => [ 'sometimes' ],
-					'job_info_name' => [ 'sometimes' ],
+					'specialty_name' => [ 'required' ],
+					'job_info_name' => [ 'required' ],
 					'date_of_birth' => [ 'required' ],
 					'gender' => [ 'required', Rule::in( 'male', 'female' ) ],
 					'address' => [ 'required' ],
 					'phone' => [ 'required' ],
 					'willing_to_relocate' => [ 'required', 'boolean' ],
-					'photo' => [ 'sometimes', File::image()
-						// ->min( 1024 )
-						// ->max( 12 * 1024 )
-					]
+					'photo' => [ 'sometimes', 'nullable', File::image() ],
+					'langs' => [ 'sometimes' ],
+					'skills' => [ 'sometimes' ],
 				] );
 			if ( $validator->fails() ) {
 				return $this->handleValidation( $validator );
@@ -69,7 +68,8 @@ class DoctorController extends Controller {
 						'user_id' => auth()->id(),
 						'photo' => $path,
 					] )
-					->forget( [ 'id', 'specialty_name', 'job_info_name' ] )
+					->forget( [ 'id', 'specialty_name', 'job_info_name', 'langs', 'skills' ] )
+					->reject( fn( $value, $key ) => $key == 'photo' && $value == null )
 					->toArray()
 				);
 			} else {
@@ -79,7 +79,7 @@ class DoctorController extends Controller {
 							'user_id' => auth()->id(),
 							'photo' => $path,
 						] )
-						->forget( [ 'id', 'university_name', 'specialty_name', 'job_info_name' ] )
+						->forget( [ 'id', 'university_name', 'specialty_name', 'job_info_name', 'langs', 'skills' ] )
 						->toArray()
 				);
 			}
@@ -176,7 +176,9 @@ class DoctorController extends Controller {
 
 	protected function handleSkillAttach( Doctor $doctor ) {
 		$skillNames = [];
-		if ( ! ( request()->has( 'skills' ) ) ) {
+		$skills = request()->has( 'skills' ) ? request()->only( 'skills' )['skills'] : null;
+		if ( ! $skills || str( $skills )->trim()->isEmpty() ) {
+			$doctor->skills()->detach();
 			return;
 		}
 		$skillNames = explode( ',', request()->only( 'skills' )['skills'] );
@@ -185,26 +187,22 @@ class DoctorController extends Controller {
 		foreach ( $skillNames as $skillName ) {
 			$skillName = str( $skillName )->trim()->lower();
 			$skill = Skill::where( 'name', $skillName )->first();
-			$skillExist = false;
+
 			foreach ( $doctor->skills as $doctorSkill ) {
-				if ( $doctorSkill->id === $skill->id ) {
-					$skillExist = true;
-					break;
-				}
 			}
 			if ( ! $skill ) {
 				$skill = Skill::create( [ 'name' => $skillName ] );
 			}
-			if ( ! $skillExist ) {
-				$skillIds->add( $skill->id );
-			}
+			$skillIds->add( $skill->id );
 		}
-		$doctor->skills()->attach( $skillIds );
+		$doctor->skills()->sync( $skillIds );
 	}
 
 	protected function handleLangAttach( Doctor $doctor ) {
 		$langNames = [];
-		if ( ! ( request()->has( 'langs' ) ) ) {
+		$languages = request()->has( 'langs' ) ? request()->only( 'langs' )['langs'] : null;
+		if ( ! $languages || str( $languages )->trim()->isEmpty() ) {
+			$doctor->langs()->detach();
 			return;
 		}
 		$langNames = explode( ',', request()->only( 'langs' )['langs'] );
@@ -213,21 +211,15 @@ class DoctorController extends Controller {
 		foreach ( $langNames as $langName ) {
 			$langName = str( $langName )->trim()->lower();
 			$lang = Lang::where( 'name', $langName )->first();
-			$langExist = false;
+
 			foreach ( $doctor->langs as $doctorLang ) {
-				if ( $doctorLang->id === $lang->id ) {
-					$langExist = true;
-					break;
-				}
 			}
 			if ( ! $lang ) {
 				$lang = Lang::create( [ 'name' => $langName ] );
 			}
-			if ( ! $langExist ) {
-				$langIds->add( $lang->id );
-			}
+			$langIds->add( $lang->id );
 		}
-		$doctor->langs()->attach( $langIds );
+		$doctor->langs()->sync( $langIds );
 	}
 
 	protected function handleStoreAuthroizationCheck() {
