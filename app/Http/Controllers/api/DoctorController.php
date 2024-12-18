@@ -261,3 +261,4 @@ class DoctorController extends Controller {
 		$doctor->update( [ 'job_info_id' => $jobInfo->id ] );
 	}
 }
+
