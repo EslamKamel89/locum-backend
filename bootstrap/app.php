@@ -24,29 +24,29 @@ return Application::configure( basePath: dirname( __DIR__ ) )
 	} )
 	->withExceptions( function (Exceptions $exceptions) {
 
-		$exceptions->render( function (NotFoundHttpException $e) {
-			return ( new Controller() )->failure( 'Resource Not Found' );
-		} );
-		$exceptions->render( function (ValidationException $e) {
-			$errors = collect( [] );
-			collect( $e->errors() )
-				->each(
-					fn( $error ) => $errors->add( $error[0] )
-				);
-			return ( new Controller() )->failure(
-				message: 'Validation Failed',
-				errors: $errors,
-				statusCode: 422
-			);
+		// $exceptions->render( function (NotFoundHttpException $e) {
+		// 	return ( new Controller() )->failure( 'Resource Not Found' );
+		// } );
+		// $exceptions->render( function (ValidationException $e) {
+		// 	$errors = collect( [] );
+		// 	collect( $e->errors() )
+		// 		->each(
+		// 			fn( $error ) => $errors->add( $error[0] )
+		// 		);
+		// 	return ( new Controller() )->failure(
+		// 		message: 'Validation Failed',
+		// 		errors: $errors,
+		// 		statusCode: 422
+		// 	);
 
-		} );
-		$exceptions->render( function (AuthenticationException $e) {
-			return ( new Controller() )->failure( 'Unauthenticated User', statusCode: 401 );
-		} );
-		$exceptions->render( function (AccessDeniedHttpException $e) {
-			return ( new Controller() )->failure( 'This action is unauthorized.', statusCode: 403 );
-		} );
-		$exceptions->render( function (NotAuthorizedException $e) {
-			return ( new Controller() )->failure( $e->getMessage(), $e->errors );
-		} );
+		// } );
+		// $exceptions->render( function (AuthenticationException $e) {
+		// 	return ( new Controller() )->failure( 'Unauthenticated User', statusCode: 401 );
+		// } );
+		// $exceptions->render( function (AccessDeniedHttpException $e) {
+		// 	return ( new Controller() )->failure( 'This action is unauthorized.', statusCode: 403 );
+		// } );
+		// $exceptions->render( function (NotAuthorizedException $e) {
+		// 	return ( new Controller() )->failure( $e->getMessage(), $e->errors );
+		// } );
 	} )->create();
