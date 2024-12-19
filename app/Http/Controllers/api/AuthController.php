@@ -81,7 +81,6 @@ class AuthController extends Controller {
 	public function userInfo() {
 		$user = auth()->user()->load( [ 'district', 'state',] );
 
-
 		if ( $user->type == 'doctor' ) {
 			$user->load( [ 
 				'doctor.doctorInfo.university',
@@ -102,5 +101,35 @@ class AuthController extends Controller {
 			'type' => $user->type,
 			'user' => $user,
 		] );
+	}
+
+	public function update( Request $request ) {
+		try {
+			$validator = Validator::make(
+				$request->all(),
+				[ 
+					'name' => 'required',
+					'email' => [ 
+						'required',
+						'email',
+						Rule::unique( 'users', 'email' )->ignore( auth()->id() )
+					],
+					'password' => 'sometimes|nullable',
+					'state_id' => 'required|exists:states,id',
+					'district_id' => 'sometimes|exists:districts,id',
+				] );
+			if ( $validator->fails() ) {
+				return $this->handleValidation( $validator );
+			}
+			$user = auth()->user();
+			$user->update(
+				collect( $validator->validated() )
+					->reject( fn( $value, $key ) => $key === 'password' && ( $value === null || $value === '' ) )
+					->toArray()
+			);
+			return $this->success( $user );
+		} catch (\Exception $e) {
+			return $this->handleException( $e );
+		}
 	}
 }
