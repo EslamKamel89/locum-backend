@@ -52,6 +52,40 @@ class DatabaseSeeder extends Seeder {
 
 		collect( $this->langs )->each( fn( $lang ) => Lang::create( $lang ) );
 		collect( $this->skills )->each( fn( $skill ) => Skill::create( $skill ) );
+
+		$usersAsHospitals = User::factory()
+			->count( 50 )
+			->sequence( function (Sequence $sequence) {
+				if ( $sequence->index == 0 ) {
+					return [ 
+						'name' => "hospital",
+						'email' => "hospital@gmail.com",
+						'type' => 'hospital',
+					];
+				}
+				$index = $sequence->index + 1;
+				return [ 
+					'name' => "Hospital{$index} " . fake()->name(),
+					'email' => "hospital{$index}_" . fake()->email(),
+					'type' => 'hospital',
+				];
+			} )->create();
+		$usersAsHospitals->each( function ($userHospital, $index) {
+
+			$hospital = Hospital::factory()->create( [ 
+				'user_id' => $userHospital->id,
+			] );
+
+			HospitalInfo::factory()->create( [ 
+				'hospital_id' => $hospital->id,
+			] );
+
+			HospitalDocument::factory()->create( [ 
+				'hospital_id' => $hospital->id,
+			] );
+			// if ( $userHospital->id == 1 )
+			// 	return;
+		} );
 		$usersAsDoctors = User::factory()
 			->count( 50 )
 			->sequence( function (Sequence $sequence) {
@@ -87,34 +121,6 @@ class DatabaseSeeder extends Seeder {
 			$doctor->langs()->attach( [ 1, 2, 3 ] );
 			$doctor->skills()->attach( [ 1, 2, 3 ] );
 
-		} );
-		$usersAsHospitals = User::factory()
-			->count( 50 )
-			->sequence( function (Sequence $sequence) {
-				if ( $sequence->index == 0 ) {
-					return [ 
-						'name' => "hospital",
-						'email' => "hospital@gmail.com",
-						'type' => 'hospital',
-					];
-				}
-				$index = $sequence->index + 1;
-				return [ 
-					'name' => "Hospital{$index} " . fake()->name(),
-					'email' => "hospital{$index}_" . fake()->email(),
-					'type' => 'hospital',
-				];
-			} )->create();
-		$usersAsHospitals->each( function ($userHospital, $index) {
-			$hospital = Hospital::factory()->create( [ 
-				'user_id' => $userHospital->id,
-			] );
-			HospitalInfo::factory()->create( [ 
-				'hospital_id' => $hospital->id,
-			] );
-			HospitalDocument::factory()->create( [ 
-				'hospital_id' => $hospital->id,
-			] );
 		} );
 		$hospitals = Hospital::all();
 		$hospitals->each( function (Hospital $hospital) {

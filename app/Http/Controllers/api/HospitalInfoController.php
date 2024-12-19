@@ -28,15 +28,7 @@ class HospitalInfoController extends Controller {
 	public function store( Request $request ) {
 		try {
 			$this->handleStoreAuthroizationCheck();
-			if ( auth()->user()->hospital->hospitalInfo ) {
-				return $this->failure(
-					message: 'Validation Failed',
-					errors: [ 
-						"This Health Care Provider already completed his profile"
-					],
-					statusCode: 422
-				);
-			}
+
 			$validator = Validator::make(
 				$request->all(),
 				[ 
@@ -49,12 +41,28 @@ class HospitalInfoController extends Controller {
 			if ( $validator->fails() ) {
 				return $this->handleValidation( $validator );
 			}
-			$hospitalInfo = HospitalInfo::create(
-				collect( $validator->validated() )
+
+			$hospitalInfo = null;
+			if ( request()->has( 'id' ) ) {
+				$hospitalInfo = HospitalInfo::findOrFail( request()->all()['id'] );
+				$hospitalInfo->update( collect( $validator->validated() )
 					->merge( [ 
 						'hospital_id' => auth()->user()->hospital->id,
-					] )->toArray()
-			);
+					] )
+					->forget( [ 'id' ] )
+					->toArray()
+				);
+			} else {
+				$hospitalInfo = HospitalInfo::create(
+					collect( $validator->validated() )
+						->merge( [ 
+							'hospital_id' => auth()->user()->hospital->id,
+						] )
+						->forget( [ 'id' ] )
+						->toArray()
+				);
+			}
+
 			return $this->success( new HospitalInfoResource( $hospitalInfo ) );
 		} catch (\Exception $e) {
 			return $this->handleException( $e );
@@ -121,7 +129,7 @@ class HospitalInfoController extends Controller {
 		if ( ! auth()->user()->hospital ) {
 			throw new NotAuthorizedException( [ "this health care proivder didn't complete his basic profile information" ] );
 		}
-		if ( auth()->user()->hospital->hospitalInfo ) {
+		if ( auth()->user()->hospital->hospitalInfo && ! request()->has( [ 'id' ] ) ) {
 			throw new NotAuthorizedException( [ "This Health Care Provider already completed his profile" ] );
 		}
 	}

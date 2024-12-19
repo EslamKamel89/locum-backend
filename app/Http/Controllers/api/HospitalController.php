@@ -30,22 +30,21 @@ class HospitalController extends Controller {
 		try {
 			$this->handleStoreAuthroizationCheck();
 
-
 			$validator = Validator::make(
 				$request->all(),
 				[ 
 					'facility_name' => [ 'required' ],
 					'type' => [ 'required' ],
-					'contact_person' => [ 'sometimes' ],
-					'contact_email' => [ 'sometimes', 'email' ],
-					'contact_phone' => [ 'sometimes' ],
-					'address' => [ 'sometimes', 'max:255' ],
-					'services_offered' => [ 'sometimes', 'max:255' ],
-					'number_of_beds' => [ 'sometimes', 'numeric' ],
-					'website_url' => [ 'sometimes' ],
-					'year_established' => [ 'sometimes', 'numeric' ],
-					'overview' => [ 'sometimes', 'max:255' ],
-					'photo' => [ 'sometimes', File::image()
+					'contact_person' => [ 'sometimes', 'nullable' ],
+					'contact_email' => [ 'sometimes', 'email', 'nullable' ],
+					'contact_phone' => [ 'sometimes', 'nullable' ],
+					'address' => [ 'sometimes', 'nullable', 'max:255' ],
+					'services_offered' => [ 'sometimes', 'nullable', 'max:255' ],
+					'number_of_beds' => [ 'sometimes', 'nullable', 'numeric' ],
+					'website_url' => [ 'sometimes', 'nullable' ],
+					'year_established' => [ 'sometimes', 'nullable', 'numeric' ],
+					'overview' => [ 'sometimes', 'nullable', 'max:255' ],
+					'photo' => [ 'sometimes', 'nullable', 'nullable', File::image()
 						// ->min( 1024 )
 						// ->max( 12 * 1024 )
 					],
@@ -58,13 +57,30 @@ class HospitalController extends Controller {
 				$path = $request->file( 'photo' )->store( 'hospital/facility_imgs', 'public' );
 				$path = "storage/$path";
 			}
-			$hospital = Hospital::create(
-				collect( $validator->validated() )
+			$hospital = null;
+			if ( request()->has( 'id' ) ) {
+				$hospital = Hospital::findOrFail( request()->all()['id'] );
+				$hospital->update( collect( $validator->validated() )
 					->merge( [ 
 						'user_id' => auth()->id(),
 						'photo' => $path,
-					] )->toArray()
-			);
+					] )
+					->forget( [ 'id' ] )
+					->reject( fn( $value, $key ) => $key == 'photo' && $value == null )
+					->toArray()
+				);
+			} else {
+				$hospital = Hospital::create(
+					collect( $validator->validated() )
+						->merge( [ 
+							'user_id' => auth()->id(),
+							'photo' => $path,
+						] )
+						->forget( [ 'id' ] )
+						->toArray()
+				);
+			}
+
 			return $this->success( new HospitalResource( $hospital ) );
 		} catch (\Exception $e) {
 			return $this->handleException( $e );
@@ -158,7 +174,7 @@ class HospitalController extends Controller {
 		if ( auth()->user()->type !== 'hospital' ) {
 			throw new NotAuthorizedException( [ "This user is not signed as a health care provider" ] );
 		}
-		if ( auth()->user()->hospital ) {
+		if ( auth()->user()->hospital && ! request()->has( [ 'id' ] ) ) {
 			throw new NotAuthorizedException( [ "This health care provider completed his basic information" ] );
 		}
 	}
