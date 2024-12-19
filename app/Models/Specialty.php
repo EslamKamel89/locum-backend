@@ -11,7 +11,7 @@ class Specialty extends Model {
 	use HasFactory;
 	protected $guarded = [];
 
-	//! Relationships
+	// Relationships
 	public function doctors(): HasMany {
 		return $this->hasMany( Doctor::class);
 	}
