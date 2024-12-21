@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,7 +18,7 @@ class JobAdd extends Model {
 		return $this->belongsTo( Hospital::class);
 	}
 	public function specialty(): BelongsTo {
-		return $this->belongsTo( Specialty::class);
+		return $this->belongsTo( Specialty::class, 'speciality_id', );
 	}
 	public function jobInfo(): BelongsTo {
 		return $this->belongsTo( JobInfo::class);
@@ -51,5 +52,9 @@ class JobAdd extends Model {
 		return [ 
 			'application_deadline' => 'datetime:Y-m-d',
 		];
+	}
+	//! scopes
+	public function scopeMain( Builder $query ) {
+		return $query->select( [ 'title', 'job_type', "description", 'location', "created_at" ] );
 	}
 }

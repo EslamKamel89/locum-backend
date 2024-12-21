@@ -16,8 +16,9 @@ class JobAddController extends Controller {
 	 */
 	public function index() {
 		$jobAdds = request()->has( 'limit' ) ?
-			JobAdd::paginate( request()->get( 'limit' ) ?? 10 ) :
-			JobAdd::all();
+			JobAdd::with( [ 'hospital', 'specialty', 'jobInfo' ] )
+				->paginate( request()->get( 'limit' ) ?? 10 ) :
+			JobAdd::with( [ 'hospital', 'specialty', 'jobInfo' ] )->get();
 		return $this->success(
 			JobAddResource::collection( $jobAdds ),
 			pagination: request()->has( 'limit' ),
@@ -62,8 +63,8 @@ class JobAddController extends Controller {
 			);
 			$this->handleSkillAttach( $jobAdd );
 			$this->handleLangAttach( $jobAdd );
-			$jobAdd->load( [ 'langs', 'skills' ] );
-			return $this->success( new JobAddResource( $jobAdd ) );
+			$jobAdd->load( [ 'langs', 'skills', 'hospital', 'specialty', 'jobInfo' ] );
+			return $this->success( $jobAdd );
 		} catch (\Exception $e) {
 			return $this->handleException( $e );
 		}
@@ -75,8 +76,8 @@ class JobAddController extends Controller {
 	public function show( string $id ) {
 		try {
 			$jobAdd = JobAdd::findOrFail( $id );
-			$jobAdd->Load( [ "hospital", "specialty", "jobInfo" ] );
-			return $this->success( new JobAddResource( $jobAdd ) );
+			$jobAdd->Load( [ 'langs', 'skills', 'hospital', 'specialty', 'jobInfo' ] );
+			return $this->success( $jobAdd );
 		} catch (\Exception $e) {
 			return $this->handleException( $e );
 		}
@@ -112,8 +113,8 @@ class JobAddController extends Controller {
 				return $this->handleValidation( $validator );
 			}
 			$jobAdd->update( $validator->validated() );
-			$jobAdd->Load( [ "hospital", "specialty", "jobInfo" ] );
-			return $this->success( new JobAddResource( $jobAdd ) );
+			$jobAdd->Load( [ 'langs', 'skills', 'hospital', 'specialty', 'jobInfo' ] );
+			return $this->success( $jobAdd );
 		} catch (\Exception $e) {
 			return $this->handleException( $e );
 		}
