@@ -7,7 +7,7 @@
             <div class="mb-3">
                 <div class="row g-0">
                     <!-- card  -------------------------------------------------->
-                    <div class="mt-4 bg-transparent col-md-6 mt-md-0 wow bounceInLeft">
+                    <div class="mt-4 bg-transparent col-md-6 mt-md-0 wow fadeIn">
                         <div class="p-3 mx-2 mb-3 text-white shadow-lg card rounded-3" style="background-color: #2b304150">
                             <div class="card-body">
                                 <h3 class="card-title">
@@ -26,7 +26,7 @@
                     </div>
                     <!-- card  -->
                     <!-- form  -------------------------------------------------->
-                    <div class="p-3 bg-white border shadow-lg col-md-6 rounded-3 wow bounceInRight">
+                    <div class="p-3 bg-white border shadow-lg col-md-6 rounded-3 wow fadeIn">
                         @if (session('success'))
                             <div class="alert alert-success"> {{ session('success') }} </div>
                         @endif
@@ -66,10 +66,69 @@
                                     <label for="specialty_id" class="form-label"> Speciality <span
                                             style="color: red;">*</span></label>
                                     <select class="form-control" name="specialty_id">
-                                        <option>Please select </option>
-                                        @foreach ($specialties as $speciality)
-                                            <option value="{{ $speciality->id }}">{{ $speciality->name }}</option>)
-                                        @endforeach
+                                        <option value="" disabled="" selected="" >Pick a Specialty</option>
+			                <option value="" >All Specialties</option>
+                            <option value="acute-care">Acute Care</option>
+                            <option value="anesthesiology" >Anesthesiology</option>
+                            <option value="cardiology" >Cardiology</option>
+                            <option value="cardiothoracic-surgery">Cardiothoracic Surgery</option>
+                            <option value="clinical-cardiac-electrophysiology" >Clinical Cardiac Electrophysiology</option>
+                            <option value="critical-care-medicine">Critical Care Medicine</option>
+                            <option value="dermatology">Dermatology</option>
+                            <option value="dermatopathology">Dermatopathology</option>
+                            <option value="emergency-medicine" >Emergency Medicine</option>
+                            <option value="endocrinology-diabetes-and-metabolism">Endocrinology, Diabetes and Metabolism</option>
+                            <option value="family-medicine" >Family Medicine</option>
+                            <option value="gastroenterology" >Gastroenterology</option>
+                            <option value="general-surgery" >General Surgery</option>
+                            <option value="genetics">Genetics</option>
+                            <option value="geriatric-medicine">Geriatric Medicine</option>
+                            <option value="gynecologic-oncology">Gynecologic Oncology</option>
+                            <option value="hospice-and-palliative-medicine" >Hospice and Palliative Medicine</option>
+                            <option value="hospitalist" >Hospitalist</option>
+                            <option value="infectious-disease" >Infectious Disease</option>
+                            <option value="interventional-cardiology" >Interventional Cardiology</option>
+                            <option value="maternal-fetal-medicine" >Maternal-Fetal Medicine</option>
+                            <option value="neonatal-perinatal-medicine" >Neonatal-Perinatal Medicine</option>
+                            <option value="nephrology" >Nephrology</option>
+                            <option value="neurointerventional-surgery" >Neurointerventional Surgery</option>
+                            <option value="neurology" >Neurology</option>
+                            <option value="neurosurgery" >Neurosurgery</option>
+                            <option value="ob-gyn" >OB-GYN</option>
+                            <option value="ob-gyn-subspecialties" >OB-GYN Subspecialties</option>
+                            <option value="occupational-medicine" >Occupational Medicine</option>
+                            <option value="oncology" >Oncology</option>
+                            <option value="ophthalmology" >Ophthalmology</option>
+                            <option value="oral-maxillofacial-surgery" >Oral &amp; Maxillofacial Surgery</option>
+                            <option value="ortho-subs" >Ortho Subs</option>
+                            <option value="orthopedic-surgery" >Orthopedic Surgery</option>
+                            <option value="otolaryngology" >Otolaryngology</option>
+                            <option value="pathology" >Pathology</option>
+                            <option value="pediatric-anesthesiology" >Pediatric Anesthesiology</option>
+                            <option value="pediatric-cardiology" >Pediatric Cardiology</option>
+                            <option value="pediatric-critical-care-medicine" >Pediatric Critical Care Medicine</option>
+                            <option value="pediatric-emergency-medicine" >Pediatric Emergency Medicine</option>
+                            <option value="pediatric-neurology" >Pediatric Neurology</option>
+                            <option value="pediatric-otolaryngology" >Pediatric Otolaryngology</option>
+                            <option value="pediatric-pathology" >Pediatric Pathology</option>
+                            <option value="pediatric-pulmonary-disease" >Pediatric Pulmonary Disease</option>
+                            <option value="pediatric-surgery" >Pediatric Surgery</option>
+                            <option value="pediatrics" >Pediatrics</option>
+                            <option value="physical-medicine-and-rehabilitation" >Physical Medicine and Rehabilitation</option>
+                            <option value="plastic-surgery" >Plastic Surgery</option>
+                            <option value="primary-care" >Primary Care</option>
+                            <option value="psychiatry" >Psychiatry</option>
+                            <option value="pulmonary-critical-care-medicine" >Pulmonary &amp; Critical Care Medicine</option>
+                            <option value="pulmonary-disease" >Pulmonary Disease</option>
+                            <option value="radiology" >Radiology</option>
+                            <option value="reproductive-endocrinology-and-infertility" >Reproductive Endocrinology and Infertility</option>
+                            <option value="rheumatology" >Rheumatology</option>
+                            <option value="sports-medicine" >Sports Medicine</option>
+                            <option value="trauma-surgery" >Trauma Surgery</option>
+                            <option value="urgent-care" >Urgent Care</option>
+                            <option value="urogynecology" >Urogynecology</option>
+                            <option value="urology">Urology</option>
+                            <option value="vascular-surgery">Vascular Surgery</option>
                                     </select>
                                     @error('specialty_id')
                                         <div class="text-danger">{{ $message }}</div>
@@ -169,7 +228,7 @@
     </section>
     <!-- connect with consultant  -->
     <!-- RECRUITMENT PARTNER -------------------------------------------------->
-    <section class="wow bounceInUp">
+    <section class="wow fadeIn">
         <div class="px-3 py-5 container-lg">
             <div class="row">
                 <!-- Title and description -------------------------------------------------->
@@ -201,7 +260,7 @@
     </section>
     <!-- RECRUITMENT PARTNER -->
     <!-- Features -------------------------------------------------->
-    <section id="sectionBackground" class="wow bounceInUp">
+    <section id="sectionBackground" class="wow fadeIn">
         <div class="px-3 py-5 container-lg">
             <div class="row">
                 <!-- Title -------------------------------------------------->
@@ -370,7 +429,7 @@
     </section>
     <!-- Features -->
     <!-- Locum events -------------------------------------------------->
-    {{-- <div class="bg-light wow bounceInUp">
+    {{-- <div class="bg-light wow fadeIn">
         <div class="px-3 py-5 container-lg">
             <div class="row">
                 <!-- Title -------------------------------------------------->
@@ -501,7 +560,7 @@
     </div> --}}
     <!-- Testimonials -->
     <!-- custoemr service -------------------------------------------------->
-    <section class="pt-5 bg-light wow bounceInUp">
+    <section class="pt-5 bg-light wow fadeIn">
         <div class="px-3 py-5 container-lg">
             <div class="row">
                 <!-- item 1 -------------------------------------------------->

@@ -21,7 +21,7 @@
     />
     <link rel="stylesheet" href="{{asset('web/css/animate.css')}}" />
     <title>AmPm Locum</title>
-    <style></style>
+    <link rel="icon" href="{{asset('web/images/logo.png')}}">
   </head>
   <body>
     <!-- Navigation  -------------------------------------------------->
@@ -95,9 +95,10 @@
               <a
                 class="nav-link fw-bold"
                 aria-current="page"
-                href="/search_jobs.html"
-                >Request Coverage</a
-              >
+                href="{{route('facilities.create')}}"
+                >Request Coverage
+                </a>
+
             </li>
 
             <!-- Medicl Providers dropdown  -------------------------------------------------->
@@ -119,7 +120,7 @@
               <a
                 class="nav-link fw-bold"
                 aria-current="page"
-                href="/for_medical_facilities.html"
+                href="{{route('facilities.create')}}"
                 >For Medical Facilities</a
               >
             </li>
@@ -141,15 +142,23 @@
     <!-- Navbar  -->
 @yield('content')
     <!-- Footer -------------------------------------------------->
-    <footer class="pt-5 pb-3 text-bg-secondary">
+    <footer class="pt-5 pb-3 text-bg-secondary text-light" style="background-image: url({{asset('web/images/hexagon-bg-blue-1024x1024.jpg')}})">
       <div class="container">
         <div class="row">
-          <div class="col-md-6">
+            <div class="col-md-4">
+                <h5><img src="{{asset('web/images/logo.png')}}" width="75" height="75" alt=""></h5>
+                <p>
+                    AmPm Locum is a medical staffing agency that provides temporary
+                    and permanent staffing solutions to medical facilities and
+                    medical providers.
+                </p>
+            </div>
+          <div class="col-md-4">
             <h5>Contact Us</h5>
             <p>
               <!-- <i class="fa fa-map-marker"></i> 9 Samia Gamel, Mansoura, Egypt<br /> -->
               <i class="fa fa-phone"></i> +717-578-4737<br />
-              <i class="fa fa-envelope"></i> eslam@admin.com
+              <i class="fa fa-envelope"></i> <a href="mailto:maeamyers@gmail.com">maeamyers@gmail.com</a>
             </p>
           </div>
           <!-- <div class="col-md-4">
@@ -161,7 +170,7 @@
               <li><a href="#">Contact</a></li>
             </ul>
           </div> -->
-          <div class="col-md-6">
+          <div class="col-md-4">
             <!-- <h5>Follow Us</h5>
             <div class="gap-2 d-flex">
               <a href="#"> <i class="fa-brands fa-facebook"></i></a>
@@ -188,12 +197,13 @@
       </div>
     </footer>
     <!-- Footer -->
+    <script src="{{asset('web/js/jquery-3.7.1.js')}}"></script>
     <script src="{{asset('web/js/bootstrap.bundle.min.js')}}"></script>
     <script src="{{asset('web/js/wow.min.js')}}"></script>
     <script>
       new WOW().init();
     </script>
-
+@include('web.ajax.ajax')
     <script src="{{asset('web/js/script.js')}}"></script>
   </body>
 </html>
