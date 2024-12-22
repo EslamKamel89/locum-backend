@@ -188,8 +188,8 @@ class DoctorController extends Controller {
 			$skillName = str( $skillName )->trim()->lower();
 			$skill = Skill::where( 'name', $skillName )->first();
 
-			foreach ( $doctor->skills as $doctorSkill ) {
-			}
+			// foreach ( $doctor->skills as $doctorSkill ) {
+			// }
 			if ( ! $skill ) {
 				$skill = Skill::create( [ 'name' => $skillName ] );
 			}
@@ -212,8 +212,8 @@ class DoctorController extends Controller {
 			$langName = str( $langName )->trim()->lower();
 			$lang = Lang::where( 'name', $langName )->first();
 
-			foreach ( $doctor->langs as $doctorLang ) {
-			}
+			// foreach ( $doctor->langs as $doctorLang ) {
+			// }
 			if ( ! $lang ) {
 				$lang = Lang::create( [ 'name' => $langName ] );
 			}

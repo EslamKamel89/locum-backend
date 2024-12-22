@@ -23,16 +23,16 @@ class UserFactory extends Factory {
 	 * @return array<string, mixed>
 	 */
 	public function definition(): array {
-		$state = State::all()->random()->first();
-		$district = $state->districts->random()->first();
+		$stateId = fake()->numberBetween( 1, State::count() );
+		// $district = $state->districts->first();
 		return [ 
 			'name' => fake()->name(),
 			'email' => fake()->unique()->safeEmail(),
 			'email_verified_at' => now(),
 			'password' => static::$password ??= Hash::make( 'password' ),
 			'remember_token' => Str::random( 10 ),
-			'state_id' => $state->id,
-			'district_id' => $district->id,
+			'state_id' => $stateId,
+			'district_id' => 1,
 		];
 	}
 

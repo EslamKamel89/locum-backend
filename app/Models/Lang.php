@@ -38,4 +38,24 @@ class Lang extends Model {
 			set: fn( string $value ) => trim( strtolower( $value ) ),
 		);
 	}
+
+	//! helpers
+	public static function getIdsFromRequest(): ?array {
+		$langNames = [];
+		$languages = request()->has( 'langs' ) ? request()->only( 'langs' )['langs'] : null;
+		if ( ! $languages || str( $languages )->trim()->isEmpty() ) {
+			return null;
+		}
+		$langNames = explode( ',', $languages );
+		$langIds = collect( [] );
+		foreach ( $langNames as $langName ) {
+			$langName = str( $langName )->trim()->lower();
+			$lang = Lang::where( 'name', $langName )->first();
+			if ( $lang ) {
+				$langIds->add( $lang->id );
+			}
+		}
+		// \App\Pr::_( $langIds );
+		return $langIds->toArray();
+	}
 }

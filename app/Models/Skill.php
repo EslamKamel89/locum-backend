@@ -37,5 +37,25 @@ class Skill extends Model {
 			set: fn( string $value ) => trim( strtolower( $value ) ),
 		);
 	}
-
+	//! helpers
+	public static function getIdsFromRequest(): ?array {
+		$skillNames = [];
+		$skills = request()->has( 'skills' ) ? request()->only( 'skills' )['skills'] : null;
+		if ( ! $skills || str( $skills )->trim()->isEmpty() ) {
+			return null;
+		}
+		$skillNames = explode( ',', $skills );
+		$skillIds = collect( [] );
+		foreach ( $skillNames as $skillName ) {
+			$skillName = str( $skillName )->trim()->lower();
+			$skill = Skill::where( 'name', $skillName )->first();
+			// \App\Pr::_( $skillName );
+			// \App\Pr::_( $skill );
+			if ( $skill ) {
+				$skillIds->add( $skill->id );
+			}
+		}
+		// \App\Pr::_( $skillIds );
+		return $skillIds->toArray();
+	}
 }

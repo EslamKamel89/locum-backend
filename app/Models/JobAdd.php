@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class JobAdd extends Model {
 	/** @use HasFactory<\Database\Factories\JobFactory> */
@@ -31,6 +32,9 @@ class JobAdd extends Model {
 			relatedPivotKey: 'skill_id',
 		);
 	}
+	public function jobSkills(): HasMany {
+		return $this->hasMany( JobSkill::class, 'job_add_id', 'id' );
+	}
 	public function langs(): BelongsToMany {
 		return $this->belongsToMany(
 			related: Lang::class,
@@ -38,6 +42,9 @@ class JobAdd extends Model {
 			foreignPivotKey: 'job_add_id',
 			relatedPivotKey: 'lang_id',
 		);
+	}
+	public function jobLangs(): HasMany {
+		return $this->hasMany( JobLang::class, 'job_add_id', 'id' );
 	}
 	public function doctors(): BelongsToMany {
 		return $this->belongsToMany(
@@ -56,5 +63,61 @@ class JobAdd extends Model {
 	//! scopes
 	public function scopeMain( Builder $query ) {
 		return $query->select( [ 'title', 'job_type', "description", 'location', "created_at" ] );
+	}
+
+	public function scopeFilter( Builder $query ) {
+		$filters = request()->only( [ 'specialty', 'job_info', 'job_type', 'state_id', 'langs', 'skills', 'location' ] );
+		if ( isset( $filters['specialty'] ) )
+			$filters['specialty'] = Specialty::getId( $filters['specialty'] );
+		if ( isset( $filters['job_info'] ) )
+			$filters['job_info'] = JobInfo::getId( $filters['job_info'] );
+		$query
+			->when(
+				$filters['specialty'] ?? null,
+				fn( $q, $v ) => $q->where( 'speciality_id', $v )
+			)->when(
+				$filters['job_info'] ?? null,
+				fn( $q, $v ) => $q->where( 'job_info_id', $v )
+			)->when(
+				$filters['job_type'] ?? null,
+				fn( $q, $v ) => $q->whereRaw( 'LOWER(job_type) = ?', [ strtoLower( trim( $v ) ) ] )
+			)->when(
+				$filters['location'] ?? null,
+				fn( $q, $v ) => $q->whereRaw( 'LOWER(location) LIKE ?', [ strtoLower( trim( '%' . $v . '%' ) ) ] )
+			)
+		;
+		if ( isset( $filters['langs'] ) && $filters['langs'] != '' )
+			$query
+				// ->with( 'jobLangs' )
+				->whereHas( 'jobLangs', function (Builder $q) {
+					$q->whereIn( 'lang_id', Lang::getIdsFromRequest() );
+				} );
+		if ( isset( $filters['skills'] ) && $filters['skills'] != '' )
+			$query
+				// ->with( 'jobSkills' )
+				->whereHas( 'jobSkills', function (Builder $q) {
+					$q->whereIn( 'skill_id', Skill::getIdsFromRequest() );
+				} );
+		if ( isset( $filters['state_id'] ) && $filters['state_id'] != '' )
+			$query
+				// ->with( 'jobSkills' )
+				->whereHas( 'hospital.user.state', function (Builder $q) use ($filters) {
+					$q->where( 'states.id', $filters['state_id'] );
+				} );
+
+		return $query;
+	}
+	public function scopeSort( Builder $query ) {
+
+		$sorts = request()->only( [ 'created_at', 'salary_max' ] );
+		return $query
+			->when(
+				$sorts['created_at'] ?? null,
+				fn( $q, $v ) => $q->orderBy( 'created_at', 'desc' )
+			)->when(
+				$sorts['salary_max'] ?? null,
+				fn( $q, $v ) => $q->orderBy( 'salary_max', 'desc' )
+			)
+		;
 	}
 }

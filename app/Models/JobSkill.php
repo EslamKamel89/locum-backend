@@ -9,6 +9,7 @@ class JobSkill extends Model {
 	/** @use HasFactory<\Database\Factories\JobSkillFactory> */
 	use HasFactory;
 	protected $guarded = [];
+	public $table = 'job_skill';
 
 	//! Relationships
 }

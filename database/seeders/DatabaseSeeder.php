@@ -19,6 +19,7 @@ use App\Models\State;
 use App\Models\University;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Database\Factories\JobAddFactory;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
 
@@ -124,8 +125,15 @@ class DatabaseSeeder extends Seeder {
 		} );
 		$hospitals = Hospital::all();
 		$hospitals->each( function (Hospital $hospital) {
+			JobAddFactory::$countSeq++;
 			$jobAdd = JobAdd::factory()->create( [ 
 				'hospital_id' => $hospital->id,
+				// 'speciality_id' => Specialty::all()->random()->first()->id,
+				// 'job_info_id' => JobInfo::all()->random()->first()->id,
+				'speciality_id' => fake()->numberBetween( 1, Specialty::count() ),
+				'job_info_id' => fake()->numberBetween( 1, jobInfo::count() ),
+
+
 			] );
 			$jobAdd->skills()->attach( [ 1, 2, 3 ] );
 			$jobAdd->langs()->attach( [ 1, 2, 3 ] );

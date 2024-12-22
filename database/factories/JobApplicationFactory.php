@@ -17,7 +17,7 @@ class JobApplicationFactory extends Factory {
 	 */
 	public function definition(): array {
 		return [ 
-			'doctor_id' => Doctor::all()->random()->first()->id,
+			'doctor_id' => Doctor::inRandomOrder()->first()->id,
 			'status' => fake()->randomElement( [ "pending", "accepted", "rejected" ] ),
 			'application_date' => now(),
 			'additional_notes' => fake()->realText(),

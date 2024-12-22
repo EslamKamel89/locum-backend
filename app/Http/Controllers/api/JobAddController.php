@@ -15,10 +15,13 @@ class JobAddController extends Controller {
 	 * Display a listing of the resource.
 	 */
 	public function index() {
-		$jobAdds = request()->has( 'limit' ) ?
-			JobAdd::with( [ 'hospital', 'specialty', 'jobInfo' ] )
-				->paginate( request()->get( 'limit' ) ?? 10 ) :
-			JobAdd::with( [ 'hospital', 'specialty', 'jobInfo' ] )->get();
+
+		$jobAddsQuery = JobAdd::with( [ 'hospital.user.state', 'specialty', 'jobInfo',] )
+			->filter()
+			->sort();
+		$this->pr( $jobAddsQuery->toRawSql() );
+		$jobAdds = $jobAddsQuery->paginate( request()->get( 'limit' ) ?? 10 );
+
 		return $this->success(
 			JobAddResource::collection( $jobAdds ),
 			pagination: request()->has( 'limit' ),
