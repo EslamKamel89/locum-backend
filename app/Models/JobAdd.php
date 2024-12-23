@@ -100,7 +100,6 @@ class JobAdd extends Model {
 				} );
 		if ( isset( $filters['state_id'] ) && $filters['state_id'] != '' )
 			$query
-				// ->with( 'jobSkills' )
 				->whereHas( 'hospital.user.state', function (Builder $q) use ($filters) {
 					$q->where( 'states.id', $filters['state_id'] );
 				} );
