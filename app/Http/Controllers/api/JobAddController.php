@@ -16,7 +16,7 @@ class JobAddController extends Controller {
 	 */
 	public function index() {
 
-		$jobAddsQuery = JobAdd::with( [ 'hospital.user.state', 'specialty', 'jobInfo',] )
+		$jobAddsQuery = JobAdd::with( [ 'hospital', 'specialty', 'jobInfo',] )
 			->filter()
 			->sort();
 		$this->pr( $jobAddsQuery->toRawSql() );

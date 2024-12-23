@@ -66,7 +66,7 @@ class JobAdd extends Model {
 	}
 
 	public function scopeFilter( Builder $query ) {
-		$filters = request()->only( [ 'specialty', 'job_info', 'job_type', 'state_id', 'langs', 'skills', 'location' ] );
+		$filters = request()->only( [ 'specialty', 'job_info', 'job_type', 'state', 'langs', 'skills', 'location' ] );
 		if ( isset( $filters['specialty'] ) )
 			$filters['specialty'] = Specialty::getId( $filters['specialty'] );
 		if ( isset( $filters['job_info'] ) )
@@ -98,11 +98,10 @@ class JobAdd extends Model {
 				->whereHas( 'jobSkills', function (Builder $q) {
 					$q->whereIn( 'skill_id', Skill::getIdsFromRequest() );
 				} );
-		if ( isset( $filters['state_id'] ) && $filters['state_id'] != '' )
+		if ( isset( $filters['state'] ) && $filters['state'] != '' )
 			$query
-				// ->with( 'jobSkills' )
 				->whereHas( 'hospital.user.state', function (Builder $q) use ($filters) {
-					$q->where( 'states.id', $filters['state_id'] );
+					$q->whereRaw( 'LOWER(states.name) = ?', [ strtolower( trim( $filters['state'] ) ) ] );
 				} );
 
 		return $query;
