@@ -119,4 +119,10 @@ class JobAdd extends Model {
 			)
 		;
 	}
+	public function scopeGetAddNotApplied( Builder $query ) {
+		return $query->whereDoesntHave(
+			'doctors',
+			fn( Builder $q ) => $q->where( 'doctors.id', '=', auth()->user()->doctor->id )
+		);
+	}
 }

@@ -7,6 +7,7 @@ use App\Http\Resources\JobAddResource;
 use App\Models\JobAdd;
 use App\Models\Lang;
 use App\Models\Skill;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -17,9 +18,10 @@ class JobAddController extends Controller {
 	public function index() {
 
 		$jobAddsQuery = JobAdd::with( [ 'hospital', 'specialty', 'jobInfo',] )
+			->getAddNotApplied()
 			->filter()
 			->sort();
-		$this->pr( $jobAddsQuery->toRawSql() );
+		// $this->pr( $jobAddsQuery->toRawSql() );
 		$jobAdds = $jobAddsQuery->paginate( request()->get( 'limit' ) ?? 10 );
 
 		return $this->success(
