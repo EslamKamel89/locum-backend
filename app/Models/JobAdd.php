@@ -109,6 +109,9 @@ class JobAdd extends Model {
 	public function scopeSort( Builder $query ) {
 
 		$sorts = request()->only( [ 'created_at', 'salary_max' ] );
+		if ( count( $sorts ) == 0 ) {
+			return $query->orderBy( 'created_at', 'desc' );
+		}
 		return $query
 			->when(
 				$sorts['created_at'] ?? null,

@@ -6,6 +6,7 @@ use App\Exceptions\NotAuthorizedException;
 use App\Http\Resources\JobApplicationResource;
 use App\Models\JobAdd;
 use App\Models\JobApplication;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -14,9 +15,14 @@ class JobApplicationController extends Controller {
 	 * Display a listing of the resource.
 	 */
 	public function index() {
-		$jobApplications = request()->has( 'limit' ) ?
-			JobApplication::paginate( request()->get( 'limit' ) ?? 10 ) :
-			JobApplication::all();
+
+		$jobApplications = JobApplication::with( [ 'jobAdd.specialty', 'jobAdd.jobInfo' ] )
+			->where( 'doctor_id', auth()->user()->doctor->id )
+			->orderBy( 'created_at', 'desc' )
+			->when(
+				request()['status'] ?? null, fn( Builder $q ) => $q->where( 'status', request()['status'] )
+			)
+			->paginate( request()->get( 'limit' ) ?? 10 );
 		// $this->pr( $jobApplications );
 		return $this->success(
 			JobApplicationResource::collection( $jobApplications ),
