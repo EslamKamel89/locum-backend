@@ -3,7 +3,14 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\admin\AuthController;
+use App\Http\Controllers\admin\LangController;
+use App\Http\Controllers\admin\SkillController;
 use App\Http\Controllers\admin\StateController;
+use App\Http\Controllers\admin\DoctorController;
+use App\Http\Controllers\admin\JobInfoController;
+use App\Http\Controllers\admin\DistrictController;
+use App\Http\Controllers\admin\HospitalController;
+use App\Http\Controllers\admin\SpecialtyController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -19,6 +26,15 @@ Route::middleware([AdminMiddleware::class])->prefix('admin')->name('admin.')->gr
     })->name('dashboard');
 
     Route::resource('/states', StateController::class);
+    Route::resource('/districts', DistrictController::class);
+    Route::resource('/skills', SkillController::class);
+    Route::resource('/langs', LangController::class);
+    Route::resource('/specialties', SpecialtyController::class);
+    Route::resource('/job_infos', JobInfoController::class);
+
+    Route::resource('/doctors', DoctorController::class);
+    Route::resource('/hospitals', HospitalController::class);
+    Route::resource('/hospitals', HospitalController::class);
 
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 });

@@ -15,5 +15,6 @@
     <!-- Custom CSS -->
     <link href="{{asset('dashboard/dist/css/style.min.css')}}" rel="stylesheet">
     <link href="{{asset('dashboard/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.css')}}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{asset('dashboard/assets/libs/select2/dist/css/select2.min.css')}}">
 
 </head>
