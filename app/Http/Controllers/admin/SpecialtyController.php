@@ -4,82 +4,87 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Specialty;
-use App\Traits\ApiResponse;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class SpecialtyController extends Controller {
+class SpecialtyController extends Controller
+{
 	/**
 	 * Display a listing of the resource.
 	 */
-	public function index() {
-		return $this->success( Specialty::select( 'id', 'name' )->get() );
+	public function index()
+	{
+		$specialties = Specialty::get(['id', 'name']);
+
+		return view('admin.specialties.index', get_defined_vars());
+	}
+
+	public function create()
+	{
+		return view('admin.specialties.create');
 	}
 
 	/**
 	 * Store a newly created resource in storage.
 	 */
-	public function store( Request $request ) {
+	public function store(Request $request)
+	{
 		try {
 			$validator = Validator::make(
 				$request->all(),
-				[ 
-					'name' => [ 'required' ],
-				] );
-			if ( $validator->fails() ) {
-				return $this->handleValidation( $validator );
+				[
+					'name' => ['required', 'unique:specialties,name'],
+				]
+			);
+			if ($validator->fails()) {
+				return redirect()->back()->withErrors($validator);
 			}
-			$speciality = Specialty::create( $validator->validated() );
-			return $this->success( $speciality );
+			$specialty = Specialty::create($validator->validated());
+			return redirect()->back()->with('success', 'Specialty Created Successfully');
 		} catch (\Exception $e) {
-			return $this->handleException( $e );
+			return redirect()->back()->withErrors($e->getMessage());
 		}
 	}
 
-	/**
-	 * Display the specified resource.
-	 */
-	public function show( string $id ) {
-		try {
-			$speciality = Specialty::findOrFail( $id );
-			return $this->success( $speciality );
-		} catch (\Exception $e) {
-			return $this->handleException( $e );
-		}
+	public function edit(Request $request, Specialty $specialty)
+	{
+		return view('admin.specialties.edit', get_defined_vars());
 	}
 
 	/**
 	 * Update the specified resource in storage.
 	 */
-	public function update( Request $request, string $id ) {
+	public function update(Request $request, string $id)
+	{
 		try {
 			$validator = Validator::make(
 				$request->all(),
-				[ 
-					'name' => [ 'required' ],
-				] );
-			if ( $validator->fails() ) {
-				return $this->handleValidation( $validator );
+				[
+					'name' => ['required', 'unique:specialties,name,' . $id],
+				]
+			);
+			if ($validator->fails()) {
+				return redirect()->back()->withErrors($validator);
 			}
-			$speciality = Specialty::findOrFail( $id );
-			$speciality->update( $request->only( 'name' ) );
-			return $this->success( $speciality );
+			$specialty = Specialty::findOrFail($id);
+			$specialty->update($request->only('name'));
+			return redirect()->back()->with('success', 'Specialty Updated Successfully');
 		} catch (\Exception $e) {
-			return $this->handleException( $e );
+			return redirect()->back()->withErrors($e->getMessage());
 		}
 	}
 
 	/**
 	 * Remove the specified resource from storage.
 	 */
-	public function destroy( string $id ) {
+	public function destroy(string $id)
+	{
 		try {
-			$speciality = Specialty::findOrFail( $id );
-			$speciality->delete();
-			return $this->success( [], message: 'Resource Deleted Successfully' );
+			$specialty = Specialty::findOrFail($id);
+			$specialty->delete();
+			return redirect()->back()->with('success', 'Specialty Deleted Successfully');
 		} catch (\Exception $e) {
-			return $this->handleException( $e );
+			return redirect()->back()->withErrors($e->getMessage());
 		}
 	}
 }

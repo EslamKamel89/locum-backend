@@ -33,7 +33,7 @@
                         <thead>
                             <tr>
                                 <th>Name</th>
-                                <th>Salary</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>

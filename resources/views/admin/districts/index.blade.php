@@ -34,7 +34,7 @@
                             <tr>
                                 <th>Name</th>
                                 <th>State</th>
-                                <th>Salary</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
