@@ -25,8 +25,8 @@
         <div class="card">
             <div class="card-body">
                 <div class="d-flex justify-content-between mb-2">
-                    <h4 class="card-title">States</h4>
-                    <a href="{{ route('admin.states.create') }}" class="btn btn-primary"> Add State </a>
+                    <h4 class="card-title">Langs</h4>
+                    <a href="{{ route('admin.langs.create') }}" class="btn btn-primary"> Add Lang </a>
                 </div>
                 <div class="table-responsive">
                     <table id="zero_config" class="table table-striped table-bordered">
@@ -37,12 +37,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($states as $state) 
+                            @foreach($langs as $lang) 
                                 <tr>
-                                    <td>{{ $state->name }}</td>
+                                    <td>{{ $lang->name }}</td>
                                     <td>
-                                        <a href="{{ route('admin.states.edit', $state->id) }}" class="btn btn-primary">Edit</a>
-                                        <form action="{{ route('admin.states.destroy', $state->id) }}" class="d-inline" method="POST">
+                                        <a href="{{ route('admin.langs.edit', $lang->id) }}" class="btn btn-primary">Edit</a>
+                                        <form action="{{ route('admin.langs.destroy', $lang->id) }}" class="d-inline" method="POST">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger">Delete</button>
