@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
 
-@include('admin.includes.head')
+@include( 'admin.includes.head' )
 
 <body>
     <!-- ============================================================== -->
@@ -20,14 +20,14 @@
         <!-- ============================================================== -->
         <!-- Topbar header - style you can find in pages.scss -->
         <!-- ============================================================== -->
-        @include('admin.includes.header')
+        @include( 'admin.includes.header' )
         <!-- ============================================================== -->
         <!-- End Topbar header -->
         <!-- ============================================================== -->
         <!-- ============================================================== -->
         <!-- Left Sidebar - style you can find in sidebar.scss  -->
         <!-- ============================================================== -->
-        @include('admin.includes.left-sidebar')
+        @include( 'admin.includes.left-sidebar' )
         <!-- ============================================================== -->
         <!-- End Left Sidebar - style you can find in sidebar.scss  -->
         <!-- ============================================================== -->
@@ -40,7 +40,7 @@
             <!-- ============================================================== -->
 
             <div class="container-fluid">
-                @yield('content')
+                @yield( 'content' )
             </div>
         </div>
         <!-- ============================================================== -->
@@ -50,7 +50,7 @@
 
     <!-- @include('admin.includes.aside') -->
     <div class="chat-windows"></div>
-    @include('admin.includes.scripts')
+    @include( 'admin.includes.scripts' )
 </body>
 
 </html>

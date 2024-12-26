@@ -22,6 +22,6 @@ class Specialty extends Model {
 	//! scopes
 	public function scopeGetId( Builder $query, string $name ): ?int {
 		$name = strtolower( trim( $name ) );
-		return $query->where( 'name', 'LIKE', "%" . $name . "%" )->first()?->id;
+		return $query->whereRaw( 'LOWER(name) = ?', [ $name ] )->first()?->id;
 	}
 }

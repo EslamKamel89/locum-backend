@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Admin;
 use App\Models\District;
 use App\Models\Doctor;
 use App\Models\DoctorDocument;
@@ -141,6 +142,11 @@ class DatabaseSeeder extends Seeder {
 				'job_add_id' => $jobAdd->id,
 			] );
 		} );
+		Admin::create( [ 
+			'name' => 'admin',
+			'email' => 'admin@gmail.com',
+			'password' => 'password',
+		] );
 	}
 
 	public $medicalSpecialties = [ 

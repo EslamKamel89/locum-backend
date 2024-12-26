@@ -4,7 +4,9 @@ namespace App\Http\Controllers\api;
 
 use App\Exceptions\NotAuthorizedException;
 use App\Http\Resources\JobApplicationResource;
+use App\Models\JobAdd;
 use App\Models\JobApplication;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -13,9 +15,15 @@ class JobApplicationController extends Controller {
 	 * Display a listing of the resource.
 	 */
 	public function index() {
-		$jobApplications = request()->has( 'limit' ) ?
-			JobApplication::paginate( request()->get( 'limit' ) ?? 10 ) :
-			JobApplication::all();
+
+		$jobApplications = JobApplication::with( [ 'jobAdd.specialty', 'jobAdd.jobInfo' ] )
+			->where( 'doctor_id', auth()->user()->doctor->id )
+			->orderBy( 'created_at', 'desc' )
+			->when(
+				request()['status'] ?? null, fn( Builder $q ) => $q->where( 'status', request()['status'] )
+			)
+			->paginate( request()->get( 'limit' ) ?? 10 );
+		// $this->pr( $jobApplications );
 		return $this->success(
 			JobApplicationResource::collection( $jobApplications ),
 			pagination: request()->has( 'limit' ),
@@ -39,7 +47,7 @@ class JobApplicationController extends Controller {
 			if ( $validator->fails() ) {
 				return $this->handleValidation( $validator );
 			}
-
+			$this->checkUserApplied( $validator->validated()['job_add_id'] );
 			$jobApplication = JobApplication::create(
 				collect( $validator->validated() )
 					->merge( [ 
@@ -84,11 +92,16 @@ class JobApplicationController extends Controller {
 
 	}
 	protected function handleStoreAuthroizationCheck() {
-		if ( auth()->user()->type !== 'doctor' ) {
+		if ( auth()->user()->type !== 'doctor' )
 			throw new NotAuthorizedException( [ "This user is not signed as a health care professional" ] );
-		}
-		if ( ! auth()->user()->doctor ) {
+		if ( ! auth()->user()->doctor )
 			throw new NotAuthorizedException( [ "This health care professionl didn't complete his basic information" ] );
-		}
+	}
+	protected function checkUserApplied( int $jobAddId ) {
+		$jobAdd = auth()->user()->doctor->jobAdds()->where( 'job_adds.id', $jobAddId )->first();
+		// $this->pr( $jobAdd );
+		// $isApplied = $jobAdds->filter( fn( JobAdd $jobAdd, int $index ) => $jobAdd->id === $jobAddId )->isNotEmpty();
+		if ( $jobAdd )
+			throw new NotAuthorizedException( [ "You applied to this job add before" ] );
 	}
 }
