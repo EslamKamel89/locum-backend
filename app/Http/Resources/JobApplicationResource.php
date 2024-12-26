@@ -12,9 +12,9 @@ class JobApplicationResource extends JsonResource {
 	 * @return array<string, mixed>
 	 */
 	public function toArray( Request $request ): array {
-		return collect( parent::toArray( $request ) )->merge( [
+		return collect( parent::toArray( $request ) )->merge( [ 
 			'doctor' => new DoctorResource( $this->whenLoaded( 'doctor' ) ),
-			'jobAdd' => new JobAddResource( $this->whenLoaded( 'jobAdd' ) ),
+			// 'jobAdd' => new JobAddResource( $this->whenLoaded( 'jobAdd' ) ),
 		] )->toArray();
 	}
 }
