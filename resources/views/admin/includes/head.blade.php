@@ -17,4 +17,9 @@
     <link href="{{asset('dashboard/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.css')}}" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{asset('dashboard/assets/libs/select2/dist/css/select2.min.css')}}">
 
+    <!-- <link href="{{asset('dashboard/dist/js/tom-select.base.js')}}" rel="stylesheet"> -->
+    <!-- <link href="https://cdn.jsdelivr.net/npm/tom-select@2.4.1/dist/css/tom-select.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.4.1/dist/css/tom-select.default.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.1/dist/js/tom-select.complete.min.js"></script>
+
 </head>

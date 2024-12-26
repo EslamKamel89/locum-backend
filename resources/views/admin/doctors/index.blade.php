@@ -45,7 +45,7 @@
                             @foreach($doctors as $doctor) 
                                 <tr>
                                     <td>
-                                        <img src="{{ asset('storage/doctor/personal_imgs/' . $doctor->photo) }}" width="70"
+                                        <img src="{{ asset($doctor->photo) }}" width="70"
                                             height="70" alt=""
                                             loading="lazy"
                                             onerror="this.onerror=null; this.src='{{ $doctor->photo }}'">

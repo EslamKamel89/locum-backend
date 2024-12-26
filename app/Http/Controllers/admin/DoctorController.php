@@ -30,8 +30,8 @@ class DoctorController extends Controller
 	public function index()
 	{
 		$doctors = request()->has('limit') ?
-			Doctor::paginate(request()->get('limit') ?? 10) :
-			Doctor::all();
+			Doctor::latest()->paginate(request()->get('limit') ?? 10) :
+			Doctor::latest()->get();
 
 		$doctors = DoctorResource::collection($doctors);
 		return view('admin.doctors.index', get_defined_vars());
@@ -87,10 +87,6 @@ class DoctorController extends Controller
 				$path = "storage/$path";
 			}
 
-			// Store User
-			// Store Doctor
-			// Store Doctor Relations
-
 			$user = new User();
 			$user->name = request()->input('name');
 			$user->email = request()->input('email');
@@ -100,21 +96,21 @@ class DoctorController extends Controller
 			$user->type = UserType::doctor;
 			$user->save();
 
-			$doctor = new Doctor();
-			$doctor->user_id = $user->id;
-			$doctor->specialty_id = request()->input('specialty_name');
-			$doctor->job_info_id = request()->input('job_info_name');
-			$doctor->date_of_birth = request()->input('date_of_birth');
-			$doctor->gender = request()->input('gender');
-			$doctor->address = request()->input('address');
-			$doctor->phone = request()->input('phone');
-			$doctor->willing_to_relocate = request()->input('willing_to_relocate');
-			$doctor->shift_preference = request()->input('shift_preference');
-			$doctor->photo = $path;
-			$doctor->save();
+			$doctor = Doctor::create(
+				collect($validator->validated())
+					->merge([
+						'user_id' => $user->id,
+						'photo' => $path,
+						'willing_to_relocate' => request()->input('willing_to_relocate') == 'on' ? 1 : 0
+					])
+					->forget(['id', 'university_name', 'specialty_name', 'job_info_name', 'langs', 'skills'])
+					->toArray()
+			);
 
-			$doctor->langs()->sync(request()->input('langs'));
-			$doctor->skills()->sync(request()->input('skills'));
+			$this->attachJobInfo($doctor);
+			$this->attachSpeciality($doctor);
+			$this->handleSkillAttach($doctor);
+			$this->handleLangAttach($doctor);
 
 			DB::commit();
 			return redirect()->back()->with('success', 'Doctor Created Successfully');
@@ -132,9 +128,33 @@ class DoctorController extends Controller
 		try {
 			$doctor = Doctor::findOrFail($id);
 			$doctor->Load(['user', 'specialty', 'jobInfo', 'doctorInfo', 'doctorDocuments']);
-			return $this->success(new DoctorResource($doctor));
+			$doctor = new DoctorResource($doctor);
+			return view('', get_defined_vars());
 		} catch (\Exception $e) {
 			return $this->handleException($e);
+		}
+	}
+
+
+	/**
+	 * Show the form for editing the specified resource.
+	 */
+	public function edit(string $id)
+	{
+		try {
+			$doctor = Doctor::findOrFail($id);
+			$doctor->Load(['user', 'specialty', 'jobInfo']);
+			$specialties = Specialty::all();
+			$jobInfos = JobInfo::all();
+			$states = State::all();
+			$districts = District::all();
+			$genders = Gender::cases();
+			$skills = Skill::all();
+			$langs = Lang::all();
+			$shiftPreferences = shiftPreference::cases();
+			return view('admin.doctors.edit', get_defined_vars());
+		} catch (\Exception $e) {
+			return redirect()->back()->withErrors($e->getMessage());
 		}
 	}
 
@@ -145,7 +165,8 @@ class DoctorController extends Controller
 	{
 		try {
 			$doctor = Doctor::findOrFail($id);
-			$this->checkResourceOwner($doctor->user->id);
+			$user = $doctor->user;
+
 			$validator = Validator::make(
 				$request->all(),
 				[
@@ -154,18 +175,35 @@ class DoctorController extends Controller
 					'date_of_birth' => ['sometimes'],
 					'gender' => ['sometimes', Rule::in('male', 'female')],
 					'address' => ['sometimes'],
-					'phone' => ['sometimes'],
-					'willing_to_relocate' => ['sometimes', 'boolean'],
+					'phone' => ['sometimes']
 				]
 			);
 			if ($validator->fails()) {
-				return $this->handleValidation($validator);
+				return redirect()->back()->withErrors($validator);
 			}
-			$doctor->update($validator->validated());
-			$doctor->Load(['user', 'specialty', 'jobInfo', 'doctorInfo', 'doctorDocuments']);
-			return $this->success(new DoctorResource($doctor));
+
+			if ($request->hasFile('photo')) {
+				$path = $request->file('photo')->store('doctor/personal_imgs', 'public');
+				$path = "storage/$path";
+				$doctor->photo = $path;
+			}
+
+			$doctor->update(collect($validator->validated())->merge(['willing_to_relocate' => $request->filled('willing_to_relocate') ? 1 : 0])->toArray());
+			$data = $request->only('name', 'email', 'state_id', 'district_id');
+
+			if ($request->filled('password')) {
+				$data['password'] = bcrypt($request->password);
+			}
+
+			$user->update($data);
+
+			$this->attachJobInfo($doctor);
+			$this->attachSpeciality($doctor);
+			$this->handleSkillAttach($doctor);
+			$this->handleLangAttach($doctor);
+			return redirect()->back()->with('success', 'Doctor Updated Successfully');
 		} catch (\Exception $e) {
-			return $this->handleException($e);
+			return redirect()->back()->withErrors($e->getMessage());
 		}
 	}
 
@@ -176,52 +214,23 @@ class DoctorController extends Controller
 	{
 		try {
 			$doctor = Doctor::findOrFail($id);
-			$this->checkResourceOwner($doctor->user->id);
 			$doctor->delete();
-			return $this->success([], message: 'Resource Deleted Successfully');
+			return redirect()->back()->with('success', 'Doctor Deleted Successfully');
 		} catch (\Exception $e) {
-			return $this->handleException($e);
-		}
-	}
-
-	public function updateUserImg(Doctor $doctor, Request $request)
-	{
-		try {
-			$validator = Validator::make(
-				$request->all(),
-				[
-					'photo' => ['required', File::image()],
-				]
-			);
-			if ($validator->fails()) {
-				return $this->handleValidation($validator);
-			}
-			$path = null;
-			if ($request->hasFile('photo')) {
-				$path = $request->file('photo')->store('doctor/personal_imgs', 'public');
-				$path = "storage/$path";
-			}
-			$doctor->update(['photo' => $path]);
-			$doctor->Load(['user', 'specialty', 'jobInfo', 'doctorInfo', 'doctorDocuments']);
-			return $this->success(new DoctorResource($doctor));
-		} catch (\Exception $e) {
-			return $this->handleException($e);
+			return redirect()->back()->withErrors($e->getMessage());
 		}
 	}
 
 	protected function handleSkillAttach(Doctor $doctor)
 	{
-		$skillNames = [];
 		$skills = request()->has('skills') ? request()->only('skills')['skills'] : null;
-		if (!$skills || str($skills)->trim()->isEmpty()) {
+		if (!$skills || count($skills) == 0) {
 			$doctor->skills()->detach();
 			return;
 		}
-		dd($skills);
-		$skillNames = explode(',', request()->only('skills')['skills']);
 
 		$skillIds = collect([]);
-		foreach ($skillNames as $skillName) {
+		foreach ($skills as $skillName) {
 			$skillName = str($skillName)->trim()->lower();
 			$skill = Skill::where('name', $skillName)->first();
 			if (!$skill) {
@@ -234,27 +243,46 @@ class DoctorController extends Controller
 
 	protected function handleLangAttach(Doctor $doctor)
 	{
-		$langNames = [];
 		$languages = request()->has('langs') ? request()->only('langs')['langs'] : null;
-		if (!$languages || str($languages)->trim()->isEmpty()) {
+		if (!$languages || count($languages) == 0) {
 			$doctor->langs()->detach();
 			return;
 		}
-		$langNames = explode(',', request()->only('langs')['langs']);
 
 		$langIds = collect([]);
-		foreach ($langNames as $langName) {
+		foreach ($languages as $langName) {
 			$langName = str($langName)->trim()->lower();
 			$lang = Lang::where('name', $langName)->first();
-
-			// foreach ( $doctor->langs as $doctorLang ) {
-			// }
 			if (!$lang) {
 				$lang = Lang::create(['name' => $langName]);
 			}
 			$langIds->add($lang->id);
 		}
 		$doctor->langs()->sync($langIds);
+	}
+
+	protected function attachSpeciality(Doctor $doctor)
+	{
+		if (!request()->has('specialty_name'))
+			return;
+		$specialityName = strtolower(trim(request()->input('specialty_name')));
+		$speciality = Specialty::where('name', $specialityName)->first();
+		if (!$speciality) {
+			$speciality = Specialty::create(['name' => $specialityName]);
+		}
+		$doctor->update(['specialty_id' => $speciality->id]);
+	}
+
+	protected function attachJobInfo(Doctor $doctor)
+	{
+		if (!request()->has('job_info_name'))
+			return;
+		$jobInfoName = strtolower(trim(request()->input('job_info_name')));
+		$jobInfo = JobInfo::where('name', $jobInfoName)->first();
+		if (!$jobInfo) {
+			$jobInfo = JobInfo::create(['name' => $jobInfoName]);
+		}
+		$doctor->update(['job_info_id' => $jobInfo->id]);
 	}
 }
 
