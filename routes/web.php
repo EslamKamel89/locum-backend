@@ -34,7 +34,6 @@ Route::middleware([AdminMiddleware::class])->prefix('admin')->name('admin.')->gr
 
     Route::resource('/doctors', DoctorController::class);
     Route::resource('/hospitals', HospitalController::class);
-    Route::resource('/hospitals', HospitalController::class);
 
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 });
