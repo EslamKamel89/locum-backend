@@ -14,6 +14,7 @@ return new class extends Migration {
 			$table->foreignId( 'hospital_id' )->constrained()->cascadeOnDelete();
 			$table->string( 'type' );
 			$table->string( 'file' );
+			$table->string( 'name' );
 			$table->timestamps();
 		} );
 	}
