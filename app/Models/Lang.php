@@ -8,14 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Lang extends Model {
+class Lang extends Model
+{
 	/** @use HasFactory<\Database\Factories\LangFactory> */
 	use HasFactory;
 	protected $guarded = [];
 
 	//! Relationships
 
-	public function doctors(): BelongsToMany {
+	public function doctors(): BelongsToMany
+	{
 		return $this->belongsToMany(
 			related: Doctor::class,
 			table: 'doctor_lang',
@@ -23,7 +25,8 @@ class Lang extends Model {
 			relatedPivotKey: 'doctor_id',
 		);
 	}
-	public function jobAdds(): BelongsToMany {
+	public function jobAdds(): BelongsToMany
+	{
 		return $this->belongsToMany(
 			related: JobAdd::class,
 			table: 'job_lang',
@@ -32,27 +35,29 @@ class Lang extends Model {
 		);
 	}
 	//! Mutators
-	protected function name(): Attribute {
+	protected function name(): Attribute
+	{
 		return Attribute::make(
-			get: fn( string $value ) => trim( strtolower( $value ) ),
-			set: fn( string $value ) => trim( strtolower( $value ) ),
+			get: fn(string $value) => trim(strtolower($value)),
+			set: fn(string $value) => trim(strtolower($value)),
 		);
 	}
 
 	//! helpers
-	public static function getIdsFromRequest(): ?array {
+	public static function getIdsFromRequest(): ?array
+	{
 		$langNames = [];
-		$languages = request()->has( 'langs' ) ? request()->only( 'langs' )['langs'] : null;
-		if ( ! $languages || str( $languages )->trim()->isEmpty() ) {
+		$languages = request()->has('langs') ? request()->only('langs')['langs'] : null;
+		if (!$languages || str($languages)->trim()->isEmpty()) {
 			return null;
 		}
-		$langNames = explode( ',', $languages );
-		$langIds = collect( [] );
-		foreach ( $langNames as $langName ) {
-			$langName = str( $langName )->trim()->lower();
-			$lang = Lang::where( 'name', $langName )->first();
-			if ( $lang ) {
-				$langIds->add( $lang->id );
+		$langNames = explode(',', $languages);
+		$langIds = collect([]);
+		foreach ($langNames as $langName) {
+			$langName = str($langName)->trim()->lower();
+			$lang = Lang::where('name', $langName)->first();
+			if ($lang) {
+				$langIds->add($lang->id);
 			}
 		}
 		// \App\Pr::_( $langIds );

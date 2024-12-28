@@ -34,6 +34,7 @@
 <script src="{{asset('dashboard/assets/extra-libs/DataTables/datatables.min.js')}}"></script>
 <script src="{{asset('dashboard/dist/js/pages/datatable/datatable-basic.init.js')}}"></script>
 
-<script src="{{asset('dashboard/assets/libs/select2/dist/js/select2.full.min.js')}}"></script>
-<script src="{{asset('dashboard/assets/libs/select2/dist/js/select2.min.js')}}"></script>
-<script src="{{asset('dashboard/dist/js/pages/forms/select2/select2.init.js')}}"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script src="{{asset('dashboard/dist/js/locum.js')}}"></script>
