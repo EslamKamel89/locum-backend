@@ -15,6 +15,7 @@ return new class extends Migration {
 			$table->foreignId( 'doctor_id' )->constrained()->cascadeOnDelete();
 			$table->string( 'type' );// ['License', 'Accreditation', 'ID Proof', 'Certificate']
 			$table->string( 'file' );
+			$table->string( 'name' );
 			$table->timestamps();
 		} );
 	}
