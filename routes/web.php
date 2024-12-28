@@ -10,6 +10,7 @@ use App\Http\Controllers\admin\DoctorController;
 use App\Http\Controllers\admin\JobInfoController;
 use App\Http\Controllers\admin\DistrictController;
 use App\Http\Controllers\admin\HospitalController;
+use App\Http\Controllers\admin\JobApplicationController;
 use App\Http\Controllers\admin\SpecialtyController;
 
 Route::get('/', function () {
@@ -34,6 +35,7 @@ Route::middleware([AdminMiddleware::class])->prefix('admin')->name('admin.')->gr
 
     Route::resource('/doctors', DoctorController::class);
     Route::resource('/hospitals', HospitalController::class);
+    Route::resource('/jobApplications', JobApplicationController::class);
 
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 });

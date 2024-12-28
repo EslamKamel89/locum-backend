@@ -45,8 +45,7 @@
                     <span class="hide-menu">General</span>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="{{ route('admin.dashboard') }}"
-                        aria-expanded="false">
+                    <a class="sidebar-link" href="{{ route('admin.dashboard') }}" aria-expanded="false">
                         <i class="icon-Car-Wheel"></i>
                         <span class="hide-menu">Dashboards </span>
                     </a>
@@ -220,6 +219,21 @@
                             <a href="{{ route('admin.hospitals.create') }}" class="sidebar-link">
                                 <i class="mdi mdi-email"></i>
                                 <span class="hide-menu">create new hospitals</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)"
+                        aria-expanded="false">
+                        <i class="icon-Mailbox-Empty"></i>
+                        <span class="hide-menu">Job Applications</span>
+                    </a>
+                    <ul aria-expanded="false" class="collapse first-level">
+                        <li class="sidebar-item">
+                            <a href="{{ route('admin.jobApplications.index') }}" class="sidebar-link">
+                                <i class="mdi mdi-email"></i>
+                                <span class="hide-menu">view all</span>
                             </a>
                         </li>
                     </ul>
