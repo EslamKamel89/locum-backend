@@ -2,68 +2,41 @@
 
 namespace App\Http\Controllers\admin;
 
-use App\Exceptions\NotAuthorizedException;
-use App\Http\Resources\JobApplicationResource;
 use App\Models\JobApplication;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Support\Facades\Validator;
-class JobApplicationController extends Controller {
+class JobApplicationController extends Controller
+{
 	/**
 	 * Display a listing of the resource.
 	 */
-	public function index() {
-		$jobApplications = request()->has( 'limit' ) ?
-			JobApplication::paginate( request()->get( 'limit' ) ?? 10 ) :
+	public function index()
+	{
+		$jobApplications = request()->has('limit') ?
+			JobApplication::paginate(request()->get('limit') ?? 10) :
 			JobApplication::all();
-		return $this->success(
-			JobApplicationResource::collection( $jobApplications ),
-			pagination: request()->has( 'limit' ),
-		);
-	}
 
+		$jobsCount = JobApplication::all()->count();
+		$jobsPendingCount = JobApplication::where('status', 'pending')->count();
+		$jobsAcceptedCount = JobApplication::where('status', 'accepted')->count();
+		$jobsRejectedCount = JobApplication::where('status', 'rejected')->count();
 
-
-	/**
-	 * Store a newly created resource in storage.
-	 */
-	public function store( Request $request ) {
-		try {
-			$this->handleStoreAuthroizationCheck();
-			$validator = Validator::make(
-				$request->all(),
-				[ 
-					'job_add_id' => [ 'required', 'exists:job_adds,id' ],
-					'additional_notes' => [ 'sometimes' ],
-				] );
-			if ( $validator->fails() ) {
-				return $this->handleValidation( $validator );
-			}
-
-			$jobApplication = JobApplication::create(
-				collect( $validator->validated() )
-					->merge( [ 
-						'doctor_id' => auth()->user()->doctor->id,
-					] )->toArray()
-			);
-
-			$jobApplication->load( [ 'doctor', 'jobAdd' ] );
-			return $this->success( new JobApplicationResource( $jobApplication ) );
-		} catch (\Exception $e) {
-			return $this->handleException( $e );
-		}
+		return view('admin.jobApplications.index', get_defined_vars());
 	}
 
 	/**
 	 * Display the specified resource.
 	 */
-	public function show( string $id ) {
+	public function show(string $id)
+	{
 		try {
-			$jobApplication = JobApplication::findOrFail( $id );
-			$jobApplication->Load( [ 'doctor', 'jobAdd' ] );
-			return $this->success( new JobApplicationResource( $jobApplication ) );
-		} catch (\Exception $e) {
-			return $this->handleException( $e );
+			$jobApplication = JobApplication::findOrFail($id);
+			$jobApplication->Load(['doctor', 'jobAdd']);
+			return view('admin.jobApplications.show', get_defined_vars());
+		} catch (Exception $e) {
+			return redirect()->back()->withErrors($e->getMessage());
 		}
 	}
 
@@ -72,23 +45,27 @@ class JobApplicationController extends Controller {
 	/**
 	 * Update the specified resource in storage.
 	 */
-	public function update( Request $request, JobApplication $jobApplication ) {
-		return $this->failure( 'You are not authorized to update job applications' );
-	}
+	public function update(Request $request, JobApplication $jobApplication)
+	{
+		// update job application status
+		try {
+			$validator = Validator::make(
+				$request->all(),
+				[
+					'status' => ['required'],
+				]
+			);
 
-	/**
-	 * Remove the specified resource from storage.
-	 */
-	public function destroy( JobApplication $jobApplication ) {
-		return $this->failure( 'You are not authorized to delete job applications' );
+			if ($validator->fails()) {
+				return redirect()->back()->withErrors($validator->errors());
+			}
 
-	}
-	protected function handleStoreAuthroizationCheck() {
-		if ( auth()->user()->type !== 'doctor' ) {
-			throw new NotAuthorizedException( [ "This user is not signed as a health care professional" ] );
-		}
-		if ( ! auth()->user()->doctor ) {
-			throw new NotAuthorizedException( [ "This health care professionl didn't complete his basic information" ] );
+			$jobApplication->status = $request->status;
+			$jobApplication->save();
+			return redirect()->back()->with('success', 'Job Application Status Updated Successfully');
+
+		} catch (Exception $e) {
+			return redirect()->back()->withErrors($e->getMessage());
 		}
 	}
 }
