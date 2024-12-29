@@ -17,6 +17,7 @@ class DoctorDocumentFactory extends Factory {
 		return [ 
 			'type' => fake()->randomElement( [ 'License', 'Accreditation', 'ID Proof', 'Certificate' ] ),
 			'file' => fake()->imageUrl(),
+			'name' => fake()->firstName() . '.' . fake()->fileExtension()
 		];
 	}
 }

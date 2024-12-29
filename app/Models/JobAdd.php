@@ -123,6 +123,10 @@ class JobAdd extends Model {
 		;
 	}
 	public function scopeGetAddNotApplied( Builder $query ) {
+		$doctor = auth()->user()->doctor;
+		if ( ! $doctor ) {
+			return $query;
+		}
 		return $query->whereDoesntHave(
 			'doctors',
 			fn( Builder $q ) => $q->where( 'doctors.id', '=', auth()->user()->doctor->id )

@@ -28,6 +28,7 @@ Route::apiResource( '/districts', DistrictController::class);
 Route::prefix( 'auth' )->group( function () {
 	Route::post( '/login', [ AuthController::class, 'login' ] );
 	Route::post( '/register', [ AuthController::class, 'register' ] );
+	Route::post( '/social', [ AuthController::class, 'socialAuth' ] );
 } );
 
 Route::middleware( [ 'auth:sanctum' ] )->group( function () {
