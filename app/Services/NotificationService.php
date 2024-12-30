@@ -39,25 +39,25 @@ class NotificationService extends Controller {
 		string $body,
 		string $routeName,
 		array $payload ): bool {
-		// try {
-		$fcmToken = User::findorFail( $userId )->fcm_token;
-		if ( ! $fcmToken ) {
-			throw new NotAuthorizedException( [ 'No Token Found in the database' ] );
+		try {
+			$fcmToken = User::findorFail( $userId )->fcm_token;
+			if ( ! $fcmToken ) {
+				throw new NotAuthorizedException( [ 'No Token Found in the database' ] );
+			}
+			$message = CloudMessage::withTarget( 'token', $fcmToken )
+				->withNotification( [ 
+					'title' => $title,
+					'body' => $body,
+				] )
+				->withData( [ 
+					'routeName' => $routeName,
+					'payload' => json_encode( $payload ),
+				] );
+			$this->messaging->send( $message );
+			return true;
+		} catch (\Exception $e) {
+			throw new NotAuthorizedException( [ $e->getMessage() ] );
 		}
-		$message = CloudMessage::withTarget( 'token', $fcmToken )
-			->withNotification( [ 
-				'title' => $title,
-				'body' => $body,
-			] )
-			->withData( [ 
-				'routeName' => $routeName,
-				'payload' => json_encode( $payload ),
-			] );
-		$this->messaging->send( $message );
-		return true;
-		// } catch (\Exception $e) {
-		// 	throw new NotAuthorizedException( [ $e->getMessage() ] );
-		// }
 	}
 	/**
 	 * Summary of sendNotifications
@@ -82,7 +82,7 @@ class NotificationService extends Controller {
 			] )
 				->withData( [ 
 					'routeName'->$routeName,
-					'payload' => $payload,
+					'payload' => json_encode( $payload ),
 				] );
 			$sendReport = $this->messaging->sendMulticast( $message, $fcmTokens );
 			if ( $sendReport->hasFailures() ) {
