@@ -16,12 +16,24 @@ use App\Http\Controllers\api\SkillController;
 use App\Http\Controllers\api\SpecialtyController;
 use App\Http\Controllers\api\StateController;
 use App\Http\Controllers\api\UniversityController;
+use App\Http\Controllers\Controller;
+use App\Services\NotificationService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get( '/user', function (Request $request) {
 	return $request->user();
 } )->middleware( 'auth:sanctum' );
+
+
+Route::get( '/test',
+	function (Request $request, Controller $controller, NotificationService $notificationService): JsonResponse {
+		$controller->pr( [ 'project_id' => env( 'FIREBASE_PROJECT_ID' ) ], 'Firebase Project ID: ', );
+
+		$notificationService->sendNotification( 101, 'test notification laravel', 'hello form laravel', 'routeName', [] );
+		return $controller->success( [] );
+	} );
 
 Route::apiResource( '/states', StateController::class);
 Route::apiResource( '/districts', DistrictController::class);

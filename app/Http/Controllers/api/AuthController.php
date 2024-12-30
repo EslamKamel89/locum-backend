@@ -122,7 +122,11 @@ class AuthController extends Controller {
 
 	public function userInfo() {
 		$user = auth()->user()->load( [ 'district', 'state',] );
-
+		if ( request()->has( 'fcm_token' ) ) {
+			$user->update( [ 
+				'fcm_token' => request()->only( 'fcm_token' )['fcm_token'],
+			] );
+		}
 		if ( $user->type == 'doctor' ) {
 			$user->load( [ 
 				'doctor.doctorInfo.university',
