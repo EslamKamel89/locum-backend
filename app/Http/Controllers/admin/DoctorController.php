@@ -5,7 +5,6 @@ namespace App\Http\Controllers\admin;
 use App\Models\Lang;
 use App\Models\User;
 use App\Enums\Gender;
-use App\Enums\shiftPreference;
 use App\Models\Skill;
 use App\Models\State;
 use App\Models\Doctor;
@@ -13,7 +12,11 @@ use App\Enums\UserType;
 use App\Models\JobInfo;
 use App\Models\District;
 use App\Models\Specialty;
+use App\Models\DoctorInfo;
+use App\Models\University;
 use Illuminate\Http\Request;
+use App\Enums\shiftPreference;
+use App\Models\DoctorDocument;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -48,6 +51,7 @@ class DoctorController extends Controller
 			$districts = District::all();
 			$genders = Gender::cases();
 			$shiftPreferences = shiftPreference::cases();
+			$universities = University::all();
 
 			return view('admin.doctors.create', get_defined_vars());
 		} catch (\Exception $e) {
@@ -60,6 +64,7 @@ class DoctorController extends Controller
 	 */
 	public function store(Request $request)
 	{
+		// dd($request->all());
 		try {
 			$validator = Validator::make(
 				$request->all(),
@@ -107,6 +112,47 @@ class DoctorController extends Controller
 					->toArray()
 			);
 
+			$cvPath = null;
+			if ($request->hasFile('cv')) {
+				$cvPath = $request->file('cv')->store('doctor/cv', 'public');
+				$cvPath = "storage/$cvPath";
+			}
+
+			// Create Doctor Info
+			$doctorInfo = DoctorInfo::create(
+				collect($request->only([
+					'professional_license_number',
+					'license_state',
+					'license_issue_date',
+					'license_expiry_date',
+					'university_id',
+					'highest_degree',
+					'field_of_study',
+					'graduation_year',
+					'work_experience',
+					'biography'
+				]))
+					->merge([
+						'doctor_id' => $doctor->id,
+						'cv' => $cvPath
+					])->toArray()
+			);
+
+			// if (count($request->documents) > 0) {
+			// 	foreach ($request->documents as $key => $document) {
+			// 		if ($document['document_file']) {
+			// 			$document_path = $document['document_file']->store('doctor/files', 'public');
+			// 			$document_path = "storage/$document_path";
+			// 			DoctorDocument::create([
+			// 				'doctor_id' => $doctor->id,
+			// 				'name' => $document['document_name'],
+			// 				'type' => $document['document_type'],
+			// 				'file' => $document_path
+			// 			]);
+			// 		}
+			// 	}
+			// }
+
 			$this->attachJobInfo($doctor);
 			$this->attachSpeciality($doctor);
 			$this->handleSkillAttach($doctor);
@@ -152,6 +198,7 @@ class DoctorController extends Controller
 			$skills = Skill::all();
 			$langs = Lang::all();
 			$shiftPreferences = shiftPreference::cases();
+			$universities = University::all();
 			return view('admin.doctors.edit', get_defined_vars());
 		} catch (\Exception $e) {
 			return redirect()->back()->withErrors($e->getMessage());
@@ -189,6 +236,48 @@ class DoctorController extends Controller
 			}
 
 			$doctor->update(collect($validator->validated())->merge(['willing_to_relocate' => $request->filled('willing_to_relocate') ? 1 : 0])->toArray());
+			$doctor->doctorInfo->update(collect($request->only([
+				'professional_license_number',
+				'license_state',
+				'license_issue_date',
+				'license_expiry_date',
+				'university_id',
+				'highest_degree',
+				'field_of_study',
+				'graduation_year',
+				'work_experience',
+				'biography'
+			]))->toArray());
+
+			// استقبال البيانات المرسلة
+			// $documents = $request->input('documents', []); // استرجاع قائمة الوثائق
+
+			// if (!empty($documents)) {
+			// 	// delete existing documents
+			// 	$doctor->doctorDocuments()->delete();
+			// }
+			// ;
+
+			// foreach ($documents as $key => $document) {
+			// 	$documentName = $document['document_name'];
+			// 	$documentType = $document['document_type'];
+			// 	$uploadedFile = $request->file("documents.{$key}.document_file");
+
+			// 	if ($uploadedFile) {
+			// 		// رفع الملف إلى مجلد معين
+			// 		$filePath = $uploadedFile->store('documents', 'public');
+
+			// 		// حفظ المعلومات في قاعدة البيانات
+			// 		$document = new DoctorDocument([
+			// 			'name' => $documentName,
+			// 			'type' => $documentType,
+			// 			'file' => "storage/$filePath",
+			// 		]);
+			// 		$doctor->doctorDocuments()->save($document);
+			// 	}
+			// }
+
+
 			$data = $request->only('name', 'email', 'state_id', 'district_id');
 
 			if ($request->filled('password')) {

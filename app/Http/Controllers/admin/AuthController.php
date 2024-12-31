@@ -39,6 +39,14 @@ class AuthController extends Controller
 			return $this->handleException($e);
 		}
 	}
+
+
+	// Healthcare Register
+	public function healthcare_register()
+	{
+		return view('healthcare.auth.register');
+	}
+
 	public function register(Request $request)
 	{
 		$validator = Validator::make(

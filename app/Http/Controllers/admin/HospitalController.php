@@ -14,6 +14,7 @@ use App\Models\Hospital;
 use App\Models\Specialty;
 use Illuminate\Http\Request;
 use App\Enums\shiftPreference;
+use App\Models\HospitalDocument;
 use App\Http\Controllers\Controller;
 use Illuminate\Validation\Rules\File;
 use App\Http\Resources\HospitalResource;
@@ -85,7 +86,8 @@ class HospitalController extends Controller
 			if ($validator->fails()) {
 				return redirect()->back()->withErrors($validator);
 			}
-			$path = null;
+
+
 			if ($request->hasFile('photo')) {
 				$path = $request->file('photo')->store('hospital/facility_imgs', 'public');
 				$path = "storage/$path";
@@ -99,21 +101,43 @@ class HospitalController extends Controller
 			$user->type = UserType::hospital;
 			$user->save();
 
-			$hospital = new Hospital();
-			$hospital->user_id = $user->id;
-			$hospital->facility_name = request()->input('facility_name');
-			$hospital->type = request()->input('type');
-			$hospital->contact_person = request()->input('contact_person');
-			$hospital->contact_email = request()->input('contact_email');
-			$hospital->contact_phone = request()->input('contact_phone');
-			$hospital->address = request()->input('address');
-			$hospital->services_offered = request()->input('services_offered');
-			$hospital->number_of_beds = request()->input('number_of_beds');
-			$hospital->website_url = request()->input('website_url');
-			$hospital->year_established = request()->input('year_established');
-			$hospital->overview = request()->input('overview');
-			$hospital->photo = $path;
-			$hospital->save();
+			$hospital = Hospital::create([
+				collect($request->only([
+					'facility_name',
+					'type',
+					'contact_person',
+					'contact_email',
+					'contact_phone',
+					'address',
+					'services_offered',
+					'number_of_beds',
+					'website_url',
+					'year_established',
+					'overview'
+				]))->merge(['user_id' => $user->id, 'photo' => $path ?? null])->toArray(),
+			]);
+
+			// create hospital info
+			$hospitalInfo = $hospital->hospitalInfo()->create([
+				collect($request->only(['license_number', 'license_state', 'license_issue_date', 'license_expiry_date', 'operating_hours']))
+					->toArray()
+			]);
+
+			// create hospital documents if exists
+			// if (count($request->documents) > 0) {
+			// 	foreach ($request->documents as $key => $document) {
+			// 		if ($document['document_file']) {
+			// 			$document_path = $document['document_file']->store('hospital/files', 'public');
+			// 			$document_path = "storage/$document_path";
+			// 			HospitalDocument::create([
+			// 				'hospital_id' => $hospital->id,
+			// 				'name' => $document['document_name'],
+			// 				'type' => $document['document_type'],
+			// 				'file' => $document_path
+			// 			]);
+			// 		}
+			// 	}
+			// }
 
 			return redirect()->back()->with('success', 'Hospital Created Successfully');
 		} catch (\Exception $e) {
