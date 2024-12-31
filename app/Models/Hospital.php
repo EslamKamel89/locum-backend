@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Hospital extends Model {
 	/** @use HasFactory<\Database\Factories\HospitalFactory> */
@@ -26,6 +27,8 @@ class Hospital extends Model {
 	public function jobAdds(): HasMany {
 		return $this->hasMany( JobAdd::class);
 	}
-
+	public function reviews(): MorphMany {
+		return $this->morphMany( Review::class, 'reviewable' );
+	}
 
 }

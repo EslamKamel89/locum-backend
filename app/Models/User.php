@@ -71,4 +71,7 @@ class User extends Authenticatable {
 	public function hospital(): HasOne {
 		return $this->hasOne( Hospital::class);
 	}
+	public function reviews(): HasMany {
+		return $this->hasMany( Review::class);
+	}
 }

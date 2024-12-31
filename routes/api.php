@@ -17,6 +17,8 @@ use App\Http\Controllers\api\SpecialtyController;
 use App\Http\Controllers\api\StateController;
 use App\Http\Controllers\api\UniversityController;
 use App\Http\Controllers\Controller;
+use App\Models\JobAdd;
+use App\Models\User;
 use App\Services\NotificationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -29,12 +31,24 @@ Route::get( '/user', function (Request $request) {
 
 Route::get( '/test',
 	function (Request $request, Controller $controller, NotificationService $notificationService): JsonResponse {
-		$controller->pr( [ 'project_id' => env( 'FIREBASE_PROJECT_ID' ) ], 'Firebase Project ID: ', );
-
-		$notificationService->sendNotification( 101, 'test notification laravel', 'hello form laravel', 'routeName', [] );
+		$notificationService->sendNotification(
+			101,
+			'test notification laravel',
+			'hello from laravel',
+			'/doctorJobDetailsScreen',
+			[ 'id' => 1 ]
+		);
 		return $controller->success( [] );
 	} );
-
+Route::get( '/test2',
+	function (Request $request, Controller $controller, NotificationService $notificationService): JsonResponse {
+		JobAdd::find( 1 )->reviews()->create( [ 
+			'user_id' => 1,
+			'content' => 'some content',
+			'rating' => 2,
+		] );
+		return $controller->success( [] );
+	} );
 Route::apiResource( '/states', StateController::class);
 Route::apiResource( '/districts', DistrictController::class);
 Route::prefix( 'auth' )->group( function () {

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class JobAdd extends Model {
 	/** @use HasFactory<\Database\Factories\JobFactory> */
@@ -53,6 +54,9 @@ class JobAdd extends Model {
 			foreignPivotKey: 'job_add_id',
 			relatedPivotKey: 'doctor_id',
 		)->withPivot( [ 'status', 'application_date', 'additional_notes',] )->withTimestamps();
+	}
+	public function reviews(): MorphMany {
+		return $this->morphMany( Review::class, 'reviewable' );
 	}
 	//! casts
 	protected function casts() {

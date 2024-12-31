@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Doctor extends Model {
 	/** @use HasFactory<\Database\Factories\DoctorFactory> */
@@ -61,6 +62,10 @@ class Doctor extends Model {
 		)->withPivot( [ 'status', 'application_date', 'additional_notes',] )->withTimestamps();
 	}
 
+	public function reviews(): MorphMany {
+		return $this->morphMany( Review::class, 'reviewable' );
+	}
+
 	//! casts
 	protected function casts() {
 		return [ 
@@ -69,4 +74,5 @@ class Doctor extends Model {
 			'willing_to_relocate' => 'boolean'
 		];
 	}
+
 }
