@@ -81,7 +81,7 @@ class NotificationService extends Controller {
 				'body' => $body,
 			] )
 				->withData( [ 
-					'routeName'->$routeName,
+					'routeName' => $routeName,
 					'payload' => json_encode( $payload ),
 				] );
 			$sendReport = $this->messaging->sendMulticast( $message, $fcmTokens );
