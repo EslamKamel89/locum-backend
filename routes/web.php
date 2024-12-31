@@ -39,3 +39,11 @@ Route::middleware([AdminMiddleware::class])->prefix('admin')->name('admin.')->gr
 
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 });
+
+// Healthcare Routes
+// Route::get('/healthcare/register', [AuthController::class, 'healthcare_register'])->name('healthcare.register');
+// Route::group(['prefix' => 'healthcare'], function () {
+//     Route::get('/', function () {
+//         return view('healthcare.index');
+//     })->name('healthcare.index');
+// });
