@@ -14,6 +14,7 @@ use App\Models\JobAdd;
 use App\Models\JobApplication;
 use App\Models\JobInfo;
 use App\Models\Lang;
+use App\Models\Review;
 use App\Models\Skill;
 use App\Models\Specialty;
 use App\Models\State;
@@ -147,6 +148,7 @@ class DatabaseSeeder extends Seeder {
 			'email' => 'admin@gmail.com',
 			'password' => 'password',
 		] );
+		Review::factory( 50 )->create();
 	}
 
 	public $medicalSpecialties = [ 
