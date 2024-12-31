@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Enums\UserType;
+use App\Exceptions\NotAuthorizedException;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\District;
@@ -19,6 +20,7 @@ class AuthController extends Controller {
 			[ 
 				'email' => 'required|email',
 				'password' => 'required',
+				'fcm_token' => 'sometimes',
 			] );
 
 		if ( $validator->fails() ) {
@@ -44,6 +46,7 @@ class AuthController extends Controller {
 				'password' => 'required',
 				'state_id' => 'required|exists:states,id',
 				'district_id' => 'sometimes|exists:districts,id',
+				'fcm_token' => 'sometimes',
 				'type' => [ 'required', Rule::enum( UserType::class) ]
 			] );
 
@@ -78,9 +81,52 @@ class AuthController extends Controller {
 	}
 
 
+	public function socialAuth( Request $request ) {
+		$validator = Validator::make(
+			$request->all(),
+			[ 
+				'name' => 'required',
+				'email' => 'required|email',
+				'auth_id' => 'required',
+				'fcm_token' => 'sometimes',
+				'type' => [ 'required', Rule::enum( UserType::class) ]
+			] );
+
+		if ( $validator->fails() ) {
+			return $this->handleValidation( $validator );
+		}
+		$authId = $validator->validated()['auth_id'];
+		$email = $validator->validated()['email'];
+		$user = User::where( 'auth_id', $authId )
+			->where( 'email', $email )->first();
+		$message = 'Login Completed Successfully';
+		$t = 'Debug social Auth';
+		if ( ! $user ) {
+			$user = User::where( 'email', $email )->first();
+			$this->pr( $user, $t );
+			$this->pr( $email, $t );
+			if ( $user ) {
+				throw new NotAuthorizedException( [ 'Email Found but the credentials are not correct' ] );
+			}
+			$user = User::create( $validator->validated() );
+			$message = 'Register Completed Successfully';
+		}
+		return $this->success(
+			collect( $user )
+				->merge( [ 
+					'token' => $user->createToken( $user->email )->plainTextToken,
+					'auth_type' => 'google',
+				] ),
+			message: $message );
+	}
+
 	public function userInfo() {
 		$user = auth()->user()->load( [ 'district', 'state',] );
-
+		if ( request()->has( 'fcm_token' ) ) {
+			$user->update( [ 
+				'fcm_token' => request()->only( 'fcm_token' )['fcm_token'],
+			] );
+		}
 		if ( $user->type == 'doctor' ) {
 			$user->load( [ 
 				'doctor.doctorInfo.university',

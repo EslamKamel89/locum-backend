@@ -31,6 +31,7 @@ class HospitalDocumentController extends Controller {
 				$request->all(),
 				[ 
 					'type' => [ 'required' ],
+					'name' => [ 'required' ],
 					'file' => [ 'required', File::types( mimetypes: [ 'doc', 'pdf' ] ) ],
 				] );
 			if ( $validator->fails() ) {

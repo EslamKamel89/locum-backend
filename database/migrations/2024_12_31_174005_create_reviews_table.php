@@ -9,21 +9,20 @@ return new class extends Migration {
 	 * Run the migrations.
 	 */
 	public function up(): void {
-		Schema::table( 'users', function (Blueprint $table) {
-			// $table->dropColumn('role');
+		Schema::create( 'reviews', function (Blueprint $table) {
+			$table->id();
+			$table->foreignId( 'user_id' )->constrained()->cascadeOnDelete();
+			$table->morphs( 'reviewable' );
+			$table->string( 'content' );
+			$table->integer( 'rating' );
+			$table->timestamps();
 		} );
 	}
 
-<<<<<<< HEAD
-    /**
-=======
 	/**
->>>>>>> origin/merg
 	 * Reverse the migrations.
 	 */
 	public function down(): void {
-		Schema::table( 'users', function (Blueprint $table) {
-			//
-		} );
+		Schema::dropIfExists( 'reviews' );
 	}
 };
