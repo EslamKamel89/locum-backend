@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Facebook-like Register Page</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.4.1/dist/css/tom-select.default.min.css">
+    <link rel="stylesheet" href="{{asset('dashboard/assets/dist/js/locum.js')}}">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.1/dist/js/tom-select.complete.min.js"></script>
+
     <style>
         body {
             background-color: #f0f2f5;
@@ -35,43 +39,53 @@
 <body>
 
     <div class="register-container">
-        <h2 class="register-header">إنشاء حساب جديد</h2>
-        <form>
+
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <h2 class="register-header">Register as a Healthcare Provider</h2>
+        <form method="POST" action="{{ route('healthcare.register') }}">
+            @csrf
             <div class="mb-3">
-                <input type="text" class="form-control" placeholder="الاسم الأول" required>
+                <input type="text" class="form-control" placeholder="name" name="name" required>
             </div>
             <div class="mb-3">
-                <input type="text" class="form-control" placeholder="اسم العائلة" required>
+                <input type="email" class="form-control" placeholder="email" name="email" required>
             </div>
             <div class="mb-3">
-                <input type="email" class="form-control" placeholder="البريد الإلكتروني" required>
+                <input type="password" class="form-control" placeholder="Password" name="password" required>
             </div>
             <div class="mb-3">
-                <input type="password" class="form-control" placeholder="كلمة المرور" required>
+                <select name="state_id" class="form-control" id="state_id">
+                    <option value="">Select State</option>
+                    @foreach ($states as $state)
+                        <option value="{{ $state->id }}">{{ $state->name }}</option>
+                    @endforeach
+                </select>
             </div>
             <div class="mb-3">
-                <label for="birthday" class="form-label">تاريخ الميلاد</label>
-                <input type="date" id="birthday" class="form-control" required>
+                <select name="district_id" class="form-control" id="district_id">
+                    <option value="">Select District</option>
+                    @foreach ($districts as $district)
+                        <option value="{{ $district->id }}">{{ $district->name }}</option>
+                    @endforeach
+                </select>
             </div>
-            <div class="mb-3">
-                <label class="form-label">الجنس</label>
-                <div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="gender" id="male" value="male" required>
-                        <label class="form-check-label" for="male">ذكر</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="gender" id="female" value="female">
-                        <label class="form-check-label" for="female">أنثى</label>
-                    </div>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">التسجيل</button>
-            <p class="text-center mt-3">بالتسجيل، أنت توافق على <a href="#">الشروط والأحكام</a>.</p>
+            <button type="submit" class="btn btn-primary w-100">Register</button>
+            <a href="{{ route('healthcare.login') }}" class="btn btn-outline-facebook w-100"> Login </a>
         </form>
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>

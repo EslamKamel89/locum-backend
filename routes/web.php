@@ -10,6 +10,7 @@ use App\Http\Controllers\admin\DoctorController;
 use App\Http\Controllers\admin\JobInfoController;
 use App\Http\Controllers\admin\DistrictController;
 use App\Http\Controllers\admin\HospitalController;
+use App\Http\Controllers\hospital\HospitalController as HospitalHospitalController;
 use App\Http\Controllers\admin\JobApplicationController;
 use App\Http\Controllers\admin\SpecialtyController;
 
@@ -41,9 +42,14 @@ Route::middleware([AdminMiddleware::class])->prefix('admin')->name('admin.')->gr
 });
 
 // Healthcare Routes
-// Route::get('/healthcare/register', [AuthController::class, 'healthcare_register'])->name('healthcare.register');
-// Route::group(['prefix' => 'healthcare'], function () {
-//     Route::get('/', function () {
-//         return view('healthcare.index');
-//     })->name('healthcare.index');
-// });
+Route::get('/healthcare/register', [AuthController::class, 'healthcare_register'])->name('healthcare.create_register');
+Route::post('/healthcare/register', [AuthController::class, 'healthcare_store_register'])->name('healthcare.register');
+
+Route::get('/healthcare/login', [AuthController::class, 'healthcare_login'])->name('healthcare.login');
+Route::post('/healthcare/login', [AuthController::class, 'healthcare_store_login'])->name('healthcare.store_login');
+
+Route::prefix('healthcare')->name('healthcare.')->group(function () {
+    Route::resource('/profile', HospitalHospitalController::class);
+
+    Route::get('/logout', [AuthController::class, 'healthcare_logout'])->name('logout');
+});
