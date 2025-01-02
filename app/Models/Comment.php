@@ -58,6 +58,10 @@ class Comment extends Model {
 				function (Builder $q, string $commentableType) {
 					return $q->where( 'commentable_type', $commentableType );
 				}
+			)->when( request()->commentableId ?? null,
+				function (Builder $q, $commentableId) {
+					return $q->where( 'commentable_id', $commentableId );
+				}
 			);
 	}
 
