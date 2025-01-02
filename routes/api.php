@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\api\AuthController;
+use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\api\DistrictController;
 use App\Http\Controllers\api\DoctorController;
 use App\Http\Controllers\api\DoctorDocumentController;
@@ -80,5 +81,6 @@ Route::middleware( [ 'auth:sanctum' ] )->group( function () {
 	Route::apiResource( '/hospital-docs', HospitalDocumentController::class);
 	Route::apiResource( '/job-add', JobAddController::class); //
 	Route::apiResource( '/job-applications', JobApplicationController::class); //
+	Route::apiResource( '/comments', CommentController::class); //
 
 } );

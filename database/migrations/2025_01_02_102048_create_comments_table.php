@@ -9,12 +9,14 @@ return new class extends Migration {
 	 * Run the migrations.
 	 */
 	public function up(): void {
-		Schema::create( 'reviews', function (Blueprint $table) {
+		Schema::create( 'comments', function (Blueprint $table) {
 			$table->id();
-			$table->foreignId( 'user_id' )->constrained()->cascadeOnDelete();
-			$table->morphs( 'reviewable' );
+			$table->foreignId( 'user_id' )->constrained( 'users' )->cascadeOnDelete();
+			$table->foreignId( 'parent_id' )->nullable()->constrained( 'comments' )->cascadeOnDelete();
+			$table->morphs( 'commentable' );
 			$table->string( 'content' );
-			$table->integer( 'rating' );
+			//! Rating (for top-level comments only)
+			$table->integer( 'rating' )->nullable();
 			$table->timestamps();
 		} );
 	}
@@ -23,6 +25,6 @@ return new class extends Migration {
 	 * Reverse the migrations.
 	 */
 	public function down(): void {
-		Schema::dropIfExists( 'reviews' );
+		Schema::dropIfExists( 'comments' );
 	}
 };

@@ -27,8 +27,8 @@ class Hospital extends Model {
 	public function jobAdds(): HasMany {
 		return $this->hasMany( JobAdd::class);
 	}
-	public function reviews(): MorphMany {
-		return $this->morphMany( Review::class, 'reviewable' );
+	public function comments(): MorphMany {
+		return $this->morphMany( Comment::class, 'commentable' );
 	}
 
 }

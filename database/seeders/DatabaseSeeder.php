@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Admin;
+use App\Models\Comment;
 use App\Models\District;
 use App\Models\Doctor;
 use App\Models\DoctorDocument;
@@ -148,7 +149,78 @@ class DatabaseSeeder extends Seeder {
 			'email' => 'admin@gmail.com',
 			'password' => 'password',
 		] );
-		Review::factory( 50 )->create();
+		// Review::factory( 50 )->create();
+		$hospitals->each( function (Hospital $hospital) {
+			$parentComment = Comment::create( [ 
+				'user_id' => User::inRandomOrder()->first()->id,
+				'content' => fake()->realText( 100 ),
+				'rating' => fake()->numberBetween( 1, 5 ),
+				'commentable_id' => $hospital->id,
+				'commentable_type' => Hospital::class
+			] );
+			$nestedComment = Comment::create( [ 
+				'user_id' => User::inRandomOrder()->first()->id,
+				'parent_id' => $parentComment->id,
+				'content' => fake()->realText( 100 ),
+				'commentable_id' => $hospital->id,
+				'commentable_type' => Hospital::class
+			] );
+			$deeplyNestedComment = Comment::create( [ 
+				'user_id' => User::inRandomOrder()->first()->id,
+				'parent_id' => $nestedComment->id,
+				'content' => fake()->realText( 100 ),
+				'commentable_id' => $hospital->id,
+				'commentable_type' => Hospital::class
+			] );
+		} );
+		$doctors = Doctor::all();
+		$doctors->each( function (Doctor $doctor) {
+			$parentComment = Comment::create( [ 
+				'user_id' => User::inRandomOrder()->first()->id,
+				'content' => fake()->realText( 100 ),
+				'rating' => fake()->numberBetween( 1, 5 ),
+				'commentable_id' => $doctor->id,
+				'commentable_type' => Doctor::class
+			] );
+			$nestedComment = Comment::create( [ 
+				'user_id' => User::inRandomOrder()->first()->id,
+				'parent_id' => $parentComment->id,
+				'content' => fake()->realText( 100 ),
+				'commentable_id' => $doctor->id,
+				'commentable_type' => Doctor::class
+			] );
+			$deeplyNestedComment = Comment::create( [ 
+				'user_id' => User::inRandomOrder()->first()->id,
+				'parent_id' => $nestedComment->id,
+				'content' => fake()->realText( 100 ),
+				'commentable_id' => $doctor->id,
+				'commentable_type' => Doctor::class
+			] );
+		} );
+		$jobAdds = JobAdd::all();
+		$jobAdds->each( function (JobAdd $jobAdd) {
+			$parentComment = Comment::create( [ 
+				'user_id' => User::inRandomOrder()->first()->id,
+				'content' => fake()->realText( 100 ),
+				'rating' => fake()->numberBetween( 1, 5 ),
+				'commentable_id' => $jobAdd->id,
+				'commentable_type' => JobAdd::class
+			] );
+			$nestedComment = Comment::create( [ 
+				'user_id' => User::inRandomOrder()->first()->id,
+				'parent_id' => $parentComment->id,
+				'content' => fake()->realText( 100 ),
+				'commentable_id' => $jobAdd->id,
+				'commentable_type' => JobAdd::class
+			] );
+			$deeplyNestedComment = Comment::create( [ 
+				'user_id' => User::inRandomOrder()->first()->id,
+				'parent_id' => $nestedComment->id,
+				'content' => fake()->realText( 100 ),
+				'commentable_id' => $jobAdd->id,
+				'commentable_type' => JobAdd::class
+			] );
+		} );
 	}
 
 	public $medicalSpecialties = [ 
