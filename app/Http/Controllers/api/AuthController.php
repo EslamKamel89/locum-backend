@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Enums\AuthType;
 use App\Enums\UserType;
 use App\Exceptions\NotAuthorizedException;
 use App\Http\Controllers\Controller;
@@ -99,12 +100,12 @@ class AuthController extends Controller {
 		$email = $validator->validated()['email'];
 		$user = User::where( 'auth_id', $authId )
 			->where( 'email', $email )->first();
+		if ( $user && $user->type == 'hospital' ) {
+			throw new NotAuthorizedException( [ "Health care providers can't use the mobila app. You can use the website" ] );
+		}
 		$message = 'Login Completed Successfully';
-		$t = 'Debug social Auth';
 		if ( ! $user ) {
 			$user = User::where( 'email', $email )->first();
-			$this->pr( $user, $t );
-			$this->pr( $email, $t );
 			if ( $user ) {
 				throw new NotAuthorizedException( [ 'Email Found but the credentials are not correct' ] );
 			}

@@ -55,8 +55,8 @@ class JobAdd extends Model {
 			relatedPivotKey: 'doctor_id',
 		)->withPivot( [ 'status', 'application_date', 'additional_notes',] )->withTimestamps();
 	}
-	public function reviews(): MorphMany {
-		return $this->morphMany( Review::class, 'reviewable' );
+	public function comments(): MorphMany {
+		return $this->morphMany( Comment::class, 'commentable' );
 	}
 	//! casts
 	protected function casts() {
