@@ -42,11 +42,13 @@ Route::get( '/test',
 	} );
 Route::get( '/test2',
 	function (Request $request, Controller $controller, NotificationService $notificationService): JsonResponse {
-		JobAdd::find( 1 )->reviews()->create( [ 
-			'user_id' => 1,
-			'content' => 'some content',
-			'rating' => 2,
-		] );
+		$notificationService->sendNotifications(
+			[ "cgN8w_fLT-aZ8-93wXHKZF:APA91bGQLFav_7PW8RSXLePLDfaJwZ5IyBYj_58FOrz1p7t-9Tzo30BjBQ9Z0UHHg1UhcR62iXGiD1FVIUIa1hqOW693MgsGB7YRwidgp_E0fKMFKhCjw_Q" ],
+			'test notification laravel',
+			'hello from laravel',
+			'/doctorJobDetailsScreen',
+			[ 'id' => 1 ]
+		);
 		return $controller->success( [] );
 	} );
 Route::apiResource( '/states', StateController::class);
