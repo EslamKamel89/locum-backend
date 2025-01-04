@@ -42,7 +42,7 @@ class Comment extends Model {
 	//! global scopes
 	protected static function booted(): void {
 		static::addGlobalScope( 'children', function (Builder $builder) {
-			$builder->with( [ 'children', 'user' ] );
+			$builder->with( [ 'children', 'user' ] )->latest();
 		} );
 	}
 

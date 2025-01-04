@@ -150,120 +150,144 @@ class DatabaseSeeder extends Seeder {
 			'password' => 'password',
 		] );
 		// Review::factory( 50 )->create();
-		$hospitals->each( function (Hospital $hospital) {
-			$parentComment = Comment::create( [ 
-				'user_id' => User::inRandomOrder()->first()->id,
-				'content' => 'This is parent comment ' . fake()->realText( 50 ),
-				'rating' => fake()->numberBetween( 1, 5 ),
-				'commentable_id' => $hospital->id,
-				'commentable_type' => Hospital::class
-			] );
-			$nestedComment = Comment::create( [ 
-				'user_id' => User::inRandomOrder()->first()->id,
-				'parent_id' => $parentComment->id,
-				'content' => 'This is the reply to the parent comment ' . fake()->realText( 50 ),
-				'commentable_id' => $hospital->id,
-				'commentable_type' => Hospital::class
-			] );
-			$deeplyNestedComment = Comment::create( [ 
-				'user_id' => User::inRandomOrder()->first()->id,
-				'parent_id' => $nestedComment->id,
-				'content' => 'This is the reply to the reply ' . fake()->realText( 50 ),
-				'commentable_id' => $hospital->id,
-				'commentable_type' => Hospital::class
-			] );
-			$nestedComment = Comment::create( [ 
-				'user_id' => User::inRandomOrder()->first()->id,
-				'parent_id' => $parentComment->id,
-				'content' => 'This is the reply to the parent comment ' . fake()->realText( 50 ),
-				'commentable_id' => $hospital->id,
-				'commentable_type' => Hospital::class
-			] );
-			$deeplyNestedComment = Comment::create( [ 
-				'user_id' => User::inRandomOrder()->first()->id,
-				'parent_id' => $nestedComment->id,
-				'content' => 'This is the reply to the reply ' . fake()->realText( 50 ),
-				'commentable_id' => $hospital->id,
-				'commentable_type' => Hospital::class
-			] );
+		for ( $i = 0; $i < 10; $i++ ) {
+			$hospitals->each( function (Hospital $hospital) use ($i) {
+				Comment::create( [ 
+					'user_id' => User::inRandomOrder()->first()->id,
+					'content' => 'REVIEW With no replies: ' . fake()->realText( 50 ),
+					'rating' => fake()->numberBetween( 1, 5 ),
+					'commentable_id' => $hospital->id,
+					'commentable_type' => Hospital::class
+				] );
+				$parentComment = Comment::create( [ 
+					'user_id' => User::inRandomOrder()->first()->id,
+					'content' => 'REVIEW_' . $i . ': ' . fake()->realText( 50 ),
+					'rating' => fake()->numberBetween( 1, 5 ),
+					'commentable_id' => $hospital->id,
+					'commentable_type' => Hospital::class
+				] );
+				$nestedComment = Comment::create( [ 
+					'user_id' => User::inRandomOrder()->first()->id,
+					'parent_id' => $parentComment->id,
+					'content' => 'COMMNET_1 ON REVIEW_' . $i . ': : ' . fake()->realText( 50 ),
+					'commentable_id' => $hospital->id,
+					'commentable_type' => Hospital::class
+				] );
+				$deeplyNestedComment = Comment::create( [ 
+					'user_id' => User::inRandomOrder()->first()->id,
+					'parent_id' => $nestedComment->id,
+					'content' => 'COMMNET_2 ON COMMENT_1: ' . fake()->realText( 50 ),
+					'commentable_id' => $hospital->id,
+					'commentable_type' => Hospital::class
+				] );
+				$nestedComment = Comment::create( [ 
+					'user_id' => User::inRandomOrder()->first()->id,
+					'parent_id' => $parentComment->id,
+					'content' => 'COMMNET_3 ON REVIEW_' . $i . ': : ' . fake()->realText( 50 ),
+					'commentable_id' => $hospital->id,
+					'commentable_type' => Hospital::class
+				] );
+				$deeplyNestedComment = Comment::create( [ 
+					'user_id' => User::inRandomOrder()->first()->id,
+					'parent_id' => $nestedComment->id,
+					'content' => 'COMMNET_4 ON COMMENT_3: ' . fake()->realText( 50 ),
+					'commentable_id' => $hospital->id,
+					'commentable_type' => Hospital::class
+				] );
 
-		} );
-		$doctors = Doctor::all();
-		$doctors->each( function (Doctor $doctor) {
-			$parentComment = Comment::create( [ 
-				'user_id' => User::inRandomOrder()->first()->id,
-				'content' => 'This is parent comment ' . fake()->realText( 50 ),
-				'rating' => fake()->numberBetween( 1, 5 ),
-				'commentable_id' => $doctor->id,
-				'commentable_type' => Doctor::class
-			] );
-			$nestedComment = Comment::create( [ 
-				'user_id' => User::inRandomOrder()->first()->id,
-				'parent_id' => $parentComment->id,
-				'content' => 'This is the reply to the parent comment ' . fake()->realText( 50 ),
-				'commentable_id' => $doctor->id,
-				'commentable_type' => Doctor::class
-			] );
-			$deeplyNestedComment = Comment::create( [ 
-				'user_id' => User::inRandomOrder()->first()->id,
-				'parent_id' => $nestedComment->id,
-				'content' => 'This is the reply to the reply ' . fake()->realText( 50 ),
-				'commentable_id' => $doctor->id,
-				'commentable_type' => Doctor::class
-			] );
-			$nestedComment = Comment::create( [ 
-				'user_id' => User::inRandomOrder()->first()->id,
-				'parent_id' => $parentComment->id,
-				'content' => 'This is the reply to the parent comment ' . fake()->realText( 50 ),
-				'commentable_id' => $doctor->id,
-				'commentable_type' => Doctor::class
-			] );
-			$deeplyNestedComment = Comment::create( [ 
-				'user_id' => User::inRandomOrder()->first()->id,
-				'parent_id' => $nestedComment->id,
-				'content' => 'This is the reply to the reply ' . fake()->realText( 50 ),
-				'commentable_id' => $doctor->id,
-				'commentable_type' => Doctor::class
-			] );
-		} );
-		$jobAdds = JobAdd::all();
-		$jobAdds->each( function (JobAdd $jobAdd) {
-			$parentComment = Comment::create( [ 
-				'user_id' => User::inRandomOrder()->first()->id,
-				'content' => 'This is parent comment ' . fake()->realText( 50 ),
-				'rating' => fake()->numberBetween( 1, 5 ),
-				'commentable_id' => $jobAdd->id,
-				'commentable_type' => JobAdd::class
-			] );
-			$nestedComment = Comment::create( [ 
-				'user_id' => User::inRandomOrder()->first()->id,
-				'parent_id' => $parentComment->id,
-				'content' => 'This is the reply to the parent comment ' . fake()->realText( 50 ),
-				'commentable_id' => $jobAdd->id,
-				'commentable_type' => JobAdd::class
-			] );
-			$deeplyNestedComment = Comment::create( [ 
-				'user_id' => User::inRandomOrder()->first()->id,
-				'parent_id' => $nestedComment->id,
-				'content' => 'This is the reply to the reply ' . fake()->realText( 50 ),
-				'commentable_id' => $jobAdd->id,
-				'commentable_type' => JobAdd::class
-			] );
-			$nestedComment = Comment::create( [ 
-				'user_id' => User::inRandomOrder()->first()->id,
-				'parent_id' => $parentComment->id,
-				'content' => 'This is the reply to the parent comment ' . fake()->realText( 50 ),
-				'commentable_id' => $jobAdd->id,
-				'commentable_type' => JobAdd::class
-			] );
-			$deeplyNestedComment = Comment::create( [ 
-				'user_id' => User::inRandomOrder()->first()->id,
-				'parent_id' => $nestedComment->id,
-				'content' => 'This is the reply to the reply ' . fake()->realText( 50 ),
-				'commentable_id' => $jobAdd->id,
-				'commentable_type' => JobAdd::class
-			] );
-		} );
+			} );
+			$doctors = Doctor::all();
+			$doctors->each( function (Doctor $doctor) use ($i) {
+				Comment::create( [ 
+					'user_id' => User::inRandomOrder()->first()->id,
+					'content' => 'REVIEW With no replies: ' . fake()->realText( 50 ),
+					'rating' => fake()->numberBetween( 1, 5 ),
+					'commentable_id' => $doctor->id,
+					'commentable_type' => Doctor::class
+				] );
+				$parentComment = Comment::create( [ 
+					'user_id' => User::inRandomOrder()->first()->id,
+					'content' => 'REVIEW_' . $i . ': : ' . fake()->realText( 50 ),
+					'rating' => fake()->numberBetween( 1, 5 ),
+					'commentable_id' => $doctor->id,
+					'commentable_type' => Doctor::class
+				] );
+				$nestedComment = Comment::create( [ 
+					'user_id' => User::inRandomOrder()->first()->id,
+					'parent_id' => $parentComment->id,
+					'content' => 'COMMNET_1 ON REVIEW_' . $i . ': : ' . fake()->realText( 50 ),
+					'commentable_id' => $doctor->id,
+					'commentable_type' => Doctor::class
+				] );
+				$deeplyNestedComment = Comment::create( [ 
+					'user_id' => User::inRandomOrder()->first()->id,
+					'parent_id' => $nestedComment->id,
+					'content' => 'COMMNET_2 ON COMMENT_1: ' . fake()->realText( 50 ),
+					'commentable_id' => $doctor->id,
+					'commentable_type' => Doctor::class
+				] );
+				$nestedComment = Comment::create( [ 
+					'user_id' => User::inRandomOrder()->first()->id,
+					'parent_id' => $parentComment->id,
+					'content' => 'COMMNET_3 ON REVIEW_' . $i . ': : ' . fake()->realText( 50 ),
+					'commentable_id' => $doctor->id,
+					'commentable_type' => Doctor::class
+				] );
+				$deeplyNestedComment = Comment::create( [ 
+					'user_id' => User::inRandomOrder()->first()->id,
+					'parent_id' => $nestedComment->id,
+					'content' => 'COMMNET_4 ON COMMENT_3: ' . fake()->realText( 50 ),
+					'commentable_id' => $doctor->id,
+					'commentable_type' => Doctor::class
+				] );
+			} );
+			$jobAdds = JobAdd::all();
+			$jobAdds->each( function (JobAdd $jobAdd) use ($i) {
+				Comment::create( [ 
+					'user_id' => User::inRandomOrder()->first()->id,
+					'content' => 'REVIEW With no replies: ' . fake()->realText( 50 ),
+					'rating' => fake()->numberBetween( 1, 5 ),
+					'commentable_id' => $jobAdd->id,
+					'commentable_type' => JobAdd::class
+				] );
+				$parentComment = Comment::create( [ 
+					'user_id' => User::inRandomOrder()->first()->id,
+					'content' => 'REVIEW_' . $i . ': : ' . fake()->realText( 50 ),
+					'rating' => fake()->numberBetween( 1, 5 ),
+					'commentable_id' => $jobAdd->id,
+					'commentable_type' => JobAdd::class
+				] );
+				$nestedComment = Comment::create( [ 
+					'user_id' => User::inRandomOrder()->first()->id,
+					'parent_id' => $parentComment->id,
+					'content' => 'COMMNET_1 ON REVIEW_' . $i . ': : ' . fake()->realText( 50 ),
+					'commentable_id' => $jobAdd->id,
+					'commentable_type' => JobAdd::class
+				] );
+				$deeplyNestedComment = Comment::create( [ 
+					'user_id' => User::inRandomOrder()->first()->id,
+					'parent_id' => $nestedComment->id,
+					'content' => 'COMMNET_2 ON COMMENT_1: ' . fake()->realText( 50 ),
+					'commentable_id' => $jobAdd->id,
+					'commentable_type' => JobAdd::class
+				] );
+				$nestedComment = Comment::create( [ 
+					'user_id' => User::inRandomOrder()->first()->id,
+					'parent_id' => $parentComment->id,
+					'content' => 'COMMNET_3 ON REVIEW_' . $i . ': : ' . fake()->realText( 50 ),
+					'commentable_id' => $jobAdd->id,
+					'commentable_type' => JobAdd::class
+				] );
+				$deeplyNestedComment = Comment::create( [ 
+					'user_id' => User::inRandomOrder()->first()->id,
+					'parent_id' => $nestedComment->id,
+					'content' => 'COMMNET_4 ON COMMENT_3: ' . fake()->realText( 50 ),
+					'commentable_id' => $jobAdd->id,
+					'commentable_type' => JobAdd::class
+				] );
+			} );
+		}
+
 	}
 
 	public $medicalSpecialties = [ 

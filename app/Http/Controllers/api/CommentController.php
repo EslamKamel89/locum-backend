@@ -30,13 +30,12 @@ class CommentController extends Controller {
 	public function store( Request $request ) {
 		try {
 			$rules = collect( [ 
-				'user_id' => [ 'required', 'exists:users,id' ],
+				// 'user_id' => [ 'required', 'exists:users,id' ],
 				'content' => [ 'required', 'max:255' ],
 				'commentable_id' => [ 'required', 'integer' ],
 				'commentable_type' => [ 'required',],
 			] );
 			if ( $request->has( 'parent_id' ) ) {
-				$this->pr( 'I am here' );
 				$rules = $rules->merge( [ 
 					'parent_id' => [ 'required', 'exists:comments,id' ],
 				] );
@@ -56,7 +55,9 @@ class CommentController extends Controller {
 			}
 			$validated = $validator->validated();
 			$validated['commentable_type'] = Comment::getModelNamespace( $validated['commentable_type'] );
-			$comment = Comment::create( $validated );
+			$comment = Comment::create( collect( $validated )
+				->merge( [ 'user_id' => auth()->id() ] )
+				->toArray() );
 			return $this->success( new CommentResource( $comment ) );
 		} catch (\Exception $e) {
 			return $this->handleException( $e );
