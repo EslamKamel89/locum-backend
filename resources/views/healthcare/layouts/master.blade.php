@@ -1,53 +1,98 @@
 <!DOCTYPE html>
-<html dir="ltr" lang="en">
+<html lang="en">
 
-@include( 'admin.includes.head' )
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Profile Page</title>
+    <style>
+        .cover-photo {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
 
-<body>
-    <!-- ============================================================== -->
-    <!-- Preloader - style you can find in spinners.css -->
-    <!-- ============================================================== -->
-    <div class="preloader">
-        <div class="lds-ripple">
-            <div class="lds-pos"></div>
-            <div class="lds-pos"></div>
-        </div>
-    </div>
-    <!-- ============================================================== -->
-    <!-- Main wrapper - style you can find in pages.scss -->
-    <!-- ============================================================== -->
-    <div id="main-wrapper">
-        <!-- ============================================================== -->
-        <!-- Topbar header - style you can find in pages.scss -->
-        <!-- ============================================================== -->
-        @include( 'admin.includes.header' )
-        <!-- ============================================================== -->
-        <!-- End Topbar header -->
-        <!-- ============================================================== -->
-        <!-- ============================================================== -->
-        <!-- Left Sidebar - style you can find in sidebar.scss  -->
-        <!-- ============================================================== -->
-        @include( 'admin.includes.left-sidebar' )
-        <!-- ============================================================== -->
-        <!-- End Left Sidebar - style you can find in sidebar.scss  -->
-        <!-- ============================================================== -->
-        <!-- ============================================================== -->
-        <!-- Page wrapper  -->
-        <!-- ============================================================== -->
-        <div class="page-wrapper">
-            <!-- ============================================================== -->
-            <!-- Bread crumb and right sidebar toggle -->
-            <!-- ============================================================== -->
+        .profile-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid white;
+            position: absolute;
+            top: 200px;
+            left: 20px;
+        }
 
-            <div class="container-fluid">
-                @yield( 'content' )
+        .profile-header {
+            position: relative;
+            margin-bottom: 50px;
+        }
+
+        .profile-info {
+            padding: 10px 20px;
+        }
+
+        .post {
+            background: #fff;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-primary">
+        <div class="container">
+            <a class="navbar-brand text-white" href="#">Locum Health</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{{ route('healthcare.logout') }}">Logout</a>
+                    </li>
+                </ul>
             </div>
         </div>
-        <!-- ============================================================== -->
-        <!-- End Page wrapper  -->
-        <!-- ============================================================== -->
+    </nav>
+
+    <div class="profile-header bg-white shadow">
+        <!-- Cover Photo -->
+        <img src="{{ asset('dashboard/assets/images/healthcare-cover.jpg') }}" alt="Cover Photo" class="cover-photo">
+        <!-- Profile Picture -->
+        <img src="{{ asset($hospital->photo) }}"
+            onerror="this.onerror=null; this.src='{{ asset('dashboard/assets/images/users/1.jpg') }}'"
+            alt="Profile Photo" class="profile-photo">
+        <!-- Profile Info -->
+        <div class="profile-info">
+            <h2 class="mt-5">{{ Auth::user()->name }}</h2>
+            <p class="text-muted">{{ Auth::user()->email }}</p>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="setting-tab" data-bs-toggle="tab" data-bs-target="#setting"
+                    type="button" role="tab" aria-controls="setting" aria-selected="true">Setting</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="job-tab" data-bs-toggle="tab" data-bs-target="#job" type="button"
+                    role="tab" aria-controls="job" aria-selected="false">Job Applications</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="adds-tab" data-bs-toggle="tab" data-bs-target="#adds" type="button"
+                    role="tab" aria-controls="adds" aria-selected="false">Job Adds</button>
+            </li>
+        </ul>
     </div>
-    @include( 'admin.includes.scripts' )
+
+    @yield('content')
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
