@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Facebook-like Register Page</title>
+    <title>Healthcare - Register</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.4.1/dist/css/tom-select.default.min.css">
     <link rel="stylesheet" href="{{asset('dashboard/assets/dist/js/locum.js')}}">
@@ -50,8 +50,8 @@
             </div>
         @endif
 
-        <h2 class="register-header">Register as a Healthcare Provider</h2>
-        <form method="POST" action="{{ route('healthcare.register') }}">
+        <h2 class="register-header">Register as Healthcare Provider</h2>
+        <form method="POST" action="{{ route('healthcare.register.post') }}">
             @csrf
             <div class="mb-3">
                 <input type="text" class="form-control" placeholder="name" name="name" required>

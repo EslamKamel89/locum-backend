@@ -51,7 +51,7 @@
         @endif
 
         <h2 class="register-header">Register as a Healthcare Provider</h2>
-        <form method="POST" action="{{ route('healthcare.store_login') }}">
+        <form method="POST" action="{{ route('healthcare.login.post') }}">
             @csrf
             <div class="mb-3">
                 <input type="email" class="form-control" placeholder="email" name="email" required>

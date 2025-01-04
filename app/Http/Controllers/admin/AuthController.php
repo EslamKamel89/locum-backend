@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Validator;
 class AuthController extends Controller
 {
 
+    //  Admin Auth
     public function loginForm()
     {
         return view('admin.auth.login');
@@ -41,20 +42,19 @@ class AuthController extends Controller
         }
     }
 
-
-    // Healthcare Register
-    public function healthcare_register()
+    public function logout()
     {
-        $states = State::all();
-        $districts = District::all();
-        return view('healthcare.auth.register', get_defined_vars());
+        Auth::guard('admin')->logout();
+        return redirect()->route('admin.login');
     }
-    public function healthcare_login()
+
+    // Healthcare Auth
+    public function healthcare_loginForm()
     {
         return view('healthcare.auth.login');
     }
 
-    public function healthcare_store_login(Request $request)
+    public function healthcare_login(Request $request)
     {
         try {
             $credentials = $request->only('email', 'password');
@@ -77,7 +77,15 @@ class AuthController extends Controller
         return view('healthcare.auth.login');
     }
 
-    public function healthcare_store_register(Request $request)
+    // Healthcare Register
+    public function healthcare_registerForm()
+    {
+        $states = State::all();
+        $districts = District::all();
+        return view('healthcare.auth.register', get_defined_vars());
+    }
+
+    public function healthcare_register(Request $request)
     {
         try {
             $validator = Validator::make(
@@ -101,6 +109,12 @@ class AuthController extends Controller
         } catch (Exception $e) {
             return redirect()->back()->withErrors($e->getMessage());
         }
+    }
+
+    public function healthcare_logout()
+    {
+        Auth::logout();
+        return redirect()->route('healthcare.login');
     }
 
     public function register(Request $request)
@@ -148,7 +162,6 @@ class AuthController extends Controller
         return ['fails' => false];
 
     }
-
 
     public function userInfo()
     {
@@ -208,15 +221,4 @@ class AuthController extends Controller
         }
     }
 
-    public function logout()
-    {
-        Auth::guard('admin')->logout();
-        return redirect()->route('admin.login');
-    }
-
-    public function healthcare_logout()
-    {
-        Auth::logout();
-        return redirect()->route('healthcare.login');
-    }
 }

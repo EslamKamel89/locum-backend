@@ -2,67 +2,97 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Healthcare</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Profile Page</title>
+    <style>
+        .cover-photo {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+        .profile-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid white;
+            position: absolute;
+            top: 200px;
+            left: 20px;
+        }
+
+        .profile-header {
+            position: relative;
+            margin-bottom: 50px;
+        }
+
+        .profile-info {
+            padding: 10px 20px;
+        }
+
+        .post {
+            background: #fff;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 </head>
 
-<body>
-    <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container">
-                <a class="navbar-brand" href="{{ url('/healthcare/profile') }}">
-                    Healthcare
-                </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse"
-                    data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                    aria-label="{{ __('Toggle navigation') }}">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav mr-auto">
-
-                    </ul>
-
-                    <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ml-auto">
-                        <!-- Authentication Links -->
-                        <li class="nav-item dropdown">
-                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                {{ Auth::user()->name }} <span class="caret"></span>
-                            </a>
-
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ route('healthcare.logout') }}"
-                                    onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                    {{ __('Logout') }}
-                                </a>
-
-                                <form id="logout-form" action="{{ route('healthcare.logout') }}" method="POST"
-                                    style="display: none;">
-                                    @csrf
-                                </form>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-primary">
+        <div class="container">
+            <a class="navbar-brand text-white" href="#">Locum Health</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{{ route('healthcare.logout') }}">Logout</a>
+                    </li>
+                </ul>
             </div>
-        </nav>
+        </div>
+    </nav>
 
-        <main class="py-4">
-            @yield('content')
-        </main>
+    <div class="profile-header bg-white shadow">
+        <!-- Cover Photo -->
+        <img src="{{ asset('dashboard/assets/images/healthcare-cover.jpg') }}" alt="Cover Photo" class="cover-photo">
+        <!-- Profile Picture -->
+        <img src="{{ asset($hospital->photo) }}"
+            onerror="this.onerror=null; this.src='{{ asset('dashboard/assets/images/users/1.jpg') }}'"
+            alt="Profile Photo" class="profile-photo">
+        <!-- Profile Info -->
+        <div class="profile-info">
+            <h2 class="mt-5">{{ Auth::user()->name }}</h2>
+            <p class="text-muted">{{ Auth::user()->email }}</p>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="setting-tab" data-bs-toggle="tab" data-bs-target="#setting"
+                    type="button" role="tab" aria-controls="setting" aria-selected="true">Setting</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="job-tab" data-bs-toggle="tab" data-bs-target="#job" type="button"
+                    role="tab" aria-controls="job" aria-selected="false">Job Applications</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="adds-tab" data-bs-toggle="tab" data-bs-target="#adds" type="button"
+                    role="tab" aria-controls="adds" aria-selected="false">Job Adds</button>
+            </li>
+        </ul>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
-        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    @yield('content')
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
