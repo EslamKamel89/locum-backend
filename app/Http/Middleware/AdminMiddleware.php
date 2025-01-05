@@ -17,10 +17,8 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next)
     {
         if (Auth::guard('admin')->check()) {
-            // dd("You are admin");
             return $next($request);
         }
-        // dd("You are not admin");
 
         return redirect('/admin/login');
     }

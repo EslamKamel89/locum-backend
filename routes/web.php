@@ -22,6 +22,17 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// General Routes
+Route::resource('/states', StateController::class);
+Route::resource('/districts', DistrictController::class);
+Route::resource('/skills', SkillController::class);
+Route::resource('/langs', LangController::class);
+Route::resource('/specialties', SpecialtyController::class);
+Route::resource('/job_infos', JobInfoController::class);
+
+Route::resource('/doctors', DoctorController::class);
+Route::resource('/hospitals', HospitalController::class);
+Route::resource('/jobApplications', JobApplicationController::class);
 
 // Dashboard Routes
 Route::get('/admin/login', [AuthController::class, 'loginForm'])->name('admin.login');

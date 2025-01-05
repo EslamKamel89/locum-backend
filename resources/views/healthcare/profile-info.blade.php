@@ -4,7 +4,7 @@
         <div class="card-body">
             {{-- Sub header --}}
             <h5 class="card-title">User Information</h5>
-            <form action="{{ route('healthcare.update', Auth::user()->id) }}" method="post">
+            <form action="{{ route('hospitals.update', Auth::user()->id) }}" method="post">
                 @csrf
                 @method('PUT')
                 <div class="row">
@@ -98,11 +98,11 @@
                         <textarea class="form-control" id="overview" rows="5" name="overview" placeholder="overview">{{ $hospital->overview }}</textarea>
                     </div>
                 </div>
+                <div class="fixed-bottom p-3 bg-white border-top shadow">
+                    <button type="submit" class="btn btn-primary btn-lg w-100">Save</button>
+                </div>
             </form>
         </div>
-    </div>
-    <div class="fixed-bottom p-3 bg-white border-top shadow">
-        <button type="submit" class="btn btn-primary btn-lg w-100">Save</button>
     </div>
 </div>
 
