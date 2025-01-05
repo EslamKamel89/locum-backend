@@ -1,4 +1,4 @@
-<div class="mt-0 tab-pane fade show active" id="setting" role="tabpanel" aria-labelledby="setting-tab">
+<div class="tab-pane fade show active " id="setting" role="tabpanel" aria-labelledby="setting-tab">
     <div class="mb-4 card" style="margin-bottom: 6rem !important">
         <div class="text-white card-header bg-primary">Hospital Information</div>
         <div class="card-body">

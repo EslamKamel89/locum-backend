@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
     <title>Profile Page</title>
     <style>
         .cover-photo {
@@ -43,56 +45,65 @@
 </head>
 
 <body class="bg-light">
-    <nav class="navbar navbar-expand-lg navbar-light bg-primary">
-        <div class="container">
-            <a class="navbar-brand text-white" href="#">Locum Health</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="{{ route('healthcare.logout') }}">Logout</a>
-                    </li>
-                </ul>
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg navbar-light bg-primary">
+            <div class="container">
+                <a class="text-white navbar-brand" href="#">Locum Health</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="ml-auto navbar-nav">
+                        <li class="nav-item">
+                            <a class="text-white nav-link" href="{{ route('healthcare.logout') }}">Logout</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
 
-    <div class="profile-header bg-white shadow">
-        <!-- Cover Photo -->
-        <img src="{{ asset('dashboard/assets/images/healthcare-cover.jpg') }}" alt="Cover Photo" class="cover-photo">
-        <!-- Profile Picture -->
-        <img src="{{ asset($hospital->photo) }}"
-            onerror="this.onerror=null; this.src='{{ asset('dashboard/assets/images/users/1.jpg') }}'"
-            alt="Profile Photo" class="profile-photo">
-        <!-- Profile Info -->
-        <div class="profile-info">
-            <h2 class="mt-5">{{ Auth::user()->name }}</h2>
-            <p class="text-muted">{{ Auth::user()->email }}</p>
+        <div class="bg-white shadow profile-header">
+            <div class="row">
+                <!-- Cover Photo -->
+                <img src="{{ asset('dashboard/assets/images/healthcare-cover.jpg') }}" alt="Cover Photo"
+                    class="cover-photo">
+                <!-- Profile Picture -->
+                <img src="{{ asset($hospital->photo) }}"
+                    onerror="this.onerror=null; this.src='{{ asset('dashboard/assets/images/users/1.jpg') }}'"
+                    alt="Profile Photo" class="profile-photo">
+                <!-- Profile Info -->
+            </div>
+            <div class="row">
+                <div class="profile-info col-md-10">
+                    <h2 class="mt-5">Hospital Jobs - Healthcare Jobs</h2>
+                    <p class="text-muted">Hospital Jobs & Healthcare Vacancies in Dubai UAE and Across Worldwide -Visit:
+                        www.ampmlocum.com</p>
+                    <a href="https://maps.app.goo.gl/Ta8JavFqLWw1Cuuq8" class="text-muted"><i
+                            class="bi bi-geo-alt"></i>2083
+                        43rd Hwy S
+                        Harrison, Arkansas(AR), 72601</a>
+                    <div class="mt-2">
+                        <button class="px-5 border border-muted btn btn-primary rounded-3 font-weight-bold">
+                            <i class="bi bi-plus"></i> Post Job
+                        </button>
+
+                        <button class="border border-muted btn btn-muted rounded-circle ">
+                            <i class="bi bi-three-dots-vertical text-muted"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+            @include('healthcare.includes.header-nav')
         </div>
 
-        <!-- Tabs Navigation -->
-        <ul class="nav nav-tabs" id="myTab" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="setting-tab" data-bs-toggle="tab" data-bs-target="#setting"
-                    type="button" role="tab" aria-controls="setting" aria-selected="true">Setting</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="job-tab" data-bs-toggle="tab" data-bs-target="#job" type="button"
-                    role="tab" aria-controls="job" aria-selected="false">Job Applications</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="adds-tab" data-bs-toggle="tab" data-bs-target="#adds" type="button"
-                    role="tab" aria-controls="adds" aria-selected="false">Job Adds</button>
-            </li>
-        </ul>
+        @yield('content')
+
     </div>
 
-    @yield('content')
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>

@@ -1,6 +1,6 @@
-<div class="mt-0 tab-pane fade show active" id="setting" role="tabpanel" aria-labelledby="setting-tab">
+<div class="mt-0 tab-pane fade" id="info" role="tabpanel" aria-labelledby="setting-tab">
     <div class="mb-4 card" style="margin-bottom: 6rem !important">
-        <div class="text-white card-header bg-primary">Hospital Information</div>
+        <div class="text-white card-header bg-primary">Hospital info</div>
         <div class="card-body">
             {{-- Sub header --}}
             <h5 class="card-title">User Information</h5>
