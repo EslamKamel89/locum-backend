@@ -16,15 +16,12 @@ class HealthcareMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // تحقق من تسجيل دخول المستخدم
         if (auth()->check()) {
-            // تحقق من نوع المستخدم
             if (auth()->user()->type === 'hospital') {
                 return $next($request);
             }
         }
 
-        // إعادة التوجيه إلى صفحة تسجيل الدخول
         return redirect()->route('healthcare.login')->with('error', 'You must be a hospital to access this page.');
     }
 }
