@@ -44,7 +44,7 @@
     </style>
 </head>
 
-<body class="bg-light">
+<body class="bg-light" id="captureDiv">
     <div class="container-fluid">
         <nav class="navbar navbar-expand-lg navbar-light bg-primary">
             <div class="container">
@@ -76,7 +76,7 @@
             </div>
             <div class="row">
                 <div class="profile-info col-md-10">
-                    <h2 class="mt-5">Hospital Jobs - Healthcare Jobs</h2>
+                    <h2 class="mt-5">Hospital Jobs - Healthcare Jobs <a href=""></a></h2>
                     <p class="text-muted">Hospital Jobs & Healthcare Vacancies in Dubai UAE and Across Worldwide -Visit:
                         www.ampmlocum.com</p>
                     <a href="https://maps.app.goo.gl/Ta8JavFqLWw1Cuuq8" class="text-muted"><i
@@ -84,7 +84,8 @@
                         43rd Hwy S
                         Harrison, Arkansas(AR), 72601</a>
                     <div class="mt-2">
-                        <button class="px-5 border border-muted btn btn-primary rounded-3 font-weight-bold">
+                        <button type="button" class="px-5 border border-muted btn btn-primary rounded-3 font-weight-bold" data-bs-toggle="modal" data-bs-target="#details">
+
                             <i class="bi bi-plus"></i> Post Job
                         </button>
 
@@ -100,8 +101,31 @@
 
         @yield('content')
 
-    </div>
+     {{-- Job Detail  --}}
 
+             @include('healthcare.modals.job-detail')
+             @include('healthcare.modals.job-compensation')
+             @include('healthcare.modals.job-requirements')
+             @include('healthcare.modals.job-type')
+             @include('healthcare.modals.job-additional')
+
+     {{-- /Job Detail --}}
+
+    </div>
+    <button id="downloadBtn">Capture and Download</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            var element = document.getElementById('captureDiv');
+            html2canvas(element).then(function(canvas) {
+                var link = document.createElement('a');
+                link.download = 'captured-image.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>

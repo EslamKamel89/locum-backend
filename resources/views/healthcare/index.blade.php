@@ -25,34 +25,27 @@
             </div> --}}
                 {{-- @include('healthcare.profile-info')
             @include('healthcare.job-applications') --}}
-            @include('healthcare.tabs.home')
-            @include('healthcare.tabs.about')
-            @include('healthcare.tabs.jobs')
-            @include('healthcare.tabs.reviews')
-            @include('healthcare.tabs.info')
+            @include('healthcare.pages.dashboard')
+            @include('healthcare.pages.analytics')
+            @include('healthcare.pages.activity')
+            @include('healthcare.pages.feed')
+            @include('healthcare.pages.inbox')
+            @include('healthcare.pages.edit')
+            @include('healthcare.pages.jobs')
+            @include('healthcare.pages.posts')
             </div>
         </div>
         <div class="col-md-3">
             <div class="my-2 card w-100" style="">
-                <img src="{{ asset('web/images/wanted.jpg') }}" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Surgery</h5>
+                <div class="card-body row">
+                    <h5 class="card-title col-md-10">Profile Language</h5>
+                    <a href="#" class="btn btn-muted col-md-2"><i class="bi bi-pencil"></i></a>
                     <p class="card-text">
-                        Provide temporary medical coverage for shifts at our clinic/hospital. Responsibilities include
-                        patient consultations, diagnosis, treatment, and maintaining patient records.</p>
-                    <a href="#" class="btn btn-primary">Apply</a>
+                        English</p>
+
                 </div>
             </div>
-            <div class="my-2 card w-100" style="">
-                <img src="{{ asset('web/images/wanted.jpg') }}" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Surgery</h5>
-                    <p class="card-text">
-                        Provide temporary medical coverage for shifts at our clinic/hospital. Responsibilities include
-                        patient consultations, diagnosis, treatment, and maintaining patient records.</p>
-                    <a href="#" class="btn btn-primary">Apply</a>
-                </div>
-            </div>
+
         </div>
     </div>
 @endsection
