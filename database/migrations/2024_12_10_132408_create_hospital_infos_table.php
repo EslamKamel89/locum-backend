@@ -17,6 +17,14 @@ return new class extends Migration {
 			$table->date( 'license_issue_date' )->nullable();
 			$table->date( 'license_expiry_date' )->nullable();
 			$table->string( 'operating_hours' )->nullable();
+			//! new column added to the database
+			$table->string( 'staffing_levels' )->nullable();
+			$table->json( 'services_offered' )->nullable();
+			$table->json( 'notifcation_preferences' )->nullable();
+			$table->string( 'feedback_method' )->nullable();
+			$table->string( 'general_policy' )->nullable();
+			$table->string( 'emergency_policy' )->nullable();
+			$table->string( 'affiliations' )->nullable();
 			$table->timestamps();
 		} );
 	}

@@ -26,6 +26,8 @@ return new class extends Migration {
 			$table->text( 'overview' )->nullable();
 			$table->string( 'photo' )->nullable();
 
+
+
 			$table->timestamps();
 		} );
 	}

@@ -20,6 +20,8 @@ class HospitalInfo extends Model {
 		return [ 
 			'license_issue_date' => 'datetime:Y-m-d',
 			'license_expiry_date' => 'datetime:Y-m-d',
+			'services_offered' => 'array',
+			'notifcation_preferences' => 'array',
 		];
 	}
 }

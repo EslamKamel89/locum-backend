@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api;
 use App\Exceptions\NotAuthorizedException;
 use App\Http\Resources\HospitalResource;
 use App\Models\Hospital;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -87,18 +88,15 @@ class HospitalController extends Controller {
 		}
 	}
 
-	/**
-	 * Display the specified resource.
-	 */
+
 	public function show( string $id ) {
-		try {
-			$hospital = Hospital::findOrFail( $id );
-			$hospital->Load( [ 'user', "hospitalInfo", "hospitalDocuments", "jobAdds" ] );
-			return $this->success( new HospitalResource( $hospital ) );
-		} catch (\Exception $e) {
-			return $this->handleException( $e );
-		}
+		$hospital = Hospital::findOrFail( $id );
+		$user = $hospital->user;
+		$user
+			->load( [ 'district', 'state', 'hospital.hospitalInfo', 'hospital.hospitalDocuments',] );
+		return $this->success( $user );
 	}
+
 
 
 	/**
