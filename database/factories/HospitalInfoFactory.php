@@ -21,6 +21,34 @@ class HospitalInfoFactory extends Factory {
 			'license_issue_date' => fake()->dateTimeBetween( '-40 years', '-20 years' ),
 			'license_expiry_date' => fake()->dateTimeBetween( '-40 years', '-20 years' ),
 			'operating_hours' => '24HR',
+			'staffing_levels' => fake()->realTextBetween( 50, 100 ),
+			'services_offered' => $this->services,
+			'notifcation_preferences' => $this->preferences,
+			'feedback_method' => fake()->realTextBetween( 50, 100 ),
+			'general_policy' => fake()->realTextBetween( 50, 100 ),
+			'emergency_policy' => fake()->realTextBetween( 50, 100 ),
+			'affiliations' => fake()->realTextBetween( 50, 100 ),
 		];
 	}
+	public $services = [ 
+		"Emergency Care",
+		"Outpatient Department (OPD)",
+		"Inpatient Care",
+		"Intensive Care Unit (ICU)",
+		"Maternity Services",
+		"Surgery",
+		"Laboratory and Diagnostic Services",
+		"Pharmacy",
+		"Specialty Services",
+		"Rehabilitation Services" ]
+	;
+	public $preferences =
+		[ "Email Notifications",
+			"SMS Notifications",
+			"Phone Call Notifications",
+			"Push Notifications",
+			"In-App Messages" ]
+	;
+
+
 }
