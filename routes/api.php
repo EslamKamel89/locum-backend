@@ -32,8 +32,14 @@ Route::get( '/user', function (Request $request) {
 
 Route::get( '/test',
 	function (Request $request, Controller $controller, NotificationService $notificationService): JsonResponse {
+		$email = $request->email;
+		$userId = null;
+		if ( $email ) {
+			$user = User::where( 'email', $email )->first();
+			$userId = $user?->id;
+		}
 		$notificationService->sendNotification(
-			101,
+			$userId ?? 101,
 			'test notification laravel',
 			'hello from laravel',
 			'/doctorJobDetailsScreen',
