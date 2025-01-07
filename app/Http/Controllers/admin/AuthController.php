@@ -66,7 +66,7 @@ class AuthController extends Controller
 
             if (Hash::check($credentials['password'], $user->password)) {
                 Auth::login($user);
-                return redirect()->route('healthcare.profile.index');
+                return redirect()->route('healthcare.index');
             }
             else {
                 return back()->withErrors(['email' => 'Invalid credentials']);
@@ -74,7 +74,6 @@ class AuthController extends Controller
         } catch (Exception $e) {
             return $this->handleException($e);
         }
-        return view('healthcare.auth.login');
     }
 
     // Healthcare Register
