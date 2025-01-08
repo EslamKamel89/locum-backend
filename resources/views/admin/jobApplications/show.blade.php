@@ -110,7 +110,7 @@
                 <small class="text-muted p-t-30 db">overview</small>
                 <h6>{{ $jobApplication?->jobAdd?->hospital?->overview }}</h6>
 
-                <hr>
+                {{-- <hr>
                 <h4 class="m-t-10 m-b-10">Hospital Documents</h4>
 
                 <table class="table">
@@ -130,7 +130,7 @@
                             </tr>
                         @endforeach
                     </tbody>
-                </table>
+                </table> --}}
 
             </div>
 
