@@ -31,7 +31,7 @@ class DoctorDocumentController extends Controller {
 		try {
 			$validator = Validator::make(
 				$request->all(),
-				[ 
+				[
 					'type' => [ 'required' ],
 					'name' => [ 'required' ],
 					'file' => [ 'required', File::types( mimetypes: [ 'doc', 'pdf' ] ) ],
@@ -81,7 +81,7 @@ class DoctorDocumentController extends Controller {
 			$this->checkResourceOwner( $doctorDocument->doctor->user->id );
 			$validator = Validator::make(
 				$request->all(),
-				[ 
+				[
 					'type' => [ 'sometimes' ],
 				] );
 			if ( $validator->fails() ) {
@@ -114,7 +114,7 @@ class DoctorDocumentController extends Controller {
 			$doctorDocument = DoctorDocument::findOrFail( $id );
 			$validator = Validator::make(
 				$request->all(),
-				[ 
+				[
 					'type' => [ 'required' ],
 					'file' => [ 'required', File::types( mimetypes: [ 'doc', 'pdf' ] ) ],
 				] );
