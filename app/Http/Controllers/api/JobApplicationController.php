@@ -15,7 +15,10 @@ class JobApplicationController extends Controller {
 	 * Display a listing of the resource.
 	 */
 	public function index() {
+		if ( ! auth()->user()->doctor ) {
+			throw new NotAuthorizedException( [ "Please complete Your profile " ] );
 
+		}
 		$jobApplications = JobApplication::with( [ 'jobAdd.specialty', 'jobAdd.jobInfo' ] )
 			->where( 'doctor_id', auth()->user()->doctor->id )
 			->orderBy( 'created_at', 'desc' )
@@ -95,7 +98,7 @@ class JobApplicationController extends Controller {
 		if ( auth()->user()->type !== 'doctor' )
 			throw new NotAuthorizedException( [ "This user is not signed as a health care professional" ] );
 		if ( ! auth()->user()->doctor )
-			throw new NotAuthorizedException( [ "This health care professionl didn't complete his basic information" ] );
+			throw new NotAuthorizedException( [ "Please complete your profile to be able to apply to jobs" ] );
 	}
 	protected function checkUserApplied( int $jobAddId ) {
 		$jobAdd = auth()->user()->doctor->jobAdds()->where( 'job_adds.id', $jobAddId )->first();
