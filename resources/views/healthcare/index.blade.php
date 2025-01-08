@@ -25,14 +25,14 @@
             </div> --}}
                 {{-- @include('healthcare.profile-info')
             @include('healthcare.job-applications') --}}
-            @include('healthcare.pages.dashboard')
-            @include('healthcare.pages.analytics')
-            @include('healthcare.pages.activity')
-            @include('healthcare.pages.feed')
-            @include('healthcare.pages.inbox')
-            @include('healthcare.pages.edit')
-            @include('healthcare.pages.jobs')
-            @include('healthcare.pages.posts')
+                @include('healthcare.pages.basic-info')
+                @include('healthcare.pages.specialities')
+                @include('healthcare.pages.operation-hours')
+                @include('healthcare.pages.analytics')
+                @include('healthcare.pages.inbox')
+                @include('healthcare.pages.jobs')
+                @include('healthcare.pages.settings')
+                @include('healthcare.pages.login')
             </div>
         </div>
         <div class="col-md-3">
@@ -45,7 +45,81 @@
 
                 </div>
             </div>
+            <div class="row ms-2">
+                Suggested Tenes
+            </div>
+            <div class="row col-md-11 ms-1">
+                <div class="p-3 my-2 card">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <img src="{{ asset('web/images/jobs/1.jpeg') }}" class="rounded-circle w-100" alt=""
+                                srcset="">
+                        </div>
+                        <div class="col-md-6">
+                            <span class="card-title fw-bold col-md-8">Osama Elmahdy</span>
+                            <p class="card-text">
+                                English</p>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-primary">Follow</button>
+                        </div>
 
+                    </div>
+                </div>
+                <div class="p-3 my-2 card">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <img src="{{ asset('web/images/jobs/1.jpeg') }}" class="rounded-circle w-100" alt=""
+                                srcset="">
+                        </div>
+                        <div class="col-md-6">
+                            <span class="card-title fw-bold col-md-8">Osama Elmahdy</span>
+                            <p class="card-text">
+                                English</p>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-primary">Follow</button>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="p-3 my-2 card">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <img src="{{ asset('web/images/jobs/1.jpeg') }}" class="rounded-circle w-100" alt=""
+                                srcset="">
+                        </div>
+                        <div class="col-md-6">
+                            <span class="card-title fw-bold col-md-8">Osama Elmahdy</span>
+                            <p class="card-text">
+                                English</p>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-primary">Follow</button>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="p-3 my-2 card">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <img src="{{ asset('web/images/jobs/1.jpeg') }}" class="rounded-circle w-100" alt=""
+                                srcset="">
+                        </div>
+                        <div class="col-md-6">
+                            <span class="card-title fw-bold col-md-8">Osama Elmahdy</span>
+                            <p class="card-text">
+                                English</p>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-primary">Follow</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
         </div>
+
+    </div>
     </div>
 @endsection

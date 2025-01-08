@@ -1,6 +1,6 @@
-<div class="mt-0 tab-pane fade" id="posts" role="tabpanel" aria-labelledby="setting-tab">
+<div class="mt-0 tab-pane fade" >
     <div class="mb-4 card" style="margin-bottom: 6rem !important">
-        <div class="text-white card-header bg-primary">Posts</div>
+        <div class="text-white card-header bg-primary">Settings</div>
         <div class="card-body">
             {{-- Sub header --}}
             <h5 class="card-title">User Information</h5>

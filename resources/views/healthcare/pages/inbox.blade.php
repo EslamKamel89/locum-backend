@@ -2,106 +2,52 @@
     <div class="mb-4 card" style="margin-bottom: 6rem !important">
         <div class="text-white card-header bg-primary">Inbox</div>
         <div class="card-body">
-            {{-- Sub header --}}
-            <h5 class="card-title">User Information</h5>
-            <form action="{{ route('healthcare.update', Auth::user()->id) }}" method="post">
-                @csrf
-                @method('PUT')
-                <div class="row">
-                    <div class="mb-2 col-md-6">
-                        <label for="name">Username</label>
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Name"
-                            value="{{ Auth::user()->name }}" required>
+            <div class="row">
+                <div class="col-md-4 bg-light border-end" style="height: 600px; overflow-y: auto;">
+                    <div class="p-3 border-bottom">
+                        <div class="fw-bold"><img src="{{ asset('web/images/jobs/1.jpeg') }}" alt="Profile Picture"
+                        class="rounded-circle me-3" style="width: 40px; height: 40px;"> John Doe</div>
+                        <div class="text-muted">Hey! How are you?</div>
                     </div>
-                    <div class="mb-2 col-md-6">
-                        <label for="email">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="Email"
-                            value="{{ Auth::user()->email }}" required>
+                    <div class="p-3 border-bottom">
+                        <div class="fw-bold"><img src="{{ asset('web/images/jobs/2.jpeg') }}" alt="Profile Picture"
+                        class="rounded-circle me-3" style="width: 40px; height: 40px;"> Jane Smith</div>
+                        <div class="text-muted">Are we still on for tomorrow?</div>
+                    </div>
+                    <div class="p-3 border-bottom">
+                        <div class="fw-bold"><img src="{{ asset('web/images/jobs/3.jpeg') }}" alt="Profile Picture"
+                        class="rounded-circle me-3" style="width: 40px; height: 40px;"> Michael Johnson</div>
+                        <div class="text-muted">Can you send me the report?</div>
+                    </div> <!-- Add more inbox items as needed -->
+                </div>
+                <div class="col-md-8 d-flex flex-column" style="height: 600px;">
+                    <div class="p-3 text-dark bg-muted border-bottom"><img src="{{ asset('web/images/jobs/2.jpeg') }}" alt="Profile Picture"
+                        class="rounded-circle me-3" style="width: 40px; height: 40px;"> John Doe</div>
+                    <div class="p-3 overflow-auto flex-grow-1">
+                        <div class="mb-3 d-flex"> <img src="{{ asset('web/images/jobs/1.jpeg') }}" alt="Profile Picture"
+                                class="rounded-circle me-3" style="width: 40px; height: 40px;">
+                            <div class="p-2 rounded flex-shrink-1 bg-light">
+                                <div class="mb-1">Hey! How are you?</div>
+                                <div>I've been wanting to catch up.</div>
+                            </div>
+                        </div>
+                        <div class="mb-3 d-flex"> <img src="{{ asset('web/images/jobs/2.jpeg') }}" alt="Profile Picture"
+                                class="rounded-circle me-3" style="width: 40px; height: 40px;">
+                            <div class="p-2 rounded flex-shrink-1 bg-light">
+                                <div>Sure, let's chat!</div>
+                            </div>
+                        </div> <!-- Add more chat messages as needed -->
+                    </div>
+                    <div class="p-3 border-top">
+                        <div class="input-group"> <input type="text" class="form-control"
+                                placeholder="Type a message..."> <button class="btn btn-primary"
+                                type="button">Send</button> </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="mb-2 col-md-6">
-                        <label for="password">New Password</label>
-                        <input type="password" class="form-control" id="password" name="password"
-                            placeholder="New Password">
-                    </div>
-                    <div class="mb-2 col-md-6">
-                        <label for="state_id">State</label>
-                        <select name="state_id" id="state_id" class="form-control">
-                            <option value="">Select State</option>
-                            @foreach ($states as $state)
-                                <option value="{{ $state->id }}"
-                                    {{ Auth::user()->state_id === $state->id ? 'selected' : '' }}>
-                                    {{ $state->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="mb-2 col-md-6">
-                        <label for="district_id">District</label>
-                        <select name="district_id" id="district_id" class="form-control">
-                            <option value="">Select District</option>
-                            @foreach ($districts as $district)
-                                <option value="{{ $district->id }}"
-                                    {{ Auth::user()->district_id === $district->id ? 'selected' : '' }}>
-                                    {{ $district->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="mb-2 col-md-6">
-                        <label for="facility_name">Facility Name</label>
-                        <input type="text" class="form-control" id="facility_name" name="facility_name"
-                            placeholder="facility_name" value="{{ $hospital->facility_name }}" required>
-                    </div>
-                    <div class="mb-2 col-md-6">
-                        <label for="type">Hospital Type</label>
-                        <input type="text" class="form-control" id="type" name="type" placeholder="type"
-                            value="{{ $hospital->type }}" required>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="mb-2 col-md-6">
-                        <label for="type">services offered</label>
-                        <input type="text" class="form-control" id="services_offered" name="services_offered"
-                            placeholder="services_offered" value="{{ $hospital->services_offered }}" required>
-                    </div>
-                    <div class="mb-2 col-md-6">
-                        <label for="type">number of beds</label>
-                        <input type="text" class="form-control" id="number_of_beds" name="number_of_beds"
-                            placeholder="number_of_beds" value="{{ $hospital->number_of_beds }}" required>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="mb-2 col-md-6">
-                        <label for="type">website url</label>
-                        <input type="text" class="form-control" id="website_url" name="website_url"
-                            placeholder="website_url" value="{{ $hospital->website_url }}" required>
-                    </div>
-                    <div class="mb-2 col-md-6">
-                        <label for="type">year established</label>
-                        <input type="text" class="form-control" id="year_established" name="year_established"
-                            placeholder="year_established" value="{{ $hospital->year_established }}" required>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="mb-2 col-md-6">
-                        <label for="type">website url</label>
-                        <input type="text" class="form-control" id="website_url" name="website_url"
-                            placeholder="website_url" value="{{ $hospital->website_url }}" required>
-                    </div>
-                    <div class="mb-2 col-md-12">
-                        <label for="type">overview</label>
-                        <textarea class="form-control" id="overview" rows="5" name="overview" placeholder="overview">{{ $hospital->overview }}</textarea>
-                    </div>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
-    <div class="p-3 bg-white shadow fixed-bottom border-top">
-        <button type="submit" class="btn btn-primary btn-lg w-100">Save</button>
-    </div>
 </div>
+
+
+
