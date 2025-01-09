@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\api\AuthController;
-use App\Http\Controllers\Api\CommentController;
+use App\Http\Controllers\api\CommentController;
 use App\Http\Controllers\api\DistrictController;
 use App\Http\Controllers\api\DoctorController;
 use App\Http\Controllers\api\DoctorDocumentController;
