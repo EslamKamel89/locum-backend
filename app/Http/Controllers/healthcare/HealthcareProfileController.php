@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers\healthcare;
 
-use App\Enums\JobApplicationStatus;
 use Exception;
 use App\Models\State;
+use App\Models\Doctor;
+use App\Models\JobInfo;
 use App\Models\District;
 use App\Models\Hospital;
+use App\Models\Specialty;
 use Illuminate\Http\Request;
+use App\Enums\shiftPreference;
 use App\Models\JobApplication;
+use App\Enums\JobApplicationStatus;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
-use App\Models\JobInfo;
-use App\Models\Specialty;
+use Illuminate\Support\Facades\Auth;
 
 class HealthcareProfileController extends Controller
 {
@@ -24,8 +27,11 @@ class HealthcareProfileController extends Controller
         $jobAdds = $hospital->jobAdds()->get();
         $jobApplications = JobApplication::get();
         $specialties = Specialty::all();
+        $skills = Specialty::all();
         $jobs = JobInfo::all();
+        $doctorRecommended = Doctor::take(5)->get();
         $jobApplicationStatus = JobApplicationStatus::cases();
+        $shiftPreference = shiftPreference::cases();
 
         return view('healthcare.index', get_defined_vars());
     }
@@ -37,6 +43,7 @@ class HealthcareProfileController extends Controller
 
     public function update(Request $request): View
     {
+        dd($request->all());
         try {
             $request->validate([
                 'name' => 'required',
@@ -45,7 +52,7 @@ class HealthcareProfileController extends Controller
                 'district_id' => 'sometimes|exists:districts,id',
             ]);
 
-            $user = auth()->user();
+            $user = Auth::user()->id;
             $user->update($request->all());
 
             $user->hospital->update($request->all());

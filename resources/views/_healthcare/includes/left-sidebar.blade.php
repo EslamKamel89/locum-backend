@@ -13,7 +13,7 @@
                                 class="rounded-circle img-fluid" />
                         </div>
                         <div class="user-content hide-menu m-t-10">
-                            <h5 class="font-medium m-b-10 user-name">{{Auth::guard('admin')->user()->name}}</h5>
+                            <h5 class="m-b-10 user-name font-medium">{{Auth::guard('admin')->user()->name}}</h5>
                             <a href="javascript:void(0)" class="btn btn-circle btn-sm m-r-5" id="Userdd" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="ti-settings"></i>
@@ -61,7 +61,7 @@
                         <i class="icon-Mailbox-Empty"></i>
                         <span class="hide-menu">States</span>
                     </a>
-                    <ul aria-expanded="false" class="collapse first-level">
+                    <ul aria-expanded="false" class="collapse  first-level">
                         <li class="sidebar-item">
                             <a href="{{ route('admin.states.index') }}" class="sidebar-link">
                                 <i class="mdi mdi-email"></i>
@@ -82,7 +82,7 @@
                         <i class="icon-Mailbox-Empty"></i>
                         <span class="hide-menu">District</span>
                     </a>
-                    <ul aria-expanded="false" class="collapse first-level">
+                    <ul aria-expanded="false" class="collapse  first-level">
                         <li class="sidebar-item">
                             <a href="{{ route('admin.districts.index') }}" class="sidebar-link">
                                 <i class="mdi mdi-email"></i>
@@ -103,7 +103,7 @@
                         <i class="icon-Mailbox-Empty"></i>
                         <span class="hide-menu">Skills</span>
                     </a>
-                    <ul aria-expanded="false" class="collapse first-level">
+                    <ul aria-expanded="false" class="collapse  first-level">
                         <li class="sidebar-item">
                             <a href="{{ route('admin.skills.index') }}" class="sidebar-link">
                                 <i class="mdi mdi-email"></i>
@@ -124,7 +124,7 @@
                         <i class="icon-Mailbox-Empty"></i>
                         <span class="hide-menu">Langs</span>
                     </a>
-                    <ul aria-expanded="false" class="collapse first-level">
+                    <ul aria-expanded="false" class="collapse  first-level">
                         <li class="sidebar-item">
                             <a href="{{ route('admin.langs.index') }}" class="sidebar-link">
                                 <i class="mdi mdi-email"></i>

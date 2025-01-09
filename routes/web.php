@@ -66,10 +66,12 @@ Route::get('/healthcare/login', [AuthController::class, 'healthcare_loginForm'])
 Route::get('/healthcare/register', [AuthController::class, 'healthcare_registerForm'])->name('healthcare.register');
 Route::post('/healthcare/login', [AuthController::class, 'healthcare_login'])->name('healthcare.login.post');
 Route::post('/healthcare/register', [AuthController::class, 'healthcare_register'])->name('healthcare.register.post');
-Route::middleware([HealthcareMiddleware::class])->prefix('healthcare')->name('healthcare.')->group(function () {
+Route::/* middleware([HealthcareMiddleware::class])-> */prefix('healthcare')->name('healthcare.')->group(function () {
     Route::resource('/', HealthcareProfileController::class);
     Route::resource('/applications', HealthcareApplicationController::class);
     Route::resource('/adds', HealthcareAddsController::class);
+
+    Route::resource('/job-add', JobAddController::class);
 
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 });
