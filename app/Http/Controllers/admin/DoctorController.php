@@ -17,16 +17,21 @@ use App\Models\University;
 use Illuminate\Http\Request;
 use App\Enums\shiftPreference;
 use App\Models\DoctorDocument;
+use App\Traits\FileUploadTrait;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\File;
 use App\Http\Resources\DoctorResource;
 use Illuminate\Support\Facades\Validator;
 use App\Exceptions\NotAuthorizedException;
+use Illuminate\Support\Facades\Http;
 
 class DoctorController extends Controller
 {
+    use FileUploadTrait;
+
     /**
      * Display a listing of the resource.
      */
@@ -64,104 +69,57 @@ class DoctorController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request['documents'][0]['document_file']);
         try {
             $validator = Validator::make(
                 $request->all(),
                 [
-                    'id' => ['sometimes', 'exists:doctors,id'],
+                    'name' => ['required'],
+                    'email' => ['required', 'email', 'unique:users,email'],
+                    'password' => ['required'],
+                    'state_id' => ['sometimes', 'exists:states,id'],
+                    'district_id' => ['sometimes', 'exists:districts,id'],
                     'specialty_name' => ['required'],
                     'job_info_name' => ['required'],
                     'date_of_birth' => ['required'],
-                    'gender' => ['required', Rule::in(Gender::cases())],
+                    'gender' => ['required', Rule::in('male', 'female')],
                     'address' => ['required'],
                     'phone' => ['required'],
+                    'willing_to_relocate' => ['required', 'boolean'],
+                    'photo' => ['sometimes', 'nullable', File::image()],
                     'langs' => ['sometimes'],
                     'skills' => ['sometimes'],
                 ]
             );
             if ($validator->fails()) {
-                return redirect()->back()->withErrors($validator);
+                return $this->handleValidation($validator);
             }
 
             DB::beginTransaction();
 
-            $path = null;
-            if ($request->hasFile('photo')) {
-                $path = $request->file('photo')->store('doctor/personal_imgs', 'public');
-                $path = "storage/$path";
-            }
-
-            $user = User::create(
-                collect($request->only(['name', 'email', 'state_id', 'district_id']))
-                    ->merge([
-                        'type' => UserType::doctor,
-                        'password' => bcrypt($request->input('password')),
-                    ])
-                    ->toArray()
-            );
+            $data = $request->only(['name', 'email', 'password', 'state_id', 'district_id', 'type']);
+            $data['password'] = Hash::make($data['password']);
+            $user = User::create($data);
 
             $doctor = Doctor::create(
                 collect($validator->validated())
                     ->merge([
                         'user_id' => $user->id,
-                        'photo' => $path,
                         'willing_to_relocate' => request()->input('willing_to_relocate') == 'on' ? 1 : 0
                     ])
-                    ->forget(['id', 'university_name', 'specialty_name', 'job_info_name', 'langs', 'skills'])
+                    ->forget(['name', 'email', 'password', 'state_id', 'district_id', 'specialty_name', 'job_info_name', 'langs', 'skills'])
                     ->toArray()
             );
-
-            $cvPath = null;
-            if ($request->hasFile('cv')) {
-                $cvPath = $request->file('cv')->store('doctor/cv', 'public');
-                $cvPath = "storage/$cvPath";
-            }
-
-            // Create Doctor Info
-            $doctorInfo = DoctorInfo::create(
-                collect($request->only([
-                    'professional_license_number',
-                    'license_state',
-                    'license_issue_date',
-                    'license_expiry_date',
-                    'university_id',
-                    'highest_degree',
-                    'field_of_study',
-                    'graduation_year',
-                    'work_experience',
-                    'biography'
-                ]))
-                    ->merge([
-                        'doctor_id' => $doctor->id,
-                        'cv' => $cvPath
-                    ])->toArray()
-            );
-
-            // التعامل مع كل مستند مرفوع
-            foreach ($request['documents'] as $document) {
-                // تخزين كل ملف
-                $filePath = $document['document_file']->store('doctor/files', 'public');
-
-                // إدخال البيانات في قاعدة البيانات
-                DoctorDocument::create([
-                    'doctor_id' => $doctor->id,
-                    'name' => $document['document_name'],
-                    'type' => $document['document_type'],
-                    'file' => $filePath,
-                ]);
-            }
 
             $this->attachJobInfo($doctor);
             $this->attachSpeciality($doctor);
             $this->handleSkillAttach($doctor);
             $this->handleLangAttach($doctor);
+            $doctor->load(['skills', 'langs']);
 
             DB::commit();
-            return redirect()->back()->with('success', 'Doctor Created Successfully');
+            return $this->success(new DoctorResource($doctor));
         } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()->withErrors($e->getMessage());
+            return $this->handleException($e);
         }
     }
 
@@ -240,7 +198,6 @@ class DoctorController extends Controller
                 'license_state',
                 'license_issue_date',
                 'license_expiry_date',
-                'university_id',
                 'highest_degree',
                 'field_of_study',
                 'graduation_year',
@@ -249,28 +206,28 @@ class DoctorController extends Controller
             ]))->toArray());
 
             // Fetch and delete all documents from the database
-            $doctorDocuments = $doctor->doctorDocuments;
-            foreach ($doctorDocuments as $document) {
-                if (file_exists(public_path($document->file))) {
-                    unlink(public_path($document->file));
-                }
-                $document->delete();
-            }
+            // $doctorDocuments = $doctor->doctorDocuments;
+            // foreach ($doctorDocuments as $document) {
+            //     if (file_exists(public_path($document->file))) {
+            //         unlink(public_path($document->file));
+            //     }
+            //     $document->delete();
+            // }
 
             // Add new documents to the database
-            if (isset($request['documents']) && is_array($request['documents']) && count($request['documents']) > 0) {
-                foreach ($request['documents'] as $document) {
-                    if (isset($document['document_file'])) {
-                        $filePath = $document['document_file']->store('doctor/files', 'public');
-                        DoctorDocument::create([
-                            'doctor_id' => $doctor->id,
-                            'name' => $document['document_name'],
-                            'type' => $document['document_type'],
-                            'file' => $filePath,
-                        ]);
-                    }
-                }
-            }
+            // if (isset($request['documents']) && is_array($request['documents']) && count($request['documents']) > 0) {
+            //     foreach ($request['documents'] as $document) {
+            //         if (isset($document['document_file'])) {
+            //             $filePath = $document['document_file']->store('doctor/files', 'public');
+            //             DoctorDocument::create([
+            //                 'doctor_id' => $doctor->id,
+            //                 'name' => $document['document_name'],
+            //                 'type' => $document['document_type'],
+            //                 'file' => $filePath,
+            //             ]);
+            //         }
+            //     }
+            // }
 
             $data = $request->only('name', 'email', 'state_id', 'district_id');
 

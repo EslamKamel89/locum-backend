@@ -270,8 +270,8 @@
                         </div>
                         <div class="col-sm-12 col-md-6">
                             <div class="form-group">
-                                <label for="university_id" class="control-label col-form-label">university</label>
-                                <select class="" id="university_id" name="university_id">
+                                <label for="university_name" class="control-label col-form-label">university</label>
+                                <select class="" id="university_name" name="university_name">
                                     <option value="">Select university</option>
                                     @foreach ($universities as $university)
                                         <option value="{{ $university->id }}"

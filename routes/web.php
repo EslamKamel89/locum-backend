@@ -5,6 +5,7 @@ use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\HealthcareMiddleware;
 use App\Http\Controllers\admin\AuthController;
 use App\Http\Controllers\admin\LangController;
+use App\Http\Controllers\admin\UserController;
 use App\Http\Controllers\admin\SkillController;
 use App\Http\Controllers\admin\StateController;
 use App\Http\Controllers\admin\DoctorController;
@@ -12,6 +13,8 @@ use App\Http\Controllers\admin\JobInfoController;
 use App\Http\Controllers\admin\DistrictController;
 use App\Http\Controllers\admin\HospitalController;
 use App\Http\Controllers\admin\SpecialtyController;
+use App\Http\Controllers\admin\DoctorInfoController;
+use App\Http\Controllers\admin\JobAddController;
 use App\Http\Controllers\admin\JobApplicationController;
 use App\Http\Controllers\healthcare\HealthcareAddsController;
 use App\Http\Controllers\healthcare\HealthcareProfileController;
@@ -50,8 +53,10 @@ Route::middleware([AdminMiddleware::class])->prefix('admin')->name('admin.')->gr
     Route::resource('/job_infos', JobInfoController::class);
 
     Route::resource('/doctors', DoctorController::class);
+    Route::resource('/doctor-info', DoctorInfoController::class);
     Route::resource('/hospitals', HospitalController::class);
     Route::resource('/jobApplications', JobApplicationController::class);
+    Route::resource('/job-adds', JobAddController::class);
 
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 });
