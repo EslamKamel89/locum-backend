@@ -23,7 +23,7 @@
                 <div class="card-body">
                     {{-- Sub header --}}
                     <h5 class="card-title">Info</h5>
-                    <form action="{{ route('hospitals.update', Auth::user()->id) }}" method="POST">
+                    <form action="{{ route('healthcare.update-profile', Auth::user('web')->id) }}" method="POST">
                         @csrf
                         @method('PUT')
                         <div class="row">
@@ -91,7 +91,7 @@
                                 <label for="lat">Location on maps </label>
                                 <input type="text" class="form-control" id="loc_url" name="loc_url"
                                     placeholder="https://maps.app.goo.gl/VgouGpL6ZwvgYrM46"
-                                    value="{{ $hospital->loc_url }}" required>
+                                    value="{{ $hospital->loc_url ?? 'https://maps.app.goo.gl/VgouGpL6ZwvgYrM46' }}" required>
                             </div>
 
                         </div>

@@ -4,7 +4,7 @@
         <div class="card-body">
             {{-- Sub header --}}
             <h5 class="card-title">User Information</h5>
-            <form action="{{ route('healthcare.update', Auth::user()->id) }}" method="post">
+            <form action="{{ route('healthcare.update-profile', Auth::user()->id) }}" method="post">
                 @csrf
                 @method('PUT')
                 <div class="row">

@@ -16,14 +16,15 @@ use App\Enums\JobApplicationStatus;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class HealthcareProfileController extends Controller
 {
     public function index(): View
     {
+        $hospital = Hospital::where('user_id', auth()->user()->id)->first();
         $states = State::all();
         $districts = District::all();
-        $hospital = Hospital::where('user_id', auth()->user()->id)->first();
         $jobAdds = $hospital->jobAdds()->get();
         $jobApplications = JobApplication::get();
         $specialties = Specialty::all();
@@ -32,6 +33,7 @@ class HealthcareProfileController extends Controller
         $doctorRecommended = Doctor::take(5)->get();
         $jobApplicationStatus = JobApplicationStatus::cases();
         $shiftPreference = shiftPreference::cases();
+        $hospitalSpecialties = $hospital->specialties()->get();
 
         return view('healthcare.index', get_defined_vars());
     }
@@ -41,25 +43,54 @@ class HealthcareProfileController extends Controller
         return view('healthcare.show');
     }
 
-    public function update(Request $request): View
+    public function update(Request $request, string $id)
     {
-        dd($request->all());
         try {
-            $request->validate([
-                'name' => 'required',
-                'email' => 'required|email',
-                'state_id' => 'required|exists:states,id',
-                'district_id' => 'sometimes|exists:districts,id',
-            ]);
+            $hospital = Hospital::findOrFail($id);
+            $user = $hospital->user;
 
-            $user = Auth::user()->id;
-            $user->update($request->all());
+            $validator = Validator::make(
+                $request->all(),
+                [
+                    'facility_name' => ['sometimes'],
+                    'type' => ['sometimes'],
+                    'contact_person' => ['sometimes'],
+                    'contact_email' => ['sometimes', 'email'],
+                    'contact_phone' => ['sometimes'],
+                    'address' => ['sometimes', 'max:255'],
+                    'services_offered' => ['sometimes', 'max:255'],
+                    'number_of_beds' => ['sometimes', 'numeric'],
+                    'website_url' => ['sometimes'],
+                    'year_established' => ['sometimes', 'numeric'],
+                    'overview' => ['sometimes', 'max:255'],
+                ]
+            );
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator);
+            }
 
-            $user->hospital->update($request->all());
+            // photo
+            if ($request->hasFile('photo')) {
+                $path = $request->file('photo')->store('hospital/facility_imgs', 'public');
+                $path = "storage/$path";
+                $hospital->photo = $path;
+            }
 
-            return view('healthcare.index')->with('success', 'Profile updated successfully');
-        } catch (Exception $e) {
-            return view('healthcare.index')->with('error', $e->getMessage());
+            $hospital->update($validator->validated());
+            if (isset($request->specialty_id) && count($request->specialty_id) > 0) {
+                $hospital->specialties()->sync($request->specialty_id);
+            }
+            $data = $request->only('name', 'email', 'state_id', 'district_id');
+
+            if ($request->filled('password')) {
+                $data['password'] = bcrypt($request->password);
+            }
+
+            $user->update($data);
+
+            return redirect()->back()->with('success', 'Hospital Updated Successfully');
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors($e->getMessage());
         }
     }
 }
