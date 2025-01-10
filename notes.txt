@@ -1,0 +1,13 @@
+doctors view all
+- show the created at time in all fields if the colums are two many for the page create toggleoble columns where you can toggle the visiblity of the column on and off
+- in the doctor view page the default sort should be created_at in desc order
+doctors create
+    ** Main tab
+- the validation is an alert box change it to red validation text under the text fields
+- state and district should be dependent drop downs (when user pick a state the district option list should change). you can select a district that don't belong to a state.
+- when i press save the tab should change to go the next tab, now you show an alert box only say success
+    ** Aditional information tab
+- the license state should be a dropdown not a text field, because he must pick a valid state.
+- make the work experience a text area not a text field
+    ** Files
+- file uploads is not hadled yet
