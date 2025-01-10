@@ -56,7 +56,7 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="ml-auto navbar-nav">
                         <li class="nav-item">
-                            <a class="text-white nav-link" href="{{ route('healthcare.logout') }}">Logout</a>
+                            <a class="text-white nav-link" href="{{ route('admin.logout') }}">Logout</a>
                         </li>
                     </ul>
                 </div>

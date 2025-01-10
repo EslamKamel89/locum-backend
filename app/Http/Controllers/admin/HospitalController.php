@@ -214,6 +214,9 @@ class HospitalController extends Controller
 			}
 
 			$hospital->update($validator->validated());
+            if(isset($request->specialty_id) && count($request->specialty_id) > 0){
+                $hospital->specialties()->sync($request->specialty_id);
+            }
 			$data = $request->only('name', 'email', 'state_id', 'district_id');
 
 			if ($request->filled('password')) {

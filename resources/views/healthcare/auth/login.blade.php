@@ -51,7 +51,7 @@
         @endif
 
         <h2 class="register-header">Register as a Healthcare Provider</h2>
-        <form method="POST" action="{{ route('healthcare.login.post') }}">
+        <form method="POST" action="{{ route('login') }}">
             @csrf
             <div class="mb-3">
                 <input type="email" class="form-control" placeholder="email" name="email" required>
@@ -60,7 +60,7 @@
                 <input type="password" class="form-control" placeholder="Password" name="password" required>
             </div>
             <button type="submit" class="btn btn-primary w-100">Login</button>
-            <a href="{{ route('healthcare.register') }}" class="btn btn-outline-facebook w-100"> Register </a>
+            <a href="{{ route('register') }}" class="btn btn-outline-facebook w-100"> Register </a>
         </form>
 
     </div>
