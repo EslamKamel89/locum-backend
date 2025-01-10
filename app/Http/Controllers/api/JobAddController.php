@@ -38,7 +38,7 @@ class JobAddController extends Controller {
 			$this->handleStoreAuthroizationCheck();
 			$validator = Validator::make(
 				$request->all(),
-				[ 
+				[
 					'title' => [ 'required' ],
 					'speciality_id' => [ 'sometimes', 'exists:specialties,id' ],
 					'job_info_id' => [ 'sometimes', 'exists:job_infos,id' ],
@@ -62,7 +62,7 @@ class JobAddController extends Controller {
 
 			$jobAdd = JobAdd::create(
 				collect( $validator->validated() )
-					->merge( [ 
+					->merge( [
 						'hospital_id' => auth()->user()->hospital->id,
 					] )->toArray()
 			);
@@ -97,7 +97,7 @@ class JobAddController extends Controller {
 			$this->checkResourceOwner( $jobAdd->hospital->user->id );
 			$validator = Validator::make(
 				$request->all(),
-				[ 
+				[
 					'title' => [ 'sometimes' ],
 					'speciality_id' => [ 'sometimes', 'exists:specialties,id' ],
 					'job_info_id' => [ 'sometimes', 'exists:job_infos,id' ],
