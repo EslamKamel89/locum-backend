@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\HealthcareMiddleware;
@@ -9,13 +10,14 @@ use App\Http\Controllers\admin\UserController;
 use App\Http\Controllers\admin\SkillController;
 use App\Http\Controllers\admin\StateController;
 use App\Http\Controllers\admin\DoctorController;
+use App\Http\Controllers\admin\JobAddController;
 use App\Http\Controllers\admin\JobInfoController;
 use App\Http\Controllers\admin\DistrictController;
 use App\Http\Controllers\admin\HospitalController;
 use App\Http\Controllers\admin\SpecialtyController;
 use App\Http\Controllers\admin\DoctorInfoController;
-use App\Http\Controllers\admin\JobAddController;
 use App\Http\Controllers\admin\JobApplicationController;
+use App\Http\Controllers\healthcare\Auth\WebAuthController;
 use App\Http\Controllers\healthcare\HealthcareAddsController;
 use App\Http\Controllers\healthcare\HealthcareProfileController;
 use App\Http\Controllers\healthcare\HealthcareApplicationController;
@@ -40,6 +42,7 @@ Route::resource('/jobApplications', JobApplicationController::class);
 // Dashboard Routes
 Route::get('/admin/login', [AuthController::class, 'loginForm'])->name('admin.login');
 Route::post('/admin/login', [AuthController::class, 'login'])->name('admin.login.post');
+
 Route::middleware([AdminMiddleware::class])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', function () {
         return view('admin.dashboard');
@@ -62,16 +65,12 @@ Route::middleware([AdminMiddleware::class])->prefix('admin')->name('admin.')->gr
 });
 
 // Healthcare Routes
-Route::get('/healthcare/login', [AuthController::class, 'healthcare_loginForm'])->name('healthcare.login');
-Route::get('/healthcare/register', [AuthController::class, 'healthcare_registerForm'])->name('healthcare.register');
-Route::post('/healthcare/login', [AuthController::class, 'healthcare_login'])->name('healthcare.login.post');
-Route::post('/healthcare/register', [AuthController::class, 'healthcare_register'])->name('healthcare.register.post');
-Route::/* middleware([HealthcareMiddleware::class])-> */prefix('healthcare')->name('healthcare.')->group(function () {
-    Route::resource('/', HealthcareProfileController::class);
-    Route::resource('/applications', HealthcareApplicationController::class);
-    Route::resource('/adds', HealthcareAddsController::class);
-
-    Route::resource('/job-add', JobAddController::class);
-
-    Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::prefix('healthcare')->name('healthcare.')->group(function () {
+    Route::middleware(['auth:web'])->group(function () {
+        Route::get('/', [HealthcareProfileController::class, 'index'])->name('dashboard');
+        Route::put('/update-profile/{id}', [HealthcareProfileController::class, 'update'])->name('update-profile');
+        Route::resource('/applications', HealthcareApplicationController::class);
+        Route::resource('/adds', HealthcareAddsController::class);
+        Route::resource('/job-add', JobAddController::class);
+    });
 });

@@ -45,7 +45,7 @@
                     <div class="logo">
                         <span class="db"><img src="{{asset('dashboard/assets/images/logo-icon.png')}}"
                                 alt="logo" /></span>
-                        <h5 class="font-medium m-b-20">Sign In to Admin</h5>
+                        <h5 class="font-medium m-b-20">Sign In</h5>
                     </div>
                     <!-- Form -->
                     <div class="row">
@@ -130,9 +130,9 @@
     <script>
         $('[data-toggle="tooltip"]').tooltip();
         $(".preloader").fadeOut();
-        // ============================================================== 
-        // Login and Recover Password 
-        // ============================================================== 
+        // ==============================================================
+        // Login and Recover Password
+        // ==============================================================
         $('#to-recover').on("click", function () {
             $("#loginform").slideUp();
             $("#recoverform").fadeIn();

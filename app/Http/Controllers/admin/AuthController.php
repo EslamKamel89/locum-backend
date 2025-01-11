@@ -31,8 +31,13 @@ class AuthController extends Controller
             $credentials = $request->only('email', 'password');
 
             if (Auth::guard('admin')->attempt($credentials)) {
-                // إعادة التوجيه إلى لوحة التحكم الخاصة بالمشرفين
                 return redirect()->route('admin.dashboard');
+            }
+
+            if (Auth::guard('web')->attempt($credentials)) {
+                if (Auth::guard('web')->user()->type == UserType::hospital->value) {
+                    return redirect()->route('healthcare.dashboard');
+                }
             }
 
             // إذا كانت البيانات غير صحيحة
@@ -45,6 +50,7 @@ class AuthController extends Controller
     public function logout()
     {
         Auth::guard('admin')->logout();
+        Auth::guard('web')->logout();
         return redirect()->route('admin.login');
     }
 
@@ -67,8 +73,7 @@ class AuthController extends Controller
             if (Hash::check($credentials['password'], $user->password)) {
                 Auth::login($user);
                 return redirect()->route('healthcare.index');
-            }
-            else {
+            } else {
                 return back()->withErrors(['email' => 'Invalid credentials']);
             }
         } catch (Exception $e) {

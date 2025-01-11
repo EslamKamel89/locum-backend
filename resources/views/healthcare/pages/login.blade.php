@@ -6,7 +6,7 @@
             <div class="text-white card-header bg-primary">Login Data</div>
             <div class="card-body">
                 {{-- Sub header --}}
-                <form action="{{ route('healthcare.update', Auth::user()->id) }}" method="post">
+                <form action="{{ route('healthcare.update-profile', Auth::user()->id) }}" method="post">
                     @csrf
                     @method('PUT')
                     <div class="row">
