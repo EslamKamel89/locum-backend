@@ -25,7 +25,7 @@ class DoctorFactory extends Factory {
 			'address' => fake()->address,
 			'phone' => fake()->phoneNumber,
 			'willing_to_relocate' => fake()->boolean,
-			'photo' => fake()->imageUrl(),
+			'photo' => "https://randomuser.me/api/portraits/men/" . fake()->numberBetween( 1, 99 ) . ".jpg",
 		];
 	}
 }

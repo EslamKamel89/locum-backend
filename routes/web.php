@@ -23,54 +23,55 @@ use App\Http\Controllers\healthcare\HealthcareProfileController;
 use App\Http\Controllers\healthcare\HealthcareApplicationController;
 use App\Http\Controllers\hospital\HospitalController as HospitalHospitalController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get( '/', function () {
+	return view( 'welcome' );
+} );
 
 // General Routes
-Route::resource('/states', StateController::class);
-Route::resource('/districts', DistrictController::class);
-Route::resource('/skills', SkillController::class);
-Route::resource('/langs', LangController::class);
-Route::resource('/specialties', SpecialtyController::class);
-Route::resource('/job_infos', JobInfoController::class);
+Route::resource( '/states', StateController::class);
+Route::resource( '/districts', DistrictController::class);
+Route::resource( '/skills', SkillController::class);
+Route::resource( '/langs', LangController::class);
+Route::resource( '/specialties', SpecialtyController::class);
+Route::resource( '/job_infos', JobInfoController::class);
 
-Route::resource('/doctors', DoctorController::class);
-Route::resource('/hospitals', HospitalController::class);
-Route::resource('/jobApplications', JobApplicationController::class);
+Route::resource( '/doctors', DoctorController::class);
+Route::resource( '/hospitals', HospitalController::class);
+Route::resource( '/jobApplications', JobApplicationController::class);
 
 // Dashboard Routes
-Route::get('/admin/login', [AuthController::class, 'loginForm'])->name('admin.login');
-Route::post('/admin/login', [AuthController::class, 'login'])->name('admin.login.post');
+Route::get( '/admin/login', [ AuthController::class, 'loginForm' ] )->name( 'admin.login' );
+// Route::get( '/admin/login', [ AuthController::class, 'loginForm' ] )->name( 'login' );
+Route::post( '/admin/login', [ AuthController::class, 'login' ] )->name( 'admin.login.post' );
 
-Route::middleware([AdminMiddleware::class])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
+Route::middleware( [ AdminMiddleware::class] )->prefix( 'admin' )->name( 'admin.' )->group( function () {
+	Route::get( '/', function () {
+		return view( 'admin.dashboard' );
+	} )->name( 'dashboard' );
 
-    Route::resource('/states', StateController::class);
-    Route::resource('/districts', DistrictController::class);
-    Route::resource('/skills', SkillController::class);
-    Route::resource('/langs', LangController::class);
-    Route::resource('/specialties', SpecialtyController::class);
-    Route::resource('/job_infos', JobInfoController::class);
+	Route::resource( '/states', StateController::class);
+	Route::resource( '/districts', DistrictController::class);
+	Route::resource( '/skills', SkillController::class);
+	Route::resource( '/langs', LangController::class);
+	Route::resource( '/specialties', SpecialtyController::class);
+	Route::resource( '/job_infos', JobInfoController::class);
 
-    Route::resource('/doctors', DoctorController::class);
-    Route::resource('/doctor-info', DoctorInfoController::class);
-    Route::resource('/hospitals', HospitalController::class);
-    Route::resource('/jobApplications', JobApplicationController::class);
-    Route::resource('/job-adds', JobAddController::class);
+	Route::resource( '/doctors', DoctorController::class);
+	Route::resource( '/doctor-info', DoctorInfoController::class);
+	Route::resource( '/hospitals', HospitalController::class);
+	Route::resource( '/jobApplications', JobApplicationController::class);
+	Route::resource( '/job-adds', JobAddController::class);
 
-    Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
-});
+	Route::get( '/logout', [ AuthController::class, 'logout' ] )->name( 'logout' );
+} );
 
 // Healthcare Routes
-Route::prefix('healthcare')->name('healthcare.')->group(function () {
-    Route::middleware(['auth:web'])->group(function () {
-        Route::get('/', [HealthcareProfileController::class, 'index'])->name('dashboard');
-        Route::put('/update-profile/{id}', [HealthcareProfileController::class, 'update'])->name('update-profile');
-        Route::resource('/applications', HealthcareApplicationController::class);
-        Route::resource('/adds', HealthcareAddsController::class);
-        Route::resource('/job-add', JobAddController::class);
-    });
-});
+Route::prefix( 'healthcare' )->name( 'healthcare.' )->group( function () {
+	Route::middleware( [ 'auth:web' ] )->group( function () {
+		Route::get( '/', [ HealthcareProfileController::class, 'index' ] )->name( 'dashboard' );
+		Route::put( '/update-profile/{id}', [ HealthcareProfileController::class, 'update' ] )->name( 'update-profile' );
+		Route::resource( '/applications', HealthcareApplicationController::class);
+		Route::resource( '/adds', HealthcareAddsController::class);
+		Route::resource( '/job-add', JobAddController::class);
+	} );
+} );
