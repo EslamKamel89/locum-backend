@@ -66,12 +66,13 @@ Route::middleware( [ AdminMiddleware::class] )->prefix( 'admin' )->name( 'admin.
 } );
 
 // Healthcare Routes
-Route::prefix( 'healthcare' )->name( 'healthcare.' )->group( function () {
-	Route::middleware( [ 'auth:web' ] )->group( function () {
-		Route::get( '/', [ HealthcareProfileController::class, 'index' ] )->name( 'dashboard' );
-		Route::put( '/update-profile/{id}', [ HealthcareProfileController::class, 'update' ] )->name( 'update-profile' );
-		Route::resource( '/applications', HealthcareApplicationController::class);
-		Route::resource( '/adds', HealthcareAddsController::class);
-		Route::resource( '/job-add', JobAddController::class);
-	} );
-} );
+Route::prefix('healthcare')->name('healthcare.')->group(function () {
+    Route::middleware(['auth:web'])->group(function () {
+        Route::get('/', [HealthcareProfileController::class, 'index'])->name('dashboard');
+        Route::put('/update-profile/{id}', [HealthcareProfileController::class, 'update'])->name('update-profile');
+        Route::resource('/applications', HealthcareApplicationController::class);
+        Route::resource('/adds', HealthcareAddsController::class);
+        Route::get('/get-job-by-status/{status}', [HealthcareAddsController::class, 'getJobByStatus'])->name('get-job-by-status');
+        Route::resource('/job-add', JobAddController::class);
+    });
+});
