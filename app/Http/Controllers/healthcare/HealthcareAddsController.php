@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\JobAdd;
+use App\Models\JobApplication;
 
 class HealthcareAddsController extends Controller
 {
@@ -41,6 +42,17 @@ class HealthcareAddsController extends Controller
             return redirect()->back()->with('success', 'Adds updated successfully');
         } catch (Exception $e) {
             return redirect()->back()->withErrors($e->getMessage());
+        }
+    }
+
+
+    public function getJobByStatus(string $status)
+    {
+        try {
+            $jobAdds = JobApplication::where('status', $status)->with(['jobAdd', 'doctor.user'])->get();
+            return response()->json($jobAdds, 200);
+        } catch (Exception $e) {
+            return $e->getMessage();
         }
     }
 }
