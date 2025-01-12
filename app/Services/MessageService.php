@@ -7,12 +7,16 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 class MessageService {
-	public function sendMessage( int $senderId, int $receiverId, string $content ): Message {
-		return Message::create( [ 
+	public function sendMessage( int $senderId, int $receiverId, string $content ) {
+		$message = Message::create( [ 
 			'sender_id' => $senderId,
 			'receiver_id' => $receiverId,
 			'content' => $content,
 		] );
+		$message->load( [ 'sender:id,name,type', 'receiver:id,name,type' ] );
+		$message->created_at = $message->created_at->diffForHumans();
+
+		return $message;
 
 	}
 
