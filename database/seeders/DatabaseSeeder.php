@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder {
 			JobAddSeeder::class,
 			AdminSeeder::class,
 			CommentSeeder::class,
+			MessageSeeder::class,
 		] );
 	}
 
