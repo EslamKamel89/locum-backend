@@ -15,6 +15,7 @@ use App\Models\JobApplication;
 use App\Enums\JobApplicationStatus;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
+use App\Models\HospitalInfo;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -34,6 +35,7 @@ class HealthcareProfileController extends Controller
         $jobApplicationStatus = JobApplicationStatus::cases();
         $shiftPreference = shiftPreference::cases();
         $hospitalSpecialties = $hospital->specialties()->get();
+        $services = HospitalInfo::find($hospital->id)->services_offered;
 
         return view('healthcare.index', get_defined_vars());
     }
@@ -58,6 +60,7 @@ class HealthcareProfileController extends Controller
                     'contact_email' => ['sometimes', 'email'],
                     'contact_phone' => ['sometimes'],
                     'address' => ['sometimes', 'max:255'],
+                    'address2' => ['sometimes', 'max:255'],
                     'services_offered' => ['sometimes', 'max:255'],
                     'number_of_beds' => ['sometimes', 'numeric'],
                     'website_url' => ['sometimes'],
@@ -87,6 +90,11 @@ class HealthcareProfileController extends Controller
             }
 
             $user->update($data);
+
+            if(isset($request->services_offered) && count($request->services_offered) > 0) {
+                $hospital->hospitalInfo->services_offered = implode(',', $request->services_offered);
+                $hospital->hospitalInfo->update();
+            }
 
             return redirect()->back()->with('success', 'Hospital Updated Successfully');
         } catch (\Exception $e) {

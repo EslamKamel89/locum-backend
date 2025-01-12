@@ -71,6 +71,7 @@ Route::prefix('healthcare')->name('healthcare.')->group(function () {
         Route::put('/update-profile/{id}', [HealthcareProfileController::class, 'update'])->name('update-profile');
         Route::resource('/applications', HealthcareApplicationController::class);
         Route::resource('/adds', HealthcareAddsController::class);
+        Route::get('/get-job-by-status/{status}', [HealthcareAddsController::class, 'getJobByStatus'])->name('get-job-by-status');
         Route::resource('/job-add', JobAddController::class);
     });
 });
