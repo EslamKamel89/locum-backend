@@ -13,6 +13,7 @@ use App\Http\Controllers\api\JobAddController;
 use App\Http\Controllers\api\JobApplicationController;
 use App\Http\Controllers\api\JobInfoController;
 use App\Http\Controllers\api\LangController;
+use App\Http\Controllers\api\MessageController;
 use App\Http\Controllers\api\SkillController;
 use App\Http\Controllers\api\SpecialtyController;
 use App\Http\Controllers\api\StateController;
@@ -88,5 +89,11 @@ Route::middleware( [ 'auth:sanctum' ] )->group( function () {
 	Route::apiResource( '/job-add', JobAddController::class); //
 	Route::apiResource( '/job-applications', JobApplicationController::class); //
 	Route::apiResource( '/comments', CommentController::class); //
+	Route::prefix( '/message' )->group( function () {
+		Route::post( '/send-message', [ MessageController::class, 'sendMessage' ] );
+		Route::get( '/all-chat', [ MessageController::class, 'getAllChatsForUser' ] );
+		Route::get( '/chat', [ MessageController::class, 'getChat' ] );
+		Route::get( '/unseen-count', [ MessageController::class, 'getUnSeenCount' ] );
+	} );
 
 } );
