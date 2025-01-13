@@ -16,8 +16,8 @@
                             <div class="row">
                                 <div class="mb-2 col-md-6">
                                     <label for="specialties" class="form-label">Medical Specialties</label>
-                                    <select id="specialties" name="specialty_id[]" class="form-select" multiple
-                                        required>
+                                    <select id="specialties" name="specialty_id[]" class="form-select  select2-multiple"
+                                        multiple required style="width: 100%">
                                         @foreach ($specialties as $specialty)
                                             <option value="{{ $specialty->id }}"
                                                 @if ($hospitalSpecialties->contains('name', $specialty->name)) selected @endif>
@@ -29,7 +29,14 @@
                                 </div>
                                 <div class="mb-2 col-md-6">
                                     <label for="services" class="form-label">Services Offered</label>
-                                    <input id="services" name="services_offered" class="form-control" value="{{ $hospital->services_offered }}" required>
+                                    <select id="services" name="services_offered[]" multiple
+                                        class="form-select select2-multiple">
+                                        @foreach (explode(',', $services) as $service)
+                                            <option value="{{ $service }}"
+                                                {{ in_array($service, explode(',', $services)) ? 'selected' : '' }}>
+                                                {{ $service }} </option>
+                                        @endforeach
+                                    </select>
                                 </div>
 
                             </div>
@@ -55,3 +62,17 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.select2-multiple').forEach(function(select) {
+            new TomSelect(select, {
+                plugins: ['checkbox_options'],
+                placeholder: 'Select Specialities',
+                closeAfterSelect: false,
+                allowEmptyOption: true,
+                create: true
+            });
+        });
+    });
+</script>

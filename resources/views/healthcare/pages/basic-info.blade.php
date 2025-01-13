@@ -1,21 +1,4 @@
 <div class="mt-0 tab-pane fade show active" id="basic-info" role="tabpanel" aria-labelledby="setting-tab">
-    <div class="mb-2 card">
-        <div class="card-body">
-            <h3>Today's Action</h3>
-            <p class="text-muted">Pages that complete these actions regularly grow 4x faster</p>
-            <div class="p-3 mb-4 card">
-                <h4>Add Wallpaper</h4>
-                <p>Add a Wallpaper to help your Page standout and grow brand awareness.<a href=""
-                        class="text-decoration-none fw-bold">Add</a></p>
-            </div>
-            <div class="p-3 mb-4 card ">
-                <h4>Add logo</h4>
-                <p>Add a logo to help your Page standout and grow brand awareness.<a href=""
-                        class="text-decoration-none fw-bold">Add</a></p>
-            </div>
-
-        </div>
-    </div>
     <div class="row">
         <div class="mt-0">
             <div class="mb-4 card" style="margin-bottom: 6rem !important">
@@ -40,7 +23,7 @@
                         </div>
                         <div class="row">
                             <div class="mb-2 col-md-6">
-                                <label for="district_id">District</label>
+                                <label for="district_id">City</label>
                                 <select name="district_id" id="district_id" class="form-control">
                                     <option value="">Select District</option>
                                     @foreach ($districts as $district)
@@ -63,37 +46,26 @@
                             </div>
                         </div>
 
-
                         <div class="row">
 
                         </div>
-
-
                         <div class="row">
                             <div class="mb-2 col-md-6">
-                                <label for="type">Services offered</label>
-                                <input type="text" class="form-control" id="services_offered" name="services_offered"
-                                    placeholder="services_offered" value="{{ $hospital->services_offered }}" required>
+                                <label for="type">Address 1</label>
+                                <input list="address-suggestions" name="address" id="address" class="form-control custom-input"
+                                    placeholder="Start typing address..."  value="{{ $hospital->address }}">
+                                <datalist id="address-suggestions">
+                                    <!-- الاقتراحات ستتم إضافتها هنا -->
+                                </datalist>
                             </div>
                             <div class="mb-2 col-md-6">
-                                <label for="type">number of beds</label>
-                                <input type="text" class="form-control" id="number_of_beds" name="number_of_beds"
-                                    placeholder="number_of_beds" value="{{ $hospital->number_of_beds }}" required>
+                                <label for="type">Address 2 <i class="text-muted">(optional)</i></label>
+                                <input list="address2-suggestions" type="text" class="form-control custom-input" id="address2" name="address2"
+                                    placeholder="Enter Address... " value="{{ $hospital->address2 }}">
+                                <datalist id="address2-suggestions">
+                                    <!-- الاقتراحات ستتم إضافتها هنا -->
+                                </datalist>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="mb-2 col-md-6">
-                                <label for="type">Address</label>
-                                <input type="text" class="form-control" id="address" name="address"
-                                    placeholder="Enter Address... " value="{{ $hospital->address }}" required>
-                            </div>
-                            <div class="mb-2 col-md-6">
-                                <label for="lat">Location on maps </label>
-                                <input type="text" class="form-control" id="loc_url" name="loc_url"
-                                    placeholder="https://maps.app.goo.gl/VgouGpL6ZwvgYrM46"
-                                    value="{{ $hospital->loc_url ?? 'https://maps.app.goo.gl/VgouGpL6ZwvgYrM46' }}" required>
-                            </div>
-
                         </div>
                         <div class="row">
                             <div class="mb-2 col-md-6">
@@ -103,9 +75,8 @@
                             </div>
                             <div class="mb-2 col-md-6">
                                 <label for="type">year established</label>
-                                <input type="text" class="form-control" id="year_established"
-                                    name="year_established" placeholder="year_established"
-                                    value="{{ $hospital->year_established }}" required>
+                                <input type="text" class="form-control" id="year_established" name="year_established"
+                                    placeholder="year_established" value="{{ $hospital->year_established }}" required>
                             </div>
                         </div>
 
@@ -121,3 +92,42 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const addressInputs = document.querySelectorAll('#address, #address2');
+        const datalist = document.getElementById('address-suggestions');
+
+        addressInputs.forEach(input => {
+            input.addEventListener('input', async function() {
+                const query = this.value;
+                if (query.length >= 3) {
+                    try {
+                        const response = await fetch(
+                            `https://nominatim.openstreetmap.org/search?q=${query}&format=json`
+                            );
+                        const data = await response.json();
+                        const suggestions = data.map(item => item.display_name);
+                        const suggestions2 = data.map(item => item.display_name);
+
+                        // Update datalist with suggestions
+                        datalist.innerHTML = '';
+                        suggestions.forEach(suggestion => {
+                            const option = document.createElement('option');
+                            option.value = suggestion;
+                            datalist.appendChild(option);
+                        });
+                        suggestions2.forEach(suggestion => {
+                            const option = document.createElement('option');
+                            option.value = suggestion;
+                            datalist.appendChild(option);
+                        });
+
+                    } catch (error) {
+                        console.error('Error fetching data from OpenStreetMap API', error);
+                    }
+                }
+            });
+        });
+    });
+</script>
