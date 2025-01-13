@@ -17,13 +17,13 @@ class AppServiceProvider extends ServiceProvider {
 	 * Bootstrap any application services.
 	 */
 	public function boot(): void {
-		// DB::listen( function ($query) {
-		// 	logger( 'raw sql ------------------------------------------ ' );
-		// 	logger( $query->sql );
-		// 	logger( 'bindings ------------------------------------------' );
-		// 	logger( $query->bindings );
-		// 	logger( 'time ------------------------------------------' );
-		// 	logger( $query->time );
-		// } );
+		DB::listen( function ($query) {
+			logger( 'raw sql ------------------------------------------ ' );
+			logger( $query->sql );
+			logger( 'bindings ------------------------------------------' );
+			logger( $query->bindings );
+			logger( 'time ------------------------------------------' );
+			logger( $query->time );
+		} );
 	}
 }
