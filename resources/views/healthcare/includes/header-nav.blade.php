@@ -19,11 +19,11 @@
                 type="button" role="tab" aria-controls="adds" aria-selected="false"
                 style="font-weight: 600">Analytics</button>
         </li>
-        <li class="nav-item" role="presentation">
+        {{-- <li class="nav-item" role="presentation">
             <button class="nav-link text-dark " id="inbox-tab" data-bs-toggle="tab" data-bs-target="#inbox"
                 type="button" role="tab" aria-controls="adds" aria-selected="false"
                 style="font-weight: 600">Inbox</button>
-        </li>
+        </li> --}}
 
         <li class="nav-item" role="presentation">
             <button class="nav-link text-dark " id="jobs-tab" data-bs-toggle="tab" data-bs-target="#jobs"

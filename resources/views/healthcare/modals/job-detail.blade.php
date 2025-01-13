@@ -39,7 +39,7 @@
                     <label for="required-date" class="form-label">Required Date</label>
                     {{-- <input type="date" class="form-control" id="required-date" required> --}}
                     <input type="text" id="datetime-picker" class="form-control" required
-                        placeholder="Select date and time">
+                        placeholder="Select date">
                 </div>
             </div>
             <div class="modal-footer">
@@ -54,7 +54,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         flatpickr("#datetime-picker", {
-            enableTime: true,
+            enableTime: false,
             dateFormat: "Y-m-d H:i",
             time_24hr: false,
             locale: "en",

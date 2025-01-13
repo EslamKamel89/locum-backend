@@ -63,16 +63,4 @@
     </div>
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.select2-multiple').forEach(function(select) {
-            new TomSelect(select, {
-                plugins: ['checkbox_options'],
-                placeholder: 'Select Specialities',
-                closeAfterSelect: false,
-                allowEmptyOption: true,
-                create: true
-            });
-        });
-    });
-</script>
+

@@ -12,7 +12,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="speciality_id" class="form-label">Specializations</label>
-                    <select class="form-select" id="speciality_id" multiple required>
+                    <select class="select2-multiple" id="speciality_id" multiple required>
                         @foreach ($specialties as $specialty)
                             <option value="{{ $specialty->id }}">{{ $specialty->name }}</option>
                         @endforeach
@@ -20,7 +20,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="job_info_id" class="form-label">Job Info</label>
-                    <select class="form-select" id="job_info_id" multiple required>
+                    <select class="select2-multiple" id="job_info_id" multiple required>
                         @foreach ($jobs as $job)
                             <option value="{{ $job->id }}">{{ $job->name }}</option>
                         @endforeach
@@ -28,7 +28,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="skills" class="form-label">Skills</label>
-                    <select class="form-select" id="skills" multiple required>
+                    <select class="select2-multiple" id="skills" multiple required>
                         @foreach ($skills as $skill)
                             <option value="{{ $skill->id }}">{{ $skill->name }}</option>
                         @endforeach

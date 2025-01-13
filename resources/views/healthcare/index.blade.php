@@ -9,7 +9,7 @@
                 @include('healthcare.pages.specialities')
                 {{-- @include('healthcare.pages.operation-hours') --}}
                 @include('healthcare.pages.analytics')
-                @include('healthcare.pages.inbox')
+                {{-- @include('healthcare.pages.inbox') --}}
                 @include('healthcare.pages.jobs')
                 @include('healthcare.pages.login')
             </div>

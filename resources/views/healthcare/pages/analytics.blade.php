@@ -11,7 +11,7 @@
                 </div>
                 <div class="mt-1 text-center col-md-3 card me-1" onclick="getJobApplications('rejected')">
                     <div class="card-body">
-                        <div class="card-title fw-bold">Total Jobs Rejected</div>
+                        <div class="card-title fw-bold">Total Jobs Denied</div>
                         <div class="card-value">{{ $jobApplications->where('status', 'rejected')->count() }}</div>
                     </div>
                 </div>
@@ -61,7 +61,7 @@
 
         // تنظيف الجدول وعرض مؤشر التحميل
         fadeCard.classList.remove('fade'); // لإظهار العنصر
-        title.textContent = `${status.charAt(0).toUpperCase() + status.slice(1)} Job Applications`;
+        title.textContent = `${status.charAt(0).toUpperCase() + status.slice(1)} Job Applications`.replace('Rejected', 'Denied');
         table.innerHTML = `
         <tr>
             <td colspan="5" class="text-center">
