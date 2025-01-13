@@ -31,9 +31,9 @@
                                     <label for="services" class="form-label">Services Offered</label>
                                     <select id="services" name="services_offered[]" multiple
                                         class="form-select select2-multiple">
-                                        @foreach (explode(',', $services) as $service)
+                                        @foreach ($services as $service)
                                             <option value="{{ $service }}"
-                                                {{ in_array($service, explode(',', $services)) ? 'selected' : '' }}>
+                                                {{ in_array($service, $services) ? 'selected' : '' }}>
                                                 {{ $service }} </option>
                                         @endforeach
                                     </select>
