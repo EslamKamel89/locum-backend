@@ -52,16 +52,18 @@
                         <div class="row">
                             <div class="mb-2 col-md-6">
                                 <label for="type">Address 1</label>
-                                <input list="address-suggestions" name="address" id="address" class="form-control custom-input"
-                                    placeholder="Start typing address..."  value="{{ $hospital->address }}">
+                                <input list="address-suggestions" name="address" id="address"
+                                    class="form-control custom-input" placeholder="Start typing address..."
+                                    value="{{ $hospital->address }}">
                                 <datalist id="address-suggestions">
                                     <!-- الاقتراحات ستتم إضافتها هنا -->
                                 </datalist>
                             </div>
                             <div class="mb-2 col-md-6">
                                 <label for="type">Address 2 <i class="text-muted">(optional)</i></label>
-                                <input list="address2-suggestions" type="text" class="form-control custom-input" id="address2" name="address2"
-                                    placeholder="Enter Address... " value="{{ $hospital->address2 }}">
+                                <input list="address2-suggestions" type="text" class="form-control custom-input"
+                                    id="address2" name="address2" placeholder="Enter Address... "
+                                    value="{{ $hospital->address2 }}">
                                 <datalist id="address2-suggestions">
                                     <!-- الاقتراحات ستتم إضافتها هنا -->
                                 </datalist>
@@ -105,29 +107,47 @@
                     try {
                         const response = await fetch(
                             `https://nominatim.openstreetmap.org/search?q=${query}&format=json`
-                            );
+                        );
                         const data = await response.json();
-                        const suggestions = data.map(item => item.display_name);
-                        const suggestions2 = data.map(item => item.display_name);
 
-                        // Update datalist with suggestions
-                        datalist.innerHTML = '';
-                        suggestions.forEach(suggestion => {
-                            const option = document.createElement('option');
-                            option.value = suggestion;
-                            datalist.appendChild(option);
-                        });
-                        suggestions2.forEach(suggestion => {
-                            const option = document.createElement('option');
-                            option.value = suggestion;
-                            datalist.appendChild(option);
-                        });
+                        if (data.length > 0) {
+                            const lat = data[0].lat;
+                            const lon = data[0].lon;
 
+                            // تخزين الإحداثيات في LocalStorage
+                            localStorage.setItem('lat', lat);
+                            localStorage.setItem('lon', lon);
+
+                            // إرسال الإحداثيات إلى الجلسة عبر AJAX
+                            await fetch('/set-coordinates', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector(
+                                        'meta[name="csrf-token"]').getAttribute(
+                                        'content')
+                                },
+                                body: JSON.stringify({
+                                    lat,
+                                    lon
+                                })
+                            });
+
+                            // تحديث datalist
+                            const suggestions = data.map(item => item.display_name);
+                            datalist.innerHTML = '';
+                            suggestions.forEach(suggestion => {
+                                const option = document.createElement('option');
+                                option.value = suggestion;
+                                datalist.appendChild(option);
+                            });
+                        }
                     } catch (error) {
                         console.error('Error fetching data from OpenStreetMap API', error);
                     }
                 }
             });
         });
+
     });
 </script>

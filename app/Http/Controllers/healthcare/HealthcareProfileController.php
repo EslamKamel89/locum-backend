@@ -36,7 +36,7 @@ class HealthcareProfileController extends Controller
         $shiftPreference = shiftPreference::cases();
         $hospitalSpecialties = $hospital->specialties()->get();
         $services = HospitalInfo::find($hospital->id)->services_offered;
-
+        // dd($services);
         return view('healthcare.index', get_defined_vars());
     }
 
@@ -47,6 +47,7 @@ class HealthcareProfileController extends Controller
 
     public function update(Request $request, string $id)
     {
+        // dd($request->all());
         try {
             $hospital = Hospital::findOrFail($id);
             $user = $hospital->user;
@@ -92,7 +93,7 @@ class HealthcareProfileController extends Controller
             $user->update($data);
 
             if(isset($request->services_offered) && count($request->services_offered) > 0) {
-                $hospital->hospitalInfo->services_offered = implode(',', $request->services_offered);
+                $hospital->hospitalInfo->services_offered = $request->services_offered;
                 $hospital->hospitalInfo->update();
             }
 

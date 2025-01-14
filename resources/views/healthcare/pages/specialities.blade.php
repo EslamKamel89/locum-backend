@@ -31,7 +31,7 @@
                                     <label for="services" class="form-label">Services Offered</label>
                                     <select id="services" name="services_offered[]" multiple
                                         class="form-select select2-multiple">
-                                        @foreach ($services as $service)
+                                        @foreach (($services) as $service)
                                             <option value="{{ $service }}"
                                                 {{ in_array($service, $services) ? 'selected' : '' }}>
                                                 {{ $service }} </option>
@@ -63,16 +63,4 @@
     </div>
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.select2-multiple').forEach(function(select) {
-            new TomSelect(select, {
-                plugins: ['checkbox_options'],
-                placeholder: 'Select Specialities',
-                closeAfterSelect: false,
-                allowEmptyOption: true,
-                create: true
-            });
-        });
-    });
-</script>
+
