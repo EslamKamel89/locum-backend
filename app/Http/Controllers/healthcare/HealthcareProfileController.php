@@ -82,7 +82,8 @@ class HealthcareProfileController extends Controller
 
             $hospital->update($validator->validated());
             if (isset($request->specialty_id) && count($request->specialty_id) > 0) {
-                $hospital->specialties()->sync($request->specialty_id);
+                $specialtyIds = $this->ensureSpecialtiesExist($request->specialty_id);
+                $hospital->specialties()->sync($specialtyIds);
             }
             $data = $request->only('name', 'email', 'state_id', 'district_id');
 
@@ -92,7 +93,7 @@ class HealthcareProfileController extends Controller
 
             $user->update($data);
 
-            if(isset($request->services_offered) && count($request->services_offered) > 0) {
+            if (isset($request->services_offered) && count($request->services_offered) > 0) {
                 $hospital->hospitalInfo->services_offered = $request->services_offered;
                 $hospital->hospitalInfo->update();
             }
@@ -102,4 +103,24 @@ class HealthcareProfileController extends Controller
             return redirect()->back()->withErrors($e->getMessage());
         }
     }
+
+    protected function ensureSpecialtiesExist(array $specialtyIds): array
+    {
+        // 1. استرجاع التخصصات الموجودة من قاعدة البيانات
+        $existingSpecialties = Specialty::whereIn('id', $specialtyIds)->pluck('id')->toArray();
+        // 2. تحديد التخصصات المفقودة
+        $missingSpecialties = array_diff($specialtyIds, $existingSpecialties);
+
+        // 3. إذا كانت هناك تخصصات مفقودة، إضافتها إلى قاعدة البيانات
+        $newSpecialties = collect();
+        if (!empty($missingSpecialties)) {
+            foreach ($missingSpecialties as $name) {
+                $newSpecialties->push(Specialty::create(['name' => $name])->id);
+            }
+        }
+
+        // 4. إرجاع جميع معرفات التخصصات الموجودة والمضافة حديثًا
+        return Specialty::whereIn('id', collect($newSpecialties)->merge($specialtyIds))->pluck('id')->toArray();
+    }
+
 }
