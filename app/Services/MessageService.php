@@ -45,7 +45,8 @@ class MessageService {
 				'not_seen_count' => (int) ( $message->not_seen_count ),
 				'other_user_name' => $this->getOtherUserInfo( 'name', $message ),
 				'other_user_type' => $this->getOtherUserInfo( 'type', $message ),
-				'other_user_photo' => $this->getUserPhoto( $message ),
+				'other_user_photo' => asset( $this->getUserPhoto( $message ) ),
+				'not_seen_count_total' => $this->getUnSeenCount( auth()->id() )['not_seen_count']
 			] );
 		} );
 
