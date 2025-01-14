@@ -7,6 +7,7 @@ use App\Enums\AuthType;
 use App\Enums\UserType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -79,5 +80,12 @@ class User extends Authenticatable {
 	}
 	public function recievedMessages(): HasMany {
 		return $this->hasMany( Message::class, 'receiver_id' );
+	}
+	public function supportAdmins(): BelongsToMany {
+		return $this->belongsToMany(
+			User::class,
+			'supports',
+		)->withPivot( [ 'content', 'not_seen', 'sender' ] )
+			->withTimestamps();
 	}
 }

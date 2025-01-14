@@ -7,12 +7,17 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 class MessageService {
-	public function sendMessage( int $senderId, int $receiverId, string $content ): Message {
-		return Message::create( [ 
+
+	public function sendMessage( int $senderId, int $receiverId, string $content ) {
+		$message = Message::create( [ 
 			'sender_id' => $senderId,
 			'receiver_id' => $receiverId,
 			'content' => $content,
 		] );
+		$message->load( [ 'sender:id,name,type', 'receiver:id,name,type' ] );
+		$message->created_at = $message->created_at->diffForHumans();
+
+		return $message;
 
 	}
 
@@ -29,20 +34,39 @@ class MessageService {
 				} )
 			->groupBy( [ 'sender_id', 'receiver_id' ] )
 			->orderBy( 'created_at', 'desc' )
-			->with( [ 'sender:id,name', 'receiver:id,name' ] )
+			->with( [ 'sender:id,name,type', 'receiver:id,name,type', 'sender.doctor', 'receiver.doctor', 'sender.hospital', 'receiver.hospital' ] )
 			->get();
+		// info( $messages->toRawSql() );
+		info( json_encode( $messages ) );
 		$result = collect( [] );
 		$messages->each( function ($message) use ($result) {
 			$result->add( [ 
-				// "sender_id" => $message['sender_id'],
-				// "receiver_id" => $message['receiver_id'],
-				'other_user_id' => $message['receiver_id'] == auth()->id() ? $message['sender_id'] : $message['receiver_id'],
-				'not_seen_count' => (int) ( $message['not_seen_count'] ),
-				'other_user_name' => $message['sender']['id'] == auth()->id() ? $message['receiver']['name'] : $message['sender']['name'],
+				'other_user_id' => $message->receiver_id == auth()->id() ? $message->sender_id : $message->receiver_id,
+				'not_seen_count' => (int) ( $message->not_seen_count ),
+				'other_user_name' => $this->getOtherUserInfo( 'name', $message ),
+				'other_user_type' => $this->getOtherUserInfo( 'type', $message ),
+				'other_user_photo' => asset( $this->getUserPhoto( $message ) ),
+				'not_seen_count_total' => $this->getUnSeenCount( auth()->id() )['not_seen_count']
 			] );
 		} );
 
 		return $result->unique( 'other_user_id' )->values()->all();
+	}
+
+	protected function getOtherUserInfo( string $key, Message $message ) {
+		if ( $message->receiver_id == auth()->id() ) {
+			return $message->sender[ $key ];
+		} else {
+			return $message->receiver[ $key ];
+		}
+	}
+
+	protected function getUserPhoto( Message $message ): string {
+		if ( $message->sender->id == auth()->id() ) {
+			return $message->receiver->type == 'doctor' ? $message->receiver->doctor->photo : $message->receiver->hospital->photo;
+		} else {
+			return $message->sender->type == 'doctor' ? $message->sender->doctor->photo : $message->sender->hospital->photo;
+		}
 	}
 
 	public function getUnSeenCount( int $userId ) {

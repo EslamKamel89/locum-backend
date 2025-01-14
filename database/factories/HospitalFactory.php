@@ -26,6 +26,7 @@ class HospitalFactory extends Factory {
 			'website_url' => fake()->imageUrl(),
 			'year_established' => fake()->numberBetween( 1950, 2000 ),
 			'overview' => fake()->realText(),
+			'photo' => "https://randomuser.me/api/portraits/men/" . fake()->numberBetween( 1, 99 ) . ".jpg",
 		];
 	}
 	public $fakeHospitalNames = [ "Sunrise Medical Center", "Green Valley Hospital", "Riverside Health Clinic", "Mountain View Hospital", "Lakeside General Hospital", "Pinecrest Medical Center", "Cedarwood Health Clinic", "Maple Leaf Hospital", "Oakwood Medical Center", "Silver Springs Hospital" ];

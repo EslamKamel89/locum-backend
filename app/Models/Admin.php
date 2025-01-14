@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -46,5 +47,14 @@ class Admin extends Authenticatable {
 			'email_verified_at' => 'datetime',
 			'password' => 'hashed',
 		];
+	}
+
+	//! relationships
+	public function supportUsers(): BelongsToMany {
+		return $this->belongsToMany(
+			User::class,
+			'supports',
+		)->withPivot( [ 'content', 'not_seen', 'sender' ] )
+			->withTimestamps();
 	}
 }
