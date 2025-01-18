@@ -20,7 +20,7 @@ class JobAddFactory extends Factory {
 		return [ 
 			'title' => 'Experienced: ' . JobInfo::inRandomOrder()->first()->name . ' needed (' . self::$countSeq . ')',
 
-			'job_type' => fake()->randomElement( [ 'Fulltime', 'Parttime', 'Contract', 'Locum' ] ),
+			'job_type' => fake()->randomElement( [ 'Locum-Fulltime', 'Locum-Parttime', 'Locum-Contract' ] ),
 			'location' => fake()->address(),
 			'description' => fake()->realText(),
 			'responsibilities' => fake()->realText(),
