@@ -55,8 +55,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         flatpickr("#datetime-picker", {
             enableTime: false,
-            dateFormat: "Y-m-d H:i",
-            time_24hr: false,
+            dateFormat: "Y-m-d",
             locale: "en",
         });
     });

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Doctor;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
@@ -17,6 +18,7 @@ use App\Http\Controllers\admin\DistrictController;
 use App\Http\Controllers\admin\HospitalController;
 use App\Http\Controllers\admin\SpecialtyController;
 use App\Http\Controllers\admin\DoctorInfoController;
+use App\Http\Controllers\doctor\DoctorHomeController;
 use App\Http\Controllers\admin\JobApplicationController;
 use App\Http\Controllers\healthcare\Auth\WebAuthController;
 use App\Http\Controllers\healthcare\HealthcareAddsController;
@@ -78,6 +80,12 @@ Route::prefix('healthcare')->name('healthcare.')->group(function () {
     });
 });
 
+// Doctor Routes
+Route::prefix('doctor')->name('doctor.')->group(function () {
+    Route::middleware(['auth:web'])->group(function () {
+        Route::get('/', [DoctorHomeController::class, 'index'])->name('dashboard');
+    });
+});
 
 Route::post('/set-coordinates', function (\Illuminate\Http\Request $request) {
     Session::put('lat', $request->input('lat'));

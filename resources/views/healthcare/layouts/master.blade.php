@@ -92,7 +92,8 @@
                 <div class="profile-info col-md-10">
                     <h2 class="mt-5">{{ $hospital->facility_name }} - Healthcare Jobs <a href=""></a></h2>
                     <p class="text-muted">Hospital Jobs & Healthcare Vacancies in Dubai UAE and Across Worldwide -Visit:
-                        www.ampmlocum.com</p>
+                        <a href="{{ $hospital->website_url }}" target="_blank">{{ $hospital->website_url }}</a>
+                    </p>
                     <a href="https://www.google.com/maps?q={{ request()->session()->get('lat') }},{{ request()->session()->get('lon') }}"
                         target="_blank" class="text-muted"><i class="bi bi-geo-alt"></i>{{ $hospital->address }}</a>
                     <div class="mt-2">

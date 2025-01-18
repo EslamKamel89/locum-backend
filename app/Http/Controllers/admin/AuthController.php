@@ -38,6 +38,10 @@ class AuthController extends Controller
                 if (Auth::guard('web')->user()->type == UserType::hospital->value) {
                     return redirect()->route('healthcare.dashboard');
                 }
+
+                if (Auth::guard('web')->user()->type == UserType::doctor->value) {
+                    return redirect()->route('doctor.dashboard');
+                }
             }
 
             // إذا كانت البيانات غير صحيحة
