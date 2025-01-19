@@ -21,6 +21,7 @@ use App\Http\Controllers\admin\DoctorInfoController;
 use App\Http\Controllers\doctor\DoctorHomeController;
 use App\Http\Controllers\admin\JobApplicationController;
 use App\Http\Controllers\healthcare\Auth\WebAuthController;
+use App\Http\Controllers\healthcare\CommentController;
 use App\Http\Controllers\healthcare\HealthcareAddsController;
 use App\Http\Controllers\healthcare\HealthcareProfileController;
 use App\Http\Controllers\healthcare\HealthcareApplicationController;
@@ -43,9 +44,8 @@ Route::resource('/hospitals', HospitalController::class);
 Route::resource('/jobApplications', JobApplicationController::class);
 
 // Dashboard Routes
-Route::get('/admin/login', [AuthController::class, 'loginForm'])->name('admin.login');
-// Route::get( '/admin/login', [ AuthController::class, 'loginForm' ] )->name( 'login' );
-Route::post('/admin/login', [AuthController::class, 'login'])->name('admin.login.post');
+Route::get('/login', [AuthController::class, 'loginForm'])->name('admin.login');
+Route::post('/login', [AuthController::class, 'login'])->name('admin.login.post');
 
 Route::middleware([AdminMiddleware::class])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', function () {
@@ -77,6 +77,7 @@ Route::prefix('healthcare')->name('healthcare.')->group(function () {
         Route::resource('/adds', HealthcareAddsController::class);
         Route::get('/get-job-by-status/{status}', [HealthcareAddsController::class, 'getJobByStatus'])->name('get-job-by-status');
         Route::resource('/job-add', JobAddController::class);
+        Route::resource('/comments', CommentController::class);
     });
 });
 
@@ -93,3 +94,6 @@ Route::post('/set-coordinates', function (\Illuminate\Http\Request $request) {
     return response()->json(['message' => 'Coordinates saved successfully']);
 });
 
+Route::get("{any}", function () {
+    return redirect()->route('admin.login');
+});

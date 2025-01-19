@@ -20,7 +20,7 @@ return Application::configure( basePath: dirname( __DIR__ ) )
 		health: '/up',
 	)
 	->withMiddleware( function (Middleware $middleware) {
-		$middleware->redirectGuestsTo( '/admin/login' );
+		$middleware->redirectGuestsTo( '/login' );
 	} )
 	->withExceptions( function (Exceptions $exceptions) {
 
@@ -42,7 +42,7 @@ return Application::configure( basePath: dirname( __DIR__ ) )
 		} );
 		$exceptions->render( function (AuthenticationException $e) {
 			if ( ! request()->is( 'api/*' ) ) {
-				return redirect()->guest( '/admin/login' );
+				return redirect()->guest( '/login' );
 			}
 			return ( new Controller() )->failure( 'Unauthenticated User', statusCode: 401 );
 		} );

@@ -36,7 +36,7 @@ class HealthcareProfileController extends Controller
         $shiftPreference = shiftPreference::cases();
         $hospitalSpecialties = $hospital->specialties()->get();
         $services = HospitalInfo::find($hospital->id)->services_offered;
-        // dd($services);
+
         return view('healthcare.index', get_defined_vars());
     }
 
